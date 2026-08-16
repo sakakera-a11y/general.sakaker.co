@@ -42,242 +42,707 @@ body>*{
     z-index:1;
 }
 </style>
-<!-- =====================================
-     Sakaker Business Title + Hand
-     عالم الأعمال
-===================================== -->
-
-<div id="SK_Business_Title_Box">
-
-    <a id="SK_Business_Title_Link"
-       href="https://business.sakaker.co"
-       target="_blank">
-
-        عالم الأعمال
-
-    </a>
-
-</div>
-
-
-<!-- اليد المشيرة -->
-
-<div id="SK_Business_Hand">
-    ☝️
-</div>
-
-
-
+<!-- ================= أيقونة القصة + النافذة المعدلة ================= -->
 <style>
-
-/* العنوان فوق جميع المحتوى */
-#SK_Business_Title_Box {
-
-    position:fixed;
-
-    top:320px;
-
-    left:20%;
-
-    transform:translateX(-50%);
-
-    z-index:999999999;
-
+/* أيقونة القصة */
+#shipIcon_new {
+  position: fixed;
+  bottom: 50px;
+  right: 380px;
+  width: 110px;
+  height: 110px;
+  background: url('https://i.top4top.io/p_3602p1v3s1.png') center/cover no-repeat;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 99999999;
+  box-shadow: 0 0 25px #8a2be2, 0 0 55px rgba(138, 43, 226, 0.35);
+  transition: 0.35s ease;
+}
+#shipIcon_new:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 35px #8a2be2, 0 0 80px rgba(138, 43, 226, 0.6);
 }
 
-
-
-/* رابط العنوان */
-
-#SK_Business_Title_Link {
-
-
-    display:block;
-
-
-    font-size:28px;
-
-
-    font-weight:bold;
-
-
-    font-family:
-    Tahoma,
-    Arial,
-    sans-serif;
-
-
-    text-decoration:none;
-
-
-    white-space:nowrap;
-
-
-
-    background:
-
-    linear-gradient(
-        90deg,
-        #fff4a3,
-        #ffd700,
-        #ffffff,
-        #c0c0c0,
-        #cd7f32,
-        #ffd700,
-        #fff4a3
-    );
-
-
-
-    background-size:400%;
-
-
-
-    -webkit-background-clip:text;
-
-    background-clip:text;
-
-
-    -webkit-text-fill-color:transparent;
-
-
-
-    animation:
-
-    SK_Business_Gold_Shine 5s infinite linear;
-
-
-
-    filter:
-
-    drop-shadow(0 0 8px #ffd700);
-
-
-
-    transition:.4s;
-
+/* النافذة */
+#shipPopup_new {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 92%;
+  max-width: 430px;
+  background: rgba(15, 15, 25, 0.95);
+  border: 2px solid #8a2be2;
+  border-radius: 25px;
+  padding: 28px;
+  text-align: center;
+  box-shadow: 0 0 40px #8a2be2;
+  color: #fff;
+  z-index: 99999998;
+  animation: popFade_new 0.5s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+@keyframes popFade_new {
+  from { opacity:0; transform:translate(-50%, -45%); }
+  to   { opacity:1; transform:translate(-50%, -50%); }
 }
 
-
-
-/* تكبير عند المرور */
-
-#SK_Business_Title_Link:hover {
-
-
-    transform:scale(1.15);
-
-
-    filter:
-
-    drop-shadow(0 0 25px gold);
-
+/* زر الإغلاق */
+#closeShip_new {
+  position: absolute;
+  top: 12px;
+  right: 440px;
+  background: #ff0066;
+  color: #fff;
+  border: none;
+  width: 36px;
+  height: 36px;
+  font-size: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.3s;
+}
+#closeShip_new:hover {
+  transform: scale(1.15);
+  background: #ff2b80;
 }
 
-
-
-/* حركة لمعان المعادن */
-
-@keyframes SK_Business_Gold_Shine {
-
-
-    0% {
-
-        background-position:0% 50%;
-
-    }
-
-
-    50% {
-
-        background-position:100% 50%;
-
-    }
-
-
-    100% {
-
-        background-position:0% 50%;
-
-    }
-
+#shipPopup_new h2 {
+  color: #c084fc;
+  text-shadow: 0 0 12px #c084fc;
+  margin-bottom: 15px;
+  font-size: 22px;
 }
 
-
-
-
-/* اليد */
-
-#SK_Business_Hand {
-
-
-    position:fixed;
-
-
-    top:355px;
-
-
-    left:calc(20% + 20px);
-
-
-    z-index:999999999;
-
-
-
-    font-size:35px;
-
-
-
-    animation:
-
-    SK_Hand_Move 1.2s infinite;
-
-
-
-    filter:
-
-    drop-shadow(0 0 8px gold);
-
+#shipPopup_new p, #shipPopup_new ul {
+  text-align: right;
+  line-height: 1.8;
+  color: #ddd;
+  font-size: 17px;
 }
-
-
-
-/* حركة اليد */
-
-@keyframes SK_Hand_Move {
-
-
-    0% {
-
-        transform:translateY(0);
-
-    }
-
-
-    50% {
-
-        transform:translateY(10px);
-
-    }
-
-
-    100% {
-
-        transform:translateY(0);
-
-    }
-
-
-}
-
-
 </style>
+
+<!-- الأيقونة -->
+<div id="shipIcon_new"></div>
+
+<!-- النافذة -->
+<div id="shipPopup_new">
+  <button id="closeShip_new">✖</button>
+  <div style="margin:20px; padding:15px; background:rgba(0,0,0,0.55); border:1px solid #00ffd5; border-radius:12px; font-family:'Tajawal',sans-serif; color:white; line-height:1.9;">
+<div style="
+background:linear-gradient(180deg,#020b0b,#041818);
+padding:25px;
+border-radius:16px;
+">
+<h2 style="
+color:#ffd700;
+text-align:center;
+text-shadow:0 0 12px gold;
+margin-bottom:20px;
+">
+🌙 قصة جزيرة الزمرد المضيء
+</h2>
+
+<p style="color:#00cfa3;">
+في ليلةٍ هادئة، كان أبوالقمر زمرد يقف على سطح سفينته،
+يتأمل ضوء القمر المنعكس فوق أمواج البحر.
+</p>
+
+<p style="color:#00cfa3;">
+وفجأةً، ظهر في الأفق ضوءٌ أخضر غامض،
+كان يزداد لمعانًا كلما اقتربت السفينة منه.
+لم يكن الضوء نجمةً ولا مصباحًا...
+بل جزيرةً صغيرة تتلألأ كأنها قطعة من الزمرد.
+</p>
+
+<p style="color:#00cfa3;">
+اقترب أبوالقمر من الجزيرة،
+فوجد عند شاطئها بوابةً قديمة منقوشًا عليها:
+<b style="color:#ffd700;">"من يبحث عن النور، فليتبع القمر."</b>
+</p>
+
+<p style="color:#00cfa3;">
+دخل أبوالقمر الجزيرة، فوجد طرقًا متشعبة،
+وفي كل طريق رمز مختلف.
+طريقٌ يقود إلى المعرفة،
+وطريقٌ يقود إلى التاريخ،
+وطريقٌ يقود إلى الموسيقى،
+وطريقٌ يقود إلى أسرارٍ لم يكتشفها أحد من قبل.
+</p>
+
+<p style="color:#00cfa3;">
+وعندما وصل إلى منتصف الجزيرة،
+وجد زمردةً ضخمة معلقة بين السماء والأرض،
+تدور ببطء وتبعث ضوءًا أخضر يملأ المكان.
+</p>
+
+<p style="color:#00cfa3;">
+اقترب منها، فإذا بصوتٍ يأتي من أعماق الجزيرة:
+<b style="color:#ffd700;">
+"ليست الكنوز ما تجده في نهاية الطريق...
+بل ما تتعلمه أثناء رحلتك."
+</b>
+</p>
+
+<p style="color:#00cfa3;">
+ابتسم أبوالقمر، وأدرك أن الجزيرة لم تكن مكانًا عاديًا،
+بل كانت بدايةً لرحلة جديدة...
+رحلةٍ ستقوده إلى عوالم أبعد من البحر،
+وأسرارٍ أكبر من أن يحملها كتاب واحد.
+</p>
+
+<p style="color:#00cfa3;text-align:center;">
+ومنذ تلك الليلة، أصبح ضوء الزمرد يظهر كلما بدأ أبوالقمر رحلةً جديدة...
+وكأنه يقول له دائمًا:
+<b style="color:#ffd700;">"تابع السير... فالقصة لم تنتهِ بعد." 🌙💚</b>
+</p>
+<h2 style="
+text-align:center;
+color:#d4af37;
+text-shadow:0 0 10px #bfa23a;
+font-weight:bold;
+">
+    <hr>
+<h2 style="
+color:#ffd700;
+text-align:center;
+text-shadow:0 0 12px gold;
+margin-bottom:20px;
+">
+🌙 فروع أبوالقمر زمرد
+</h2>
+
+<p style="color:#00cfa3;">
+في إحدى الليالي، وبعد أن غادرت السفينة جزيرة الرويبضة،
+واصلت رحلتها وسط البحر حتى لاح أمامها أفقٌ جديد.
+لم يكن جزيرةً واحدة...
+بل مجموعة من الجزر الصغيرة،
+ترتبط جميعها بجسرٍ واحد يحمل اسم
+<b style="color:#ffd700;">sakaker.co</b>.
+</p>
+
+<p style="color:#00cfa3;">
+اقترب أبوالقمر زمرد من أول جزيرة،
+فوجدها مليئة بالفيديوهات،
+وفي الجزيرة التالية وجد القصص،
+ثم الحكمة،
+ثم الألعاب،
+ثم المعرفة،
+وكان يدرك أن كل جزيرة ليست سوى فرعٍ من فكرةٍ بدأت صغيرة ثم كبرت مع الأيام.
+</p>
+
+<p style="color:#00cfa3;">
+وقف يتأمل ذلك المشهد وقال:
+"ما زال الطريق طويلًا...
+فهناك فروعٌ لم تولد بعد،
+وفرصٌ تنتظر من يكتشفها."
+</p>
+
+<p style="color:#00cfa3;">
+بدأ يرسم على الرمال أسماء الفروع القادمة:
+الموسيقى،
+السفر،
+التاريخ،
+التقنية،
+الذكاء الاصطناعي،
+ومكتبةٌ ضخمة تجمع خلاصة سنواتٍ من التجارب والمعرفة.
+</p>
+
+<p style="color:#00cfa3;">
+كان يؤمن أن الموقع لا يُبنى في يوم،
+بل ينمو كما تنمو الشجرة...
+كل غصنٍ جديد يمنحها حياةً أكثر،
+وكل فكرةٍ جديدة تجعلها أكثر فائدةً لكل من يزورها.
+</p>
+
+<p style="color:#00cfa3;">
+وقبل أن تغادر السفينة،
+نظر أبوالقمر زمرد إلى الأفق وقال مبتسمًا:
+"هذه ليست النهاية...
+بل مجرد بداية،
+فكل فرعٍ جديد هو مغامرة جديدة،
+وكل مغامرةٍ تبدأ بخطوة."
+</p>
+<h2 style="
+text-align:center;
+color:#ffd700;
+text-shadow:0 0 10px #bfa23a;
+font-weight:bold;
+">
+🗣️ حينما ينطق الرويبضة
+</h2>
+
+<p style="color:#00cfa3;">
+في إحدى الليالي، وبينما كانت السفينة تشق طريقها وسط بحرٍ هادئ،
+وصلت إلى جزيرةٍ لم تظهر على أي خريطة.
+لم يكن في الجزيرة قصرٌ ولا مكتبة،
+بل ساحةٌ كبيرة تجمع الناس حول رجلٍ يرفع صوته بثقةٍ عجيبة.
+</p>
+
+<p style="color:#00cfa3;">
+كان يتحدث في الطب، والسياسة، والتاريخ، والاقتصاد،
+ويفتي في أمور الدين،
+ويحكم على الأمم والحضارات،
+وكأنه أحاط بكل علمٍ من أطرافه.
+والأغرب من ذلك...
+أن الجميع كانوا يصفقون له،
+رغم أنه لم يقرأ كتابًا،
+ولم يعرف عنه علمٌ ولا تجربة.
+</p>
+
+<p style="color:#00cfa3;">
+اقترب أحد البحارة من شيخٍ عجوز كان يراقب المشهد بصمت،
+وسأله:
+"من هذا الرجل؟"
+</p>
+
+<p style="color:#00cfa3;">
+ابتسم الشيخ بحزن وقال:
+"لقد أخبر النبي ﷺ عن مثل هذا الزمان،
+وسمّى هذا الرجل <strong>الرويبضة</strong>...
+وهو الرجل التافه الذي يتكلم في أمر العامة،
+فيصدقه الناس،
+ويقدمونه على أهل العلم والخبرة."
+</p>
+
+<p style="color:#00cfa3;">
+ساد الصمت للحظات،
+ثم نظر البحارة حولهم،
+فوجدوا أن الحكيم يجلس في زاويةٍ لا يلتفت إليه أحد،
+بينما يقف صاحب الصوت الأعلى فوق المنصة،
+تحيط به الأضواء والتصفيق.
+</p>
+
+<p style="color:#00cfa3;">
+عندها أدرك قائد السفينة أن المشكلة ليست في كثرة الكلام،
+بل فيمن نعطيه آذاننا.
+فليس كل مشهورٍ عالمًا،
+وليس كل متحدثٍ صادقًا،
+وليس كل من يملك منصةً يملك الحكمة.
+</p>
+
+<p style="color:#00cfa3;">
+وقبل أن تبحر السفينة من جديد،
+كتب قائدها على لوحٍ خشبي وعلقه عند مقدمتها:
+</p>
+
+<p style="
+text-align:center;
+font-size:20px;
+color:#ffd700;
+font-weight:bold;
+">
+"إذا تكلم الحكيم أنار العقول...
+وإذا نطق الرويبضة، كثرت الضوضاء وغابت الحقيقة."
+</p>
+
+<hr>
+
+<p style="
+text-align:center;
+color:#9ff;
+font-size:15px;
+">
+📚 <strong>معلومة ثقافية:</strong><br>
+ورد لفظ <strong>الرويبضة</strong> في الحديث النبوي، وفسره النبي ﷺ بأنه:
+<b>"الرجل التافه يتكلم في أمر العامة"</b>.
+وتُستعمل الكلمة اليوم للدلالة على من يتصدر للحديث في القضايا الكبرى دون علم أو أهلية.
+</p>
+
+<hr>
+
+<p style="
+text-align:center;
+color:#00cfa3;
+line-height:2.2;
+font-size:18px;
+">
+
+دَعِ الأَيّامَ تَفعَلُ ما تَشاءُ ** وَطِب نَفسًا إِذا حَكَمَ القَضاءُ<br><br>
+
+وَلا تَجزَع لِحادِثَةِ اللَيالي ** فَما لِحَوادِثِ الدُنيا بَقاءُ<br><br>
+
+وَكُن رَجُلًا عَلى الأَهوالِ جَلدًا ** وَشيمَتُكَ السَماحَةُ وَالوَفاءُ<br><br>
+
+وَإِن كَثُرَت عُيوبُكَ في البَرايا ** وَسَرَّكَ أَن يَكونَ لَها غِطاءُ<br><br>
+
+تَسَتَّر بِالسَخاءِ فَكُلُّ عَيبٍ ** يُغَطّيهِ كَما قيلَ السَخاءُ
+
+</p>
+    <hr>
+
+<h2 style="text-align:center; color:#ffd700;">
+🆕🍔 ماذا لو تطورت الأطعمة كما تطورت التكنولوجيا؟
+</h2>
+
+<p style="color:#00cfa3;">
+في مساءٍ هادئ، جلس أبو القمر زمرد يتناول سندويشة شاورما، وبينما كان يستعد لأخذ أول لقمة، وصل إشعار من هاتفه:
+</p>
+
+<p style="text-align:center; color:#ffda6a;">
+<strong>📢 يتوفر الآن تحديث للشاورما... الإصدار 18.5</strong>
+</p>
+
+<p style="color:#00cfa3;">
+نظر إلى السندويشة باستغراب وقال:
+</p>
+
+<p style="text-align:center; color:#9ff;">
+"حتى أنتِ صار لك تحديث؟!"
+</p>
+
+<p style="color:#00cfa3;">
+فجأة اهتزت الشاورما وقالت بصوتٍ آلي:
+</p>
+
+<p style="text-align:center; color:#ffcc66;">
+<strong>
+يرجى عدم الأكل أثناء تثبيت التحديث... الوقت المتبقي: 3 دقائق.
+</strong>
+</p>
+
+<p style="color:#00cfa3;">
+تنهد أبو القمر وقال:
+</p>
+
+<p style="text-align:center; color:#9ff;">
+"يا ساتر... حتى الجوع صار ينتظر التحديثات!"
+</p>
+
+<p style="color:#00cfa3;">
+وفي صباح اليوم التالي، ذهب ليقلي بيضة، لكنها رفضت أن تُكسر وقالت:
+</p>
+
+<p style="text-align:center; color:#ffcc66;">
+<strong>
+هذا الإصدار لا يدعم المقالي القديمة... يرجى شراء مقلاة Pro Max.
+</strong>
+</p>
+
+<p style="color:#00cfa3;">
+ضحك أبو القمر وقال:
+</p>
+
+<p style="text-align:center; color:#9ff;">
+"حتى البيض صار يبيع إكسسوارات!"
+</p>
+
+<p style="color:#00cfa3;">
+ثم فتح الثلاجة، فظهرت رسالة على الحليب:
+</p>
+
+<p style="text-align:center; color:#ffcc66;">
+<strong>
+انتهت النسخة المجانية... للاستخدام غير المحدود اشترك في حليب Premium.
+</strong>
+</p>
+
+<p style="color:#00cfa3;">
+أما الخبز فقد أصبح يطلب كلمة مرور قبل أن يسمح لأحد بأكله:
+</p>
+
+<p style="text-align:center; color:#ffcc66;">
+<strong>
+أدخل رمز الرغيف المكون من 6 أرقام.
+</strong>
+</p>
+
+<p style="color:#00cfa3;">
+وحين جاع أكثر، ذهب إلى المطعم، فقال له النادل بكل هدوء:
+</p>
+
+<p style="text-align:center; color:#ffcc66;">
+<strong>
+طلبك جاهز... لكن يوجد تحديث إجباري للبطاطس، انتظر 47 دقيقة.
+</strong>
+</p>
+
+<p style="color:#00cfa3;">
+وفي تلك اللحظة ظهر التنين الفضي وهو يضحك حتى كاد يسقط من السماء، ثم قال:
+</p>
+
+<p style="text-align:center; color:#ffd700;">
+<strong>
+يا أبا القمر... احمد الله أن الطعام لا يحتاج شاحنًا ولا شبكة إنترنت!
+</strong>
+</p>
+
+<p style="color:#00cfa3;">
+ابتسم أبو القمر زمرد، وأخذ رغيفًا عاديًا، وأكله في ثوانٍ دون تحديثات، ولا اشتراكات، ولا كلمة مرور، ثم قال:
+</p>
+
+<p style="text-align:center; font-size:21px; color:#00ffd0;">
+<strong>
+الحمد لله... بعض الأشياء الجميلة ما زالت تعمل بالإصدار الأول منذ خلقها الله.
+😂🍞
+</strong>
+</p>
+
+<hr>
+🐉 أبو القمر زمرد… حين التقى التنين الفضي
+</h2>
+
+<p style="color:#00cfa3;">
+في مطلع السنة الجديدة 2026،  
+وحين كانت الليالي لا تزال تحتفظ ببرودة البدايات،  
+وقف أبو القمر زمرد عند مفترقٍ لم يكن عاديًا،  
+حيث التقى بالتنين الفضي،  
+كأن اللقاء لم يكن صدفة،  
+بل وعدًا قديمًا تأخر موعده.
+</p>
+
+<p style="color:#00cfa3;">
+لم يكن التنين حديث أسطورة،  
+ولا ظلّ خيالٍ عابر،  
+بل رمزًا للقوة الحكيمة،  
+التي لا تظهر إلا لمن أثبت صبره،  
+وأخلص لطريقه،  
+وسار دون أن يلتفت للخلف.
+</p>
+
+<p style="color:#00cfa3;">
+تبادل الاثنان نظرةً طويلة،  
+وفي تلك اللحظة،  
+أدرك أبو القمر زمرد أن الطريق لم ينتهِ،  
+بل بدأ يتّضح أكثر.  
+فشكر اللقاء في صمته،  
+ومضى دون ضجيج.
+</p>
+
+<p style="color:#00cfa3;">
+عاد أبو القمر زمرد إلى واقعه،  
+فوجده مشغولًا بما بناه بيديه،  
+في موقعه التجاري الذي أنشأه قبل ستةٍ وعشرين عامًا،  
+موقع لم يكن مجرد صفحات،  
+بل عمرًا من التجربة،  
+وأثرًا من الصبر،  
+وشاهدًا على أنه لم يضع وقته سدى.
+</p>
+
+<p style="color:#00cfa3;">
+كان يعمل هناك بهدوء،  
+كمن يعرف أن لكل شيء وقته،  
+وأن الأحلام لا تُطارد،  
+بل تُستقبل حين تنضج.
+</p>
+
+<p style="color:#00cfa3;">
+وحين أنهى يومه،  
+ترك خلفه الشاشات والضوء،  
+وسار إلى حيث يلتقي بآماله،  
+لا متعجلًا،  
+ولا مترددًا،  
+بل ثابت الخطى،  
+كما يفعل من تعلّم أن الأمل لا يُولد فجأة،  
+بل يُربّى مع السنين.
+</p>
+
+</div>
+
+<h2 style="text-align:center; color:#9ff;">🌙 أبو القمر زمرد… حين رفض الاستسلام</h2>
+
+<p>
+لم يكن أبو القمر زمرد يومًا من الذين يرفعون راية الاستسلام،  
+ولا من الذين يتركون الريح تدفعهم حيث تشاء.  
+كان يرى الحياة بخطوطها الحادة وظلالها الثقيلة،  
+ويعرف أن كل ضربةٍ هي درس،  
+وكل سقوطٍ هو بداية صعود جديد.
+</p>
+
+<p>
+وحين حاولت الدنيا أن تكسِر صلابته،  
+وقف مبتسمًا، وقال لنفسه قبل الناس:  
+<strong>"أنا لم أُخلق لأُهزم، بل لأتعلّم وأبقى."</strong>
+</p>
+
+<p>
+كان يؤمن أن العمر ليس رقمًا يُقصِر الطريق،  
+ولا جدارًا يمنع الحلم…  
+بل هو تجربةٌ تجعل القلب أنقى والعقل أعمق.  
+ولذلك قالها بثبات لا يشبه أحدًا:
+</p>
+
+<p style="text-align:center; font-size:20px; color:#00ffd0;">
+<strong>"حتى بعد الثمانين… سأمشي، سأحلم، وسأبقى."</strong>
+</p>
+
+<p>
+كان يعلم أن هناك <strong>حياة أبدية</strong>،  
+عالمًا آخر ينتظر كل روحٍ صادقة،  
+لكنّه أيضًا كان يعرف أن الله وضعه في الدنيا  
+ليؤدي دوره، ويترك أثرًا لا ينطفئ.  
+فلذلك كان يعيشها كأنها هدية،  
+ويحمي قلبه كأنه كنز،  
+ويمضي فيها بثبات القمر وسط السماء.
+</p>
+
+<p>
+أبو القمر زمرد، الرجل الذي لم يَغلبه الزمن،  
+ولم تُنهِ عزيمته الأيام…  
+بل كلما تقدم عمره،  
+ازدادت روحه قوة،  
+وكأنه خُلق ليبقى طويلًا…  
+ويعلّم الآخرين كيف يكون البقاء شرفًا.
+</p>
+
+</div>
+
+  <!-- ========= قصة أبو القمر زمرد مع المجتمع ========= -->
+<div style="margin:20px; padding:15px; background:rgba(0,0,0,0.65); border:1px solid #00ffd5; border-radius:12px; font-family:'Tajawal',sans-serif; color:white; line-height:1.8;">
+
+<h2 style="text-align:center;">🌙 أبو القمر زمرد… بين وجوه المجتمع</h2>
+
+<p>
+في زمنٍ تتصارع فيه المواقف قبل الأشخاص،  
+وتختلط فيه الأقنعة بالوجوه،  
+وجد أبو القمر زمرد نفسه يسير وسط مجتمعٍ متناقض؛  
+مجتمع يجمع المتضادّات كما تجمع الصحراء بين  
+سكون الليل وحرارة الظهيرة.
+</p>
+
+<p>
+رأى بعينيه <strong>الخير والشر</strong> يمشيان جنبًا إلى جنب؛  
+رجل يعطي بلا حساب، وآخر يمنع حتى كلمة طيبة.  
+ورأى <strong>الكرم والبخل</strong> في وجوه لا يفرّق بينها إلا موقف واحد  
+يظهر أصل صاحبها.
+</p>
+
+<p>
+وفي الطرقات لمح <strong>الذكاء والغباء</strong>:  
+ذكاءٌ يرفع صاحبه ولو كان ضعيفًا،  
+وغباءٌ يُسقط من ظن نفسه فوق الجميع.  
+ورأى أيضًا <strong>القوة والضعف</strong>،  
+لكنّه أدرك أن أقواهم هو من يحفظ قلبه نقيًا رغم كل شيء.
+</p>
+
+<p>
+أما <strong>أبو القمر زمرد</strong>، فقد ظلّ يمشي بينهم  
+لا يتغيّر مهما تغيّروا،  
+يعطي من قلبه، ويحفظ سرّه،  
+ويعرف أن البشر مثل الرمال…  
+منها ما يدفنك، ومنها ما يبني طريقك.
+</p>
+
+<p>
+وتحت كل هذا الضجيج، بقي ثابتًا على قيمه،  
+يبحث عن معنى، عن صديق حقيقي،  
+وعن لحظة صادقة تلامس مثل نور القمر  
+حجرًا من زمرد… فيضيئه.
+</p>
+
+<hr style="border-color:#00ffd5;">
+</div>
+
+
+<h2>🦎 ضبّ الصحراء… ودمعة أبو القمر زمرد</h2>
+
+في ظهيرةٍ قاسية، كانت الرمال تحترق تحت وهج الشمس، سار أبو القمر زمرد منهكًا بين كثبانٍ بلا ظل ولا أنيس.  
+وفجأة سمع نفَسًا متقطعًا خلف صخرةٍ منخفضة. اقترب ببطء… فإذا به <strong>ضبّ صحراوي</strong> جاف الجسد، لكنه ثابت النظرة،  
+عيناه تحكيان قصة طويلة من الصبر والوجع.<br><br>
+
+رفع الضب رأسه، وكأنه يعرفه من قبل، وقال بصوتٍ متعب:<br>
+<em>"يا أبو القمر… ليس كل من يعيش في الصحراء قويًا، ولكن كل من يبقى… تعلم معنى الصبر الحقيقي."</em><br><br>
+
+جلس أبو القمر بجانبه، فاقترب الضب أكثر حتى لامس يده، فشعر أبو القمر بحرارةٍ تشبه ألم قلبٍ صامت.  
+قال الضب وهو يحدّق في الأفق:<br>
+<em>"تعلمت أن الضربة التي لا تكسر ظهري… تزيدني رسوخًا تحت الرمال."</em><br><br>
+
+ثم أغمض الضب عينيه ببطء، وتلاشت أنفاسه الأخيرة مع نسمة ريح حارة  
+كأن الصحراء نفسها أخذت روحه إلى عمقها.<br><br>
+
+ساد صمت طويل… ثم نزلت دمعة واحدة من عين أبو القمر زمرد،  
+دمعة لم يُرِد أن يراها أحد، لكنه قال وهو ينظر للسماء:<br>
+<em>"أيها الضبّ الصبور… علّمتني أن القوة ليست في الحركة… بل في البقاء."</em><br><br>
+
+ومنذ ذلك اليوم عاد أبو القمر يسير في الصحراء،  
+ولكن بروحٍ أثقل… وبقلبٍ يعرف معنى القوة التي لا يراها أحد.
+<hr>
+..
+<hr>
+
+  <h2>⚓ مغامرة أبو القمر زمرد مع الصقنقور الرملي ⚓</h2>
+  <p id="storyText_new"></p>
+</div>
+
+<script>
+const snqStory_new = `
+في ليلةٍ هادئة كان القمر فيها مكتملًا، خرج أبو القمر زمرد كعادته يتأمل ضوء السماء ويبحث عن أسرار جديدة يخفيها الكون. وبينما كان يسير فوق الرمال الفضية التي تعكس ضوء القمر، لاحظ شيئًا صغيرًا يتحرك بخفةٍ قرب كثيب رملي طويل.<br><br>
+
+اقترب بهدوء، فإذا به <strong>صقنقور رملي</strong> بلونٍ يميل إلى الذهب، سريع الحركة، يترك خلفه خطًا دقيقًا كأنه يرسم علامة على الرمال.<br><br>
+
+رفع الصقنقور رأسه وكأنه يعرف أبو القمر، ثم قال بصوت خفيف يشبه همس الريح:<br>
+<em>"أبحث منذ زمن عن من يستطيع قراءة طريق القمر بين الرمال… أنت وحدك من يستطيع السير معي."</em><br><br>
+
+ابتسم أبو القمر زمرد، ووضع كفه بلطف على ظهر الصقنقور، فانطلقت منه هالة زمردية خضراء، امتزجت بلون الرمال الذهبية فكوّنت طريقًا يمتد نحو عمق الصحراء.<br><br>
+
+سار الاثنان معًا عبر هذا الطريق المتلألئ، وكل خطوة كان الصقنقور يرسم بها رمزًا جديدًا على الأرض. اكتشف أبو القمر أنّ هذه الرموز ليست عشوائية… بل هي <strong>خريطة قديمة</strong> تمزج بين <em>طاقة الأرض</em> و<em>نور القمر</em>، لا يستطيع فكها إلا من جمع بين الهدوء الداخلي وصفاء القلب.<br><br>
+
+وقادتهم الخريطة إلى <strong>كهف من الكريستال الرملي</strong>, جدرانه تلمع مثل الزجاج وعليه نقوش لأسلاف الصقنقور. هناك وجد أبو القمر <strong>حجرًا رمليًا زمرديًا</strong> نادرًا، يقال إن من يحمله يستطيع رؤية الطرق المخفية التي لا تراها العيون.<br><br>
+
+أخذ أبو القمر الحجر، ووضعه في قلادته، فقال الصقنقور:<br>
+<em>"منذ اليوم، طريق القمر لم يعد فوق السماء فقط… بل تحت قدميك أيضًا."</em><br><br>
+
+ثم اختفى الصقنقور داخل الرمال، تاركًا خلفه خطًا طويلًا كُتب عليه:<br>
+<em>"الصداقة الحقيقية لا تحتاج صوتًا… يكفي أن تترك أثرًا."</em><br><br>
+
+ومن تلك الليلة أصبح لأبو القمر زمرد طريق جديد، طريق من نور القمر… ومغامرات لا تنتهي في الصحراء… وبرفقة الصقنقور الرملي مهما غاب أو اختفى.<hr>
+
+<h2>🐉 أبو القمر زمرد يخاطب التنين الفضي بقصيدة "غدر الزمان"</h2>
+
+<p>قررت الرحيل من أمد... فخانني الزمان وأوفى به القدر</p>
+<p>فلا بصيره من لا يرى بأعينه.... ولو طال له الطريق والسفر</p>
+<p>وكلام لا ينجي صاحبه... تزدريه الحضوض ومقله البشر</p>
+<p>تعجبت من زمان أدور به.... وكيف تغيرت المخاطر إلى خطر</p>
+<p>كطفل ينمو في مراحله... وبأن فيه الشيب والقصر</p>
+<p>فهذا حال الزمان لمن جال به.... يغدو لعلمه يبوح به أو يسر</p>
+<p>كمثل الكلب حين في طبعه.... وحين يتشبه بالأسماك والنسر</p>
+<p>فوجهي هذا من الماضي صورته... طلت علي من الجوال بفجر</p>
+<p>فذكرتني بعهد لم أكن انساه... ولكن لا تجود الأرواح إلا بصبر</p>
+<p>فلكل أمر له شقوته.... ولا بعد العسر إلا يسر</p>
+<p>ولا أشره علا السارق بسطوته... فهاذي تجارب النفس والبصر</p>
+
+<hr>
+<h3>💡 الفكرة العامة</h3>
+<p>القصيدة تتناول رحلة الشاعر مع الزمن، وتستعرض تجاربه مع الخذلان والخيانة والتحولات في الحياة. تتخللها تأملات في البشر والطبيعة الإنسانية، إضافة إلى الصبر والحكمة التي تأتي بعد التجارب.</p>
+
+<hr>
+<h3>📜 تحليل الأبيات</h3>
+<ul>
+  <li><em>"قررت الرحيل من أمد... فخانني الزمان وأوفى به القدر"</em>: بداية قوية تعكس قرار الشاعر بالمضي في الحياة أو الرحيل عن الماضي، مع إدراك أن الزمن قد يخوننا، لكن القدر يظل في حكمه.</li>
+  <li><em>"فلا بصيره من لا يرى بأعينه.... ولو طال له الطريق والسفر"</em>: يشير إلى أن الرؤية الحقيقية والفهم لا تتحقق إلا بالوعي الداخلي، وأن طول التجربة وحده لا يكفي.</li>
+  <li><em>"وكلام لا ينجي صاحبه... تزدريه الحضوض ومقله البشر"</em>: يصف حالة الضعف أمام أحكام الناس، وأن الكلمات وحدها قد لا تنقذ الشخص من سوء الحظ أو انتقاد الآخرين.</li>
+  <li><em>"تعجبت من زمان أدور به.... وكيف تغيرت المخاطر إلى خطر"</em>: استغراب من تغير الحياة، وأن ما كان تحديًا قد أصبح تهديدًا حقيقيًا مع مرور الزمن.</li>
+  <li><em>"كطفل ينمو في مراحله... وبأن فيه الشيب والقصر"</em>: استعارة جميلة تشير إلى دورة الحياة، من البراءة والطفولة إلى النضج والشيب.</li>
+  <li><em>"فهذا حال الزمان لمن جال به.... يغدو لعلمه يبوح به أو يسر"</em>: تأمل في أن تجربة الإنسان مع الزمن تمنحه الحكمة، وقد يشاركها أو يحتفظ بها لنفسه.</li>
+  <li><em>"كمثل الكلب حين في طبعه.... وحين يتشبه بالأسماك والنسر"</em>: تشبيه للطبيعة البشرية، وكيف يمكن للمرء أن يتصرف بما لا يتفق مع طبعه تحت تأثير الظروف.</li>
+  <li><em>"فوجهي هذا من الماضي صورته... طلت علي من الجوال بفجر"</em>: لمسة شخصية تعكس الحنين والذكريات، وكيف يمكن للأشياء البسيطة أن تثير الماضي.</li>
+  <li><em>"فذكرتني بعهد لم أكن انساه... ولكن لا تجود الأرواح إلا بصبر"</em>: دعوة للصبر على تجارب الحياة، فالروح تحتاج الصبر لتستعيد قوتها.</li>
+  <li><em>"فلكل أمر له شقوته.... ولا بعد العسر إلا يسر"</em>: حكمة خالدة: بعد كل صعوبة يأتي الفرج، وكل تجربة تحمل درسًا.</li>
+  <li><em>"ولا أشره علا السارق بسطوته... فهاذي تجارب النفس والبصر"</em>: خلاصة القول: التجارب تصقل النفس وتعلم الإنسان الرؤية والفهم.</li>
+</ul>
+`;
+
+document.getElementById("storyText_new").innerHTML = snqStory_new;
+
+// فتح النافذة
+document.getElementById("shipIcon_new").onclick = () => {
+  document.getElementById("shipPopup_new").style.display = "block";
+};
+
+// إغلاق النافذة
+document.getElementById("closeShip_new").onclick = () => {
+  document.getElementById("shipPopup_new").style.display = "none";
+};
+
+</script>
 <!-- ================= نهاية الكود المنعزل ================= -->
   
 <!-- 🐦 أيقونة صوت الطيور بتوهج زمردي -->
 <div id="bird-sound-btn" title="تشغيل/إيقاف صوت الطيور" style="
   position: fixed;
-  top: 20px;
+  top: 60px;
   right: 202px;
   width: 75px;
   height: 75px;
@@ -518,7 +983,7 @@ setInterval(updateOceanClock,1000);
 /* ====== الدوائر ====== */
 .video-top-container-fixed {
   position: fixed;
-  top: 210px;
+  top: 250px;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -643,7 +1108,7 @@ function closeVideoModal() {
 /* زر الفتح */
 #emeraldMusicHost #emOpenBtn{
   pointer-events:auto;
-  position:fixed;bottom:120px;right:220px;width:78px;height:78px;border-radius:50%;
+  position:fixed;bottom:200px;right:20px;width:78px;height:78px;border-radius:50%;
   background:rgba(255,255,255,.08);border:2px solid var(--em);
   display:flex;align-items:center;justify-content:center;
   font-size:28px;cursor:pointer;box-shadow:0 0 18px var(--em);
@@ -1267,12 +1732,12 @@ window.addEventListener("keyup",(e)=>{
 <button id="pongGame-btn" style="
   z-index: 9999;
   position: fixed;
-  bottom : 40px;
+  bottom : 20px;
   right: 10px;
   padding: 2px 2px;
   border: none;
   border-radius: 14px;
-  background: linear-gradient(45deg, #007bff, #00ffff);
+  background:
   color: #fff;
   font-size: 15px;
   font-weight: bold;
@@ -1322,11 +1787,13 @@ z-index:2147483647;
 overflow:hidden;
 ">
   <!-- ✅ فيديو الخلفية لا يلتقط النقرات -->
-  <iframe id="pongGame-video"
-    src="https://www.youtube.com/embed/bG4NtWR2e88?autoplay=1&mute=1&loop=1&playlist=bG4NtWR2e88&enablejsapi=1"
-    frameborder="0" allow="autoplay;encrypted-media" allowfullscreen
-    style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;"></iframe>
-
+<iframe id="pongGame-video"
+  src="https://www.youtube.com/embed/Hun8SMeoM1k?autoplay=1&mute=1&loop=1&playlist=Hun8SMeoM1k&enablejsapi=1"
+  frameborder="0"
+  allow="autoplay;encrypted-media"
+  allowfullscreen
+  style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;">
+</iframe>
   <!-- قائمة الخيارات -->
   <div id="pongGame-menu" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:8px;background:rgba(0,0,0,0.6);padding:15px 25px;border-radius:12px;color:#fff;font-family:'Tajawal',sans-serif;z-index:3;">
     <label>🎨 المضرب 1: <input id="pongGame-p1Color" type="color" value="#FFD700"/></label>
@@ -1463,7 +1930,7 @@ overflow:hidden;
 /* 🔹 أيقونة النجمة */
 .launcher {
   position: fixed;
-  bottom: 135px; 
+  bottom: 235px; 
   right: 125px;
   width: 50px;
   height: 50px;
@@ -1593,6 +2060,119 @@ closeBtn.addEventListener('click', () => {
 </html>
 
   <div style="text-align:center;margin-top:120px;font-size:26px;text-shadow:0 0 12px #00ffff;">
+<!-- 🌈 أيقونة فتح/إغلاق قائمة الاتصال -->
+<div id="support-toggle-btn" style="
+  position: fixed;
+  top: 5px;
+  right:500px;
+  width: 65px;
+  height: 65px;
+  background: linear-gradient(45deg, #007bff, #ff69b4);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(0,0,255,0.8);
+  z-index: 1001;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+">
+📞
+</div>
+
+<!-- 🌟 قسم قائمة التواصل -->
+<div id="support-section" style="
+  position: fixed;
+  top: 20%;
+  right: 370px;
+  background: rgba(0, 0, 30, 0.85);
+  padding: 18px;
+  border-radius: 14px;
+  color: #fff;
+  font-family: 'Tajawal', sans-serif;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: translateX(20px);
+  z-index: 1000;
+  max-width: 270px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+">
+
+  <h3 style="margin:0; text-align:center; color:#00ffff;">💖 قائمة التواصل</h3>
+  <hr style="border: 1px solid #00ffff; margin:8px 0 10px 0;">
+
+  <!-- 💰 PayPal -->
+  <p style="margin:5px 0; color:#FFD700;">💰 
+    <a href="https://paypal.me/abwalqmrzmrd" target="_blank" style="color:#FFD700; text-decoration:none;">
+      ادعمنا عبر PayPal
+    </a>
+  </p>
+
+  <!-- 📧 البريد -->
+  <p style="margin:5px 0;">📧 
+    <a href="mailto:sakakera@gmail.com" style="color:#00ffcc; text-decoration:none;">
+      sakaker@outlook.com
+    </a>
+  </p>
+
+  <!-- 🌐 فيسبوك -->
+  <p style="margin:5px 0;">⭐ 
+    <a href="https://www.facebook.com/AbwAlqmrZmrd" target="_blank" style="color:#FFD700; text-decoration:none; font-weight:bold;">
+      أبوالقمر زمرد
+    </a>
+  </p>
+
+  <!-- 🟩 واتساب -->
+  <p style="margin:5px 0;">🟩 
+    <a href="https://wa.me/message/BJUPAGNVGZ2KI1" target="_blank" style="color:#00ff99; text-decoration:none;">
+      واتساب مباشر
+    </a>
+  </p>
+
+  <!-- 🐦 تويتر -->
+  <p style="margin:5px 0;">🐦 
+    <a href="https://twitter.com/intent/tweet?text=🌙%20زر%20موقع%20أبوالقمر%20زمرد%20https://sakakera-a11y.github.io/sakaker/" target="_blank" style="color:#1DA1F2; text-decoration:none;">
+      شارك عبر تويتر
+    </a>
+  </p>
+</div>
+
+<script>
+// 🔹 حركة الألوان المتغيرة للأيقونة
+setInterval(() => {
+  const btn = document.getElementById('support-toggle-btn');
+  const colors = [
+    'linear-gradient(45deg, #007bff, #00ffff)',
+    'linear-gradient(45deg, #ff1493, #ff69b4)',
+    'linear-gradient(45deg, #00ffcc, #0066ff)',
+    'linear-gradient(45deg, #ff9900, #ff66cc)',
+  ];
+  btn.style.background = colors[Math.floor(Math.random() * colors.length)];
+  btn.style.boxShadow = `0 0 20px ${btn.style.background.split(',')[1] || 'rgba(255,255,255,0.6)'}`;
+}, 1000);
+
+// 🔹 فتح/إغلاق القائمة مع تأثير لطيف
+const supportBtn = document.getElementById('support-toggle-btn');
+const supportSection = document.getElementById('support-section');
+
+supportBtn.addEventListener('click', () => {
+  if (supportSection.style.display === 'none' || supportSection.style.display === '') {
+    supportSection.style.display = 'block';
+    setTimeout(() => {
+      supportSection.style.opacity = 1;
+      supportSection.style.transform = 'translateX(0)';
+    }, 10);
+  } else {
+    supportSection.style.opacity = 0;
+    supportSection.style.transform = 'translateX(20px)';
+    setTimeout(() => { supportSection.style.display = 'none'; }, 400);
+  }
+});
+</script>
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -1635,8 +2215,8 @@ content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cove
 /* 🌟 أيقونة فليشر القنوات المباشرة */
 #liveFlasher {
   position: fixed;
-  top: 380px;
-  right: 40px;
+  top: 580px;
+  right: 610px;
   transform: 
   width: 50px;
   height: 50px;
@@ -1698,7 +2278,7 @@ content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cove
   width: 28px;
   height: 28px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 16px;
   transition: 0.3s;
 }
 #closePopup:hover {
@@ -1782,7 +2362,7 @@ content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cove
 #emeraldLibraryButton {
   position: fixed;
   right:1020px;
-  top: 20px;
+  top: 580px;
   z-index: 9500;
   cursor: pointer;
   padding: 2px 2px;
@@ -1815,7 +2395,7 @@ content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cove
   border-radius: 10px;
   cursor: pointer;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 24px;
   margin-bottom: 5px;
 }
 
@@ -2386,370 +2966,86 @@ select{
 
 }
 </style>
-<!-- Firebase -->
-<script type="module">
+/* ============================
+   انتقال سلس بين جميع أحجام الشاشات
+============================ */
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+/* لابتوب صغير */
+@media (max-width:1200px){
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCZw747d_KJa85KTDSOVI8EeX_J9Grpqrk",
-  authDomain: "sakaker-9247f.firebaseapp.com",
-  projectId: "sakaker-9247f",
-  storageBucket: "sakaker-9247f.firebasestorage.app",
-  messagingSenderId: "689588937441",
-  appId: "1:689588937441:web:4d17a1d02e72189bbfcda0",
-  measurementId: "G-RB0V6GTVER"
-};
+.game-card,
+.video-card,
+.popup,
+iframe{
+    transform:scale(.95);
+    transform-origin:center;
+}
 
-// تهيئة Firebase
-const app = initializeApp(firebaseConfig);
+}
 
-// الخدمات
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
-const db = getFirestore(app);
+/* تابلت */
+@media (max-width:992px){
 
-// جعلها متاحة لجميع ملفات الجافاسكريبت
-window.firebaseApp = app;
-window.auth = auth;
-window.db = db;
+.game-card,
+.video-card,
+.popup,
+iframe{
+    transform:scale(.90);
+}
 
-console.log("✅ Firebase جاهز للعمل");
+}
 
-</script>
-</body>
-</html>
+/* جوال أفقي */
+@media (max-width:768px){
 
+.game-card,
+.video-card,
+.popup,
+iframe{
+    transform:scale(.82);
+}
 
-</div>
-<!-- ==================================================
-     📱 توافق جميع أيقونات الموقع مع الجوال
-     ضع هذا الكود في آخر الملف قبل </body>
-================================================== -->
+}
 
+/* جوال صغير */
+@media (max-width:480px){
+
+.game-card,
+.video-card,
+.popup,
+iframe{
+    transform:scale(.75);
+}
+
+}
 <style>
-
-/* منع التمرير الأفقي */
-html,
-body{
-    width:100% !important;
-    max-width:100% !important;
-    overflow-x:hidden !important;
-}
-
-/* جميع العناصر */
+/* انتقال سلس لجميع العناصر */
 *{
-    box-sizing:border-box;
+    transition:
+        width .25s ease,
+        height .25s ease,
+        transform .25s ease,
+        top .25s ease,
+        right .25s ease,
+        left .25s ease,
+        bottom .25s ease,
+        font-size .25s ease !important;
 }
 
-
-/* ==================================================
-   📱 الجوال
-================================================== */
-
-@media screen and (max-width:768px){
-
-    html{
-        width:100% !important;
-        max-width:100% !important;
-        overflow-x:hidden !important;
-        -webkit-text-size-adjust:100%;
-    }
-
-    body{
-        width:100% !important;
-        max-width:100% !important;
-        overflow-x:hidden !important;
-    }
-
-
-    /* الصور */
-    img{
-        max-width:100%;
-        height:auto;
-    }
-
-
-    /* الفيديو */
-    video{
-        max-width:100%;
-    }
-
-
-    /* iframe */
-    iframe{
-        max-width:100%;
-    }
-
-
-    /* ==================================================
-       الأيقونات
-       تصغر تدريجيًا مع الشاشة
-    ================================================== */
-
-    [id*="Icon"],
-    [class*="icon"],
-    [class*="Icon"]{
-
-        width:clamp(48px,16vw,78px) !important;
-
-        height:clamp(48px,16vw,78px) !important;
-
-        max-width:78px !important;
-
-        max-height:78px !important;
-
-        flex-shrink:0 !important;
-
-    }
-
-
-    /* الصور داخل الأيقونات */
-
-    [id*="Icon"] img,
-    [class*="icon"] img,
-    [class*="Icon"] img{
-
-        width:100% !important;
-
-        height:100% !important;
-
-        object-fit:contain !important;
-
-    }
-
-
-    /* ==================================================
-       الأيقونات الموجودة داخل الحاويات
-    ================================================== */
-
-    .icon-container,
-    .icon-container-lite,
-    .icons-container,
-    .icons-grid,
-    .icon-grid{
-
-        width:100% !important;
-
-        max-width:100% !important;
-
-        display:flex;
-
-        flex-wrap:wrap;
-
-        justify-content:center;
-
-        align-items:center;
-
-        gap:clamp(6px,2vw,14px);
-
-        padding:6px;
-
-    }
-
-
-    /* ==================================================
-       النوافذ المنبثقة
-    ================================================== */
-
-    [id*="Popup"],
-    [id*="popup"],
-    .popup,
-    .modal{
-
-        max-width:94vw !important;
-
-        max-height:90vh !important;
-
-        overflow:auto !important;
-
-    }
-
-
-    /* ==================================================
-       الأزرار
-    ================================================== */
-
-    button{
-
-        max-width:100%;
-
-        touch-action:manipulation;
-
-    }
-
+/* منع ضغط الأيقونات أثناء التصغير */
+img,
+button,
+iframe,
+canvas,
+svg{
+    transform-origin:center center !important;
 }
 
-
-/* ==================================================
-   📱 الجوال الصغير جدًا
-================================================== */
-
-@media screen and (max-width:480px){
-
-    [id*="Icon"],
-    [class*="icon"],
-    [class*="Icon"]{
-
-        width:clamp(42px,17vw,68px) !important;
-
-        height:clamp(42px,17vw,68px) !important;
-
-        max-width:68px !important;
-
-        max-height:68px !important;
-
-    }
-
-
-    .icon-container,
-    .icon-container-lite,
-    .icons-container,
-    .icons-grid,
-    .icon-grid{
-
-        gap:5px;
-
-        padding:4px;
-
-    }
-
+/* منع تمدد النوافذ */
+[id*="Popup"],
+.popup,
+.modal{
+    max-width:95vw !important;
+    box-sizing:border-box !important;
 }
-
-
-/* ==================================================
-   📱 الجوال بالوضع الأفقي
-================================================== */
-
-@media screen
-and (max-width:900px)
-and (orientation:landscape){
-
-    [id*="Icon"],
-    [class*="icon"],
-    [class*="Icon"]{
-
-        width:clamp(42px,9vw,65px) !important;
-
-        height:clamp(42px,9vw,65px) !important;
-
-        max-width:65px !important;
-
-        max-height:65px !important;
-
-    }
-
-}
-
-
-/* ==================================================
-   منع العناصر الكبيرة من الخروج من الشاشة
-================================================== */
-
-main,
-section,
-header,
-footer,
-.container{
-
-    max-width:100% !important;
-
-}
-
 </style>
-
-
-<script>
-
-/* ==================================================
-   📱 فحص الأيقونات عند تغيير حجم الشاشة
-================================================== */
-
-(function(){
-
-    function checkIcons(){
-
-        if(window.innerWidth > 768){
-            return;
-        }
-
-        document.documentElement.style.overflowX =
-            "hidden";
-
-        document.body.style.overflowX =
-            "hidden";
-
-
-        const icons =
-            document.querySelectorAll(
-                '[id*="Icon"],[class*="icon"],[class*="Icon"]'
-            );
-
-
-        icons.forEach(function(icon){
-
-            const rect =
-                icon.getBoundingClientRect();
-
-
-            /* إذا خرجت الأيقونة من اليمين */
-
-            if(rect.right > window.innerWidth){
-
-                icon.style.maxWidth =
-                    "calc(100vw - 16px)";
-
-            }
-
-
-            /* إذا خرجت من اليسار */
-
-            if(rect.left < 0){
-
-                icon.style.maxWidth =
-                    "calc(100vw - 16px)";
-
-            }
-
-        });
-
-    }
-
-
-    window.addEventListener(
-        "load",
-        function(){
-
-            setTimeout(
-                checkIcons,
-                300
-            );
-
-        }
-    );
-
-
-    window.addEventListener(
-        "resize",
-        checkIcons
-    );
-
-
-    window.addEventListener(
-        "orientationchange",
-        function(){
-
-            setTimeout(
-                checkIcons,
-                400
-            );
-
-        }
-    );
-
-})();
-
-</script>
