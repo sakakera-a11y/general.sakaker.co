@@ -1,286 +1,647 @@
 <!-- =========================================================
-     🔐 SAKAKER 18+ GOOGLE LOGIN
-     Firebase Project: general-sakaker
+     🔐 SAKAKER GENERAL
+     🔐 Firebase Login + Google + 18+
      ========================================================= -->
 
 <style>
-/* منع ظهور محتوى الموقع قبل التحقق */
-body.sakaker-locked > *:not(#sakakerLoginOverlay) {
-    visibility: hidden !important;
+
+/* =========================================================
+   🔒 قفل الموقع قبل تسجيل الدخول
+   ========================================================= */
+
+body.locked > *:not(#loginOverlay):not(#ageOverlay){
+    visibility:hidden !important;
 }
 
-/* نافذة الدخول */
-#sakakerLoginOverlay {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+
+/* =========================================================
+   🔐 نافذة تسجيل الدخول
+   ========================================================= */
+
+#loginOverlay{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+
     background:
-        linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.75)),
-        url("https://raw.githubusercontent.com/sakakera-a11y/sakaker/main/ChatGPT%20Image%20Jul%2026%2C%202026%2C%2003_16_55%20AM.png")
-        center/cover no-repeat;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999999999;
-    backdrop-filter: blur(6px);
+        linear-gradient(
+            rgba(0,0,0,.50),
+            rgba(0,0,0,.80)
+        ),
+        url("https://raw.githubusercontent.com/sakakera-a11y/sakaker/main/ChatGPT%20Image%20Jul%2026%2C%202026%2C%2003_16_55%20AM.png");
+
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    z-index:999999999;
+
+    backdrop-filter:blur(6px);
+
+    box-sizing:border-box;
 }
 
-/* صندوق الدخول */
-.sakaker-login-box {
-    width: 90%;
-    max-width: 430px;
-    padding: 30px;
-    border-radius: 24px;
-    text-align: center;
-    color: white;
-    font-family: Tahoma, Arial, sans-serif;
-    background: rgba(0,0,0,.82);
-    border: 1px solid rgba(0,255,204,.5);
+
+/* =========================================================
+   صندوق تسجيل الدخول
+   ========================================================= */
+
+.sakakerLoginBox{
+
+    width:90%;
+    max-width:420px;
+
+    padding:28px;
+
+    box-sizing:border-box;
+
+    background:rgba(0,0,0,.86);
+
+    border-radius:22px;
+
+    text-align:center;
+
+    color:white;
+
+    font-family:
+        Tahoma,
+        Arial,
+        sans-serif;
+
+    border:
+        1px solid
+        rgba(0,255,204,.55);
+
     box-shadow:
-        0 0 20px rgba(0,255,204,.35),
-        0 0 60px rgba(0,0,0,.8);
+        0 0 20px
+        rgba(0,255,204,.45),
+
+        0 0 60px
+        rgba(0,0,0,.8);
 }
 
-/* الشعار */
-.sakaker-login-logo {
-    width: 90px;
-    height: 90px;
-    margin: 0 auto 15px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #00ffcc;
-    box-shadow: 0 0 25px #00ffcc;
+
+/* =========================================================
+   الشعار
+   ========================================================= */
+
+.sakakerLoginLogo{
+
+    width:90px;
+    height:90px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:
+        2px solid
+        #00ffcc;
+
+    box-shadow:
+        0 0 25px
+        #00ffcc;
+
+    margin-bottom:12px;
 }
 
-/* العنوان */
-.sakaker-login-title {
-    margin: 5px 0;
-    color: #00ffcc;
-    font-size: 27px;
+
+/* =========================================================
+   العنوان
+   ========================================================= */
+
+.sakakerTitle{
+
+    color:#00ffcc;
+
+    font-size:27px;
+
+    font-weight:bold;
+
+    margin:5px 0 8px;
 }
 
-.sakaker-login-subtitle {
-    color: #ddd;
-    font-size: 14px;
-    margin-bottom: 22px;
+
+.sakakerSubtitle{
+
+    color:#ddd;
+
+    font-size:14px;
+
+    line-height:1.8;
+
+    margin-bottom:18px;
 }
 
-/* زر Google */
-#sakakerGoogleButton {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 12px;
-    background: #fff;
-    color: #222;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: .25s;
-    box-shadow: 0 4px 15px rgba(0,0,0,.4);
+
+/* =========================================================
+   الحقول
+   ========================================================= */
+
+.sakakerInput{
+
+    width:100%;
+
+    box-sizing:border-box;
+
+    padding:13px;
+
+    margin:7px 0;
+
+    border-radius:11px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.20);
+
+    outline:none;
+
+    background:
+        rgba(255,255,255,.10);
+
+    color:white;
+
+    font-size:14px;
 }
 
-#sakakerGoogleButton:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 20px rgba(255,255,255,.5);
+
+.sakakerInput::placeholder{
+
+    color:#ccc;
 }
 
-/* Google icon */
-.sakaker-google-icon {
-    display: inline-flex;
-    width: 22px;
-    height: 22px;
-    margin-left: 7px;
-    vertical-align: middle;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
+
+/* =========================================================
+   الأزرار
+   ========================================================= */
+
+.sakakerButton{
+
+    width:100%;
+
+    padding:13px;
+
+    margin-top:9px;
+
+    border:none;
+
+    border-radius:11px;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    transition:.25s;
 }
 
-/* رسالة الخطأ */
-#sakakerLoginError {
-    min-height: 22px;
-    margin-top: 15px;
-    color: #ff7777;
-    font-size: 14px;
+
+.sakakerButton:hover{
+
+    transform:
+        translateY(-2px);
+
 }
 
-/* نافذة العمر */
-#sakakerAgeOverlay {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,.88);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000000000;
-    backdrop-filter: blur(8px);
+
+#loginButton{
+
+    background:#00ffcc;
+
+    color:#000;
+
+    box-shadow:
+        0 0 15px
+        rgba(0,255,204,.30);
 }
 
-.sakaker-age-box {
-    width: 90%;
-    max-width: 430px;
-    padding: 30px;
-    border-radius: 24px;
-    background: rgba(10,10,10,.96);
-    color: white;
-    text-align: center;
-    font-family: Tahoma, Arial, sans-serif;
-    border: 1px solid #00ffcc;
-    box-shadow: 0 0 35px rgba(0,255,204,.35);
+
+#googleButton{
+
+    background:#4285F4;
+
+    color:white;
 }
 
-.sakaker-age-icon {
-    font-size: 60px;
-    margin-bottom: 10px;
+
+#signupButton{
+
+    background:
+        rgba(255,255,255,.08);
+
+    color:white;
+
+    border:
+        1px solid
+        #00ffcc;
 }
 
-.sakaker-age-title {
-    color: #00ffcc;
-    font-size: 25px;
-    margin-bottom: 10px;
+
+#loginError{
+
+    min-height:22px;
+
+    margin-top:12px;
+
+    color:#ff7777;
+
+    font-size:13px;
 }
 
-.sakaker-age-text {
-    color: #ddd;
-    line-height: 1.8;
-    font-size: 14px;
+
+/* =========================================================
+   🔞 نافذة العمر
+   ========================================================= */
+
+#ageOverlay{
+
+    position:fixed;
+
+    inset:0;
+
+    width:100%;
+    height:100%;
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    background:
+        linear-gradient(
+            rgba(0,0,0,.82),
+            rgba(0,0,0,.96)
+        );
+
+    z-index:1000000000;
+
+    backdrop-filter:blur(8px);
+
+    box-sizing:border-box;
 }
 
-/* تاريخ الميلاد */
-#sakakerBirthDate {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 13px;
-    margin: 18px 0 10px;
-    border-radius: 12px;
-    border: 1px solid #00ffcc;
-    background: #111;
-    color: white;
-    font-size: 16px;
+
+.sakakerAgeBox{
+
+    width:90%;
+
+    max-width:420px;
+
+    padding:30px;
+
+    box-sizing:border-box;
+
+    background:
+        rgba(5,5,5,.97);
+
+    border-radius:22px;
+
+    text-align:center;
+
+    color:white;
+
+    font-family:
+        Tahoma,
+        Arial,
+        sans-serif;
+
+    border:
+        1px solid
+        #00ffcc;
+
+    box-shadow:
+        0 0 25px
+        rgba(0,255,204,.45);
 }
 
-/* زر تأكيد */
-#sakakerAgeConfirm {
-    width: 100%;
-    padding: 13px;
-    border: none;
-    border-radius: 12px;
-    background: #00ffcc;
-    color: #000;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 8px;
+
+.sakakerAgeIcon{
+
+    font-size:60px;
+
+    margin-bottom:5px;
 }
 
-/* رسالة العمر */
-#sakakerAgeError {
-    min-height: 22px;
-    margin-top: 10px;
-    color: #ff7777;
-    font-size: 14px;
+
+.sakakerAgeTitle{
+
+    color:#00ffcc;
+
+    font-size:25px;
+
+    font-weight:bold;
+
+    margin-bottom:12px;
 }
 
-/* بيانات المستخدم */
-#sakakerUserProfile {
-    display: none;
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    z-index: 999998;
-    background: rgba(0,0,0,.85);
-    padding: 8px 12px;
-    border-radius: 18px;
-    border: 1px solid #00ffcc;
-    color: white;
-    align-items: center;
-    gap: 9px;
-    box-shadow: 0 0 15px rgba(0,255,204,.25);
-    font-family: Tahoma, Arial, sans-serif;
+
+.sakakerAgeText{
+
+    color:#ddd;
+
+    font-size:14px;
+
+    line-height:1.9;
 }
 
-#sakakerUserPhoto {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    border: 2px solid gold;
-    object-fit: cover;
+
+#birthDateInput{
+
+    width:100%;
+
+    box-sizing:border-box;
+
+    padding:13px;
+
+    margin-top:18px;
+
+    border-radius:11px;
+
+    border:
+        1px solid
+        #00ffcc;
+
+    background:#111;
+
+    color:white;
+
+    font-size:16px;
 }
 
-#sakakerLogout {
-    border: none;
-    border-radius: 8px;
-    padding: 7px 10px;
-    cursor: pointer;
-    background: #ff4444;
-    color: white;
-    font-weight: bold;
+
+#ageConfirmButton{
+
+    width:100%;
+
+    padding:13px;
+
+    margin-top:12px;
+
+    border:none;
+
+    border-radius:11px;
+
+    background:#00ffcc;
+
+    color:#000;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    cursor:pointer;
 }
 
-/* الهاتف */
-@media(max-width:600px) {
 
-    .sakaker-login-box,
-    .sakaker-age-box {
-        padding: 22px;
+#ageError{
+
+    min-height:22px;
+
+    margin-top:12px;
+
+    color:#ff6666;
+
+    font-size:13px;
+}
+
+
+/* =========================================================
+   👤 بيانات المستخدم
+   ========================================================= */
+
+#userProfile{
+
+    display:none;
+
+    position:fixed;
+
+    top:15px;
+
+    right:15px;
+
+    z-index:999998;
+
+    background:
+        rgba(0,0,0,.88);
+
+    padding:8px 12px;
+
+    border-radius:16px;
+
+    border:
+        1px solid
+        #00ffcc;
+
+    color:white;
+
+    align-items:center;
+
+    gap:9px;
+
+    font-family:
+        Tahoma,
+        Arial,
+        sans-serif;
+
+    box-shadow:
+        0 0 15px
+        rgba(0,255,204,.25);
+}
+
+
+#userPhoto{
+
+    width:43px;
+
+    height:43px;
+
+    border-radius:50%;
+
+    border:
+        2px solid
+        gold;
+
+    object-fit:cover;
+}
+
+
+#userName{
+
+    max-width:180px;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+    white-space:nowrap;
+}
+
+
+#logoutButton{
+
+    border:none;
+
+    border-radius:8px;
+
+    padding:7px 10px;
+
+    background:#ff4444;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-weight:bold;
+}
+
+
+/* =========================================================
+   📱 الهاتف
+   ========================================================= */
+
+@media(max-width:600px){
+
+    .sakakerLoginBox,
+    .sakakerAgeBox{
+
+        padding:22px;
+
     }
 
-    .sakaker-login-title {
-        font-size: 23px;
+    .sakakerTitle{
+
+        font-size:23px;
+
     }
 
-    #sakakerUserProfile {
-        top: 8px;
-        right: 8px;
+    #userProfile{
+
+        top:8px;
+
+        right:8px;
+
+        max-width:calc(100% - 16px);
+
     }
+
 }
+
 </style>
 
 
+<!-- =========================================================
+     🔒 قفل الموقع فوراً
+     ========================================================= -->
+
 <script>
 
-/* =========================================================
-   🔒 قفل الموقع مباشرة
-   ========================================================= */
-
-document.body.classList.add("sakaker-locked");
+document.body.classList.add("locked");
 
 </script>
 
 
 <!-- =========================================================
-     🔐 نافذة تسجيل الدخول
+     🔐 شاشة تسجيل الدخول
      ========================================================= -->
 
-<div id="sakakerLoginOverlay">
+<div id="loginOverlay">
 
-    <div class="sakaker-login-box">
+
+    <div class="sakakerLoginBox">
+
 
         <img
-            class="sakaker-login-logo"
+            class="sakakerLoginLogo"
             src="https://raw.githubusercontent.com/sakakera-a11y/sakaker/main/ChatGPT%20Image%20Jul%2026%2C%202026%2C%2003_16_55%20AM.png"
-            alt="Sakaker">
+            alt="Sakaker"
+        >
 
-        <div class="sakaker-login-title">
-            🔐 الدخول إلى الموقع
+
+        <div class="sakakerTitle">
+
+            🔐 تسجيل الدخول
+
         </div>
 
-        <div class="sakaker-login-subtitle">
-           مرحبا بكم في الموقع
+
+        <div class="sakakerSubtitle">
+
+            مرحبا بكم في الموقع
+
             <br>
-            الدخول متاح لمن يبلغ 18 سنة أو أكثر
+
+            🔞 الدخول متاح لمن يبلغ
+            <strong>18 سنة أو أكثر</strong>
+
         </div>
 
-        <button id="sakakerGoogleButton">
-            <span class="sakaker-google-icon">🔵</span>
-            الدخول بواسطة Google
+
+        <!-- البريد -->
+
+        <input
+            id="emailInput"
+            class="sakakerInput"
+            type="email"
+            placeholder="📧 البريد الإلكتروني"
+        >
+
+
+        <!-- كلمة المرور -->
+
+        <input
+            id="passwordInput"
+            class="sakakerInput"
+            type="password"
+            placeholder="🔒 كلمة المرور"
+        >
+
+
+        <!-- دخول -->
+
+        <button
+            id="loginButton"
+            class="sakakerButton"
+        >
+
+            دخول
+
         </button>
 
-        <div id="sakakerLoginError"></div>
+
+        <!-- Google -->
+
+        <button
+            id="googleButton"
+            class="sakakerButton"
+        >
+
+            🔵 الدخول بواسطة Google
+
+        </button>
+
+
+        <!-- إنشاء حساب -->
+
+        <button
+            id="signupButton"
+            class="sakakerButton"
+        >
+
+            📝 إنشاء حساب جديد
+
+        </button>
+
+
+        <!-- الخطأ -->
+
+        <div id="loginError"></div>
+
 
     </div>
 
@@ -288,25 +649,36 @@ document.body.classList.add("sakaker-locked");
 
 
 <!-- =========================================================
-     🔞 نافذة التحقق من العمر
+     🔞 التحقق من العمر
      ========================================================= -->
 
-<div id="sakakerAgeOverlay">
+<div id="ageOverlay">
 
-    <div class="sakaker-age-box">
 
-        <div class="sakaker-age-icon">
+    <div class="sakakerAgeBox">
+
+
+        <div class="sakakerAgeIcon">
+
             🔞
+
         </div>
 
-        <div class="sakaker-age-title">
+
+        <div class="sakakerAgeTitle">
+
             التحقق من العمر
+
         </div>
 
-        <div class="sakaker-age-text">
+
+        <div class="sakakerAgeText">
 
             هذا الموقع مخصص للأشخاص
-            <strong>18 سنة أو أكثر</strong>.
+
+            <strong style="color:#00ffcc">
+                18 سنة أو أكثر
+            </strong>
 
             <br>
 
@@ -314,16 +686,24 @@ document.body.classList.add("sakaker-locked");
 
         </div>
 
+
         <input
+            id="birthDateInput"
             type="date"
-            id="sakakerBirthDate"
         >
 
-        <button id="sakakerAgeConfirm">
+
+        <button
+            id="ageConfirmButton"
+        >
+
             ✅ تأكيد والمتابعة
+
         </button>
 
-        <div id="sakakerAgeError"></div>
+
+        <div id="ageError"></div>
+
 
     </div>
 
@@ -331,18 +711,30 @@ document.body.classList.add("sakaker-locked");
 
 
 <!-- =========================================================
-     👤 المستخدم
+     👤 بيانات المستخدم
      ========================================================= -->
 
-<div id="sakakerUserProfile">
+<div id="userProfile">
 
-    <img id="sakakerUserPhoto">
 
-    <span id="sakakerUserName"></span>
+    <img
+        id="userPhoto"
+        src=""
+        alt="User"
+    >
 
-    <button id="sakakerLogout">
+
+    <span id="userName"></span>
+
+
+    <button
+        id="logoutButton"
+    >
+
         خروج
+
     </button>
+
 
 </div>
 
@@ -353,26 +745,82 @@ document.body.classList.add("sakaker-locked");
 
 <script type="module">
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
-import { getAnalytics }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
+/* =========================================================
+   Firebase App
+   ========================================================= */
 
 import {
-    getAuth,
-    GoogleAuthProvider,
-    signInWithPopup,
-    onAuthStateChanged,
-    setPersistence,
-    browserLocalPersistence,
-    signOut
+    initializeApp
 }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
 
 /* =========================================================
-   🔥 بيانات Firebase الخاصة بموقعك
+   Firebase Analytics
+   ========================================================= */
+
+import {
+    getAnalytics
+}
+from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
+
+
+/* =========================================================
+   Firebase Authentication
+   ========================================================= */
+
+import {
+
+    getAuth,
+
+    signInWithEmailAndPassword,
+
+    createUserWithEmailAndPassword,
+
+    GoogleAuthProvider,
+
+    signInWithPopup,
+
+    onAuthStateChanged,
+
+    setPersistence,
+
+    browserLocalPersistence,
+
+    signOut
+
+}
+from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+
+/* =========================================================
+   Firestore
+   ========================================================= */
+
+import {
+    getFirestore
+}
+from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+
+/* =========================================================
+   Storage
+   ========================================================= */
+
+import {
+    getStorage
+}
+from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
+
+
+/* =========================================================
+   🔥 بيانات مشروعك
    ========================================================= */
 
 const firebaseConfig = {
@@ -397,6 +845,7 @@ const firebaseConfig = {
 
     measurementId:
     "G-0LGSW71V74"
+
 };
 
 
@@ -404,15 +853,45 @@ const firebaseConfig = {
    تشغيل Firebase
    ========================================================= */
 
-const app = initializeApp(firebaseConfig);
+const app =
+    initializeApp(firebaseConfig);
 
-const analytics = getAnalytics(app);
 
-const auth = getAuth(app);
+const analytics =
+    getAnalytics(app);
+
+
+const auth =
+    getAuth(app);
+
+
+const db =
+    getFirestore(app);
+
+
+const storage =
+    getStorage(app);
 
 
 /* =========================================================
-   حفظ الجلسة
+   إتاحة Firebase لباقي أكواد الموقع
+   ========================================================= */
+
+window.firebaseApp =
+    app;
+
+window.firebaseAuth =
+    auth;
+
+window.firebaseDB =
+    db;
+
+window.firebaseStorage =
+    storage;
+
+
+/* =========================================================
+   حفظ تسجيل الدخول
    ========================================================= */
 
 await setPersistence(
@@ -425,114 +904,156 @@ await setPersistence(
    عناصر الصفحة
    ========================================================= */
 
-const loginOverlay =
-    document.getElementById("sakakerLoginOverlay");
+const overlay =
+    document.getElementById(
+        "loginOverlay"
+    );
 
-const googleButton =
-    document.getElementById("sakakerGoogleButton");
-
-const loginError =
-    document.getElementById("sakakerLoginError");
 
 const ageOverlay =
-    document.getElementById("sakakerAgeOverlay");
+    document.getElementById(
+        "ageOverlay"
+    );
+
+
+const email =
+    document.getElementById(
+        "emailInput"
+    );
+
+
+const password =
+    document.getElementById(
+        "passwordInput"
+    );
+
+
+const loginError =
+    document.getElementById(
+        "loginError"
+    );
+
 
 const birthDate =
-    document.getElementById("sakakerBirthDate");
+    document.getElementById(
+        "birthDateInput"
+    );
 
-const ageConfirm =
-    document.getElementById("sakakerAgeConfirm");
 
 const ageError =
-    document.getElementById("sakakerAgeError");
+    document.getElementById(
+        "ageError"
+    );
+
 
 const userProfile =
-    document.getElementById("sakakerUserProfile");
+    document.getElementById(
+        "userProfile"
+    );
+
 
 const userPhoto =
-    document.getElementById("sakakerUserPhoto");
+    document.getElementById(
+        "userPhoto"
+    );
+
 
 const userName =
-    document.getElementById("sakakerUserName");
-
-const logoutButton =
-    document.getElementById("sakakerLogout");
+    document.getElementById(
+        "userName"
+    );
 
 
 /* =========================================================
-   حساب العمر
+   🔢 حساب العمر
    ========================================================= */
 
-function calculateAge(dateString) {
+function calculateAge(dateString){
 
-    const birth = new Date(dateString);
+    const birth =
+        new Date(dateString);
 
-    if (isNaN(birth.getTime())) {
+    if(
+        isNaN(
+            birth.getTime()
+        )
+    ){
+
         return -1;
+
     }
 
-    const today = new Date();
+
+    const today =
+        new Date();
+
 
     let age =
-        today.getFullYear() -
+        today.getFullYear()
+        -
         birth.getFullYear();
 
+
     const month =
-        today.getMonth() -
+        today.getMonth()
+        -
         birth.getMonth();
 
-    if (
-        month < 0 ||
+
+    if(
+        month < 0
+        ||
         (
-            month === 0 &&
-            today.getDate() < birth.getDate()
+            month === 0
+            &&
+            today.getDate()
+            <
+            birth.getDate()
         )
-    ) {
+    ){
+
         age--;
+
     }
 
+
     return age;
+
 }
 
 
 /* =========================================================
-   Google Login
+   🔑 دخول البريد الإلكتروني
    ========================================================= */
 
-googleButton.onclick = async () => {
+document
+.getElementById("loginButton")
+.onclick =
+async function(){
 
     loginError.textContent = "";
 
-    googleButton.disabled = true;
 
-    googleButton.style.opacity = "0.6";
+    try{
 
-    try {
+        await signInWithEmailAndPassword(
 
-        const provider =
-            new GoogleAuthProvider();
-
-        provider.setCustomParameters({
-            prompt: "select_account"
-        });
-
-        await signInWithPopup(
             auth,
-            provider
+
+            email.value.trim(),
+
+            password.value
+
         );
 
     }
 
-    catch (error) {
+    catch(error){
 
         console.error(error);
 
         loginError.textContent =
-            "❌ تعذر تسجيل الدخول بواسطة Google.";
-
-        googleButton.disabled = false;
-
-        googleButton.style.opacity = "1";
+            "❌ " + error.message;
 
     }
 
@@ -540,101 +1061,230 @@ googleButton.onclick = async () => {
 
 
 /* =========================================================
-   مراقبة المستخدم
+   📝 إنشاء حساب جديد
    ========================================================= */
 
-onAuthStateChanged(auth, async (user) => {
+document
+.getElementById("signupButton")
+.onclick =
+async function(){
 
-    if (!user) {
+    loginError.textContent = "";
 
-        loginOverlay.style.display = "flex";
 
-        ageOverlay.style.display = "none";
+    try{
 
-        userProfile.style.display = "none";
+        await createUserWithEmailAndPassword(
 
-        document.body.classList.add(
-            "sakaker-locked"
+            auth,
+
+            email.value.trim(),
+
+            password.value
+
         );
 
-        return;
     }
 
+    catch(error){
 
-    /* =====================================================
-       بيانات المستخدم
-       ===================================================== */
+        console.error(error);
 
-    userName.textContent =
-        user.displayName ||
-        user.email ||
-        "مستخدم Google";
+        loginError.textContent =
+            "❌ " + error.message;
 
-
-    userPhoto.src =
-        user.photoURL ||
-        "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-
-
-    userProfile.style.display = "flex";
-
-
-    /* =====================================================
-       التحقق هل سبق تأكيد العمر
-       ===================================================== */
-
-    const ageVerified =
-        localStorage.getItem(
-            "sakaker_age_verified"
-        );
-
-
-    if (ageVerified === "18plus") {
-
-        loginOverlay.style.display = "none";
-
-        ageOverlay.style.display = "none";
-
-        document.body.classList.remove(
-            "sakaker-locked"
-        );
-
-        return;
     }
 
-
-    /* =====================================================
-       أول دخول يحتاج تحقق عمر
-       ===================================================== */
-
-    loginOverlay.style.display = "none";
-
-    ageOverlay.style.display = "flex";
-
-    document.body.classList.add(
-        "sakaker-locked"
-    );
-
-});
+};
 
 
 /* =========================================================
-   تأكيد العمر
+   🔵 الدخول بواسطة Google
    ========================================================= */
 
-ageConfirm.onclick = async () => {
+document
+.getElementById("googleButton")
+.onclick =
+async function(){
+
+    loginError.textContent = "";
+
+
+    const provider =
+        new GoogleAuthProvider();
+
+
+    provider.setCustomParameters({
+
+        prompt:
+            "select_account"
+
+    });
+
+
+    try{
+
+        await signInWithPopup(
+
+            auth,
+
+            provider
+
+        );
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        loginError.textContent =
+            "❌ تعذر تسجيل الدخول بواسطة Google.";
+
+    }
+
+};
+
+
+/* =========================================================
+   👤 مراقبة حالة تسجيل الدخول
+   ========================================================= */
+
+onAuthStateChanged(
+
+    auth,
+
+    function(user){
+
+
+        /* ================================================
+           لا يوجد مستخدم
+           ================================================ */
+
+        if(!user){
+
+            overlay.style.display =
+                "flex";
+
+
+            ageOverlay.style.display =
+                "none";
+
+
+            userProfile.style.display =
+                "none";
+
+
+            document.body.classList.add(
+                "locked"
+            );
+
+
+            return;
+
+        }
+
+
+        /* ================================================
+           بيانات المستخدم
+           ================================================ */
+
+        userName.textContent =
+
+            user.displayName
+            ||
+            user.email
+            ||
+            "مستخدم";
+
+
+        userPhoto.src =
+
+            user.photoURL
+            ||
+            "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+
+        userProfile.style.display =
+            "flex";
+
+
+        /* ================================================
+           هل تم التحقق من العمر؟
+           ================================================ */
+
+        const verified =
+            localStorage.getItem(
+                "sakaker_age_verified"
+            );
+
+
+        if(
+            verified === "18plus"
+        ){
+
+            overlay.style.display =
+                "none";
+
+
+            ageOverlay.style.display =
+                "none";
+
+
+            document.body.classList.remove(
+                "locked"
+            );
+
+
+            return;
+
+        }
+
+
+        /* ================================================
+           المستخدم مسجل ولكن العمر غير مؤكد
+           ================================================ */
+
+        overlay.style.display =
+            "none";
+
+
+        ageOverlay.style.display =
+            "flex";
+
+
+        document.body.classList.add(
+            "locked"
+        );
+
+    }
+
+);
+
+
+/* =========================================================
+   🔞 تأكيد العمر
+   ========================================================= */
+
+document
+.getElementById("ageConfirmButton")
+.onclick =
+function(){
 
     ageError.textContent = "";
+
 
     const date =
         birthDate.value;
 
-    if (!date) {
+
+    if(!date){
 
         ageError.textContent =
             "⚠️ يرجى إدخال تاريخ الميلاد.";
 
         return;
+
     }
 
 
@@ -642,27 +1292,29 @@ ageConfirm.onclick = async () => {
         calculateAge(date);
 
 
-    if (age < 0) {
+    if(age < 0){
 
         ageError.textContent =
             "⚠️ تاريخ الميلاد غير صحيح.";
 
         return;
+
     }
 
 
-    if (age < 18) {
+    if(age < 18){
 
         ageError.textContent =
             "🔞 عذرًا، يجب أن يكون عمرك 18 سنة أو أكثر.";
 
         return;
+
     }
 
 
-    /* =====================================================
-       تم اجتياز التحقق
-       ===================================================== */
+    /* ================================================
+       تم التحقق
+       ================================================ */
 
     localStorage.setItem(
         "sakaker_age_verified",
@@ -673,38 +1325,45 @@ ageConfirm.onclick = async () => {
     ageOverlay.style.display =
         "none";
 
-    loginOverlay.style.display =
+
+    overlay.style.display =
         "none";
 
+
     document.body.classList.remove(
-        "sakaker-locked"
+        "locked"
     );
 
 
     console.log(
-        "SAKAKER: Age verified 18+"
+        "SAKAKER: Age 18+ verified"
     );
 
 };
 
 
 /* =========================================================
-   تسجيل الخروج
+   🚪 تسجيل الخروج
    ========================================================= */
 
-logoutButton.onclick = async () => {
+document
+.getElementById("logoutButton")
+.onclick =
+async function(){
 
-    try {
+    try{
 
         await signOut(auth);
+
 
         localStorage.removeItem(
             "sakaker_age_verified"
         );
 
+
     }
 
-    catch (error) {
+    catch(error){
 
         console.error(error);
 
@@ -714,25 +1373,100 @@ logoutButton.onclick = async () => {
 
 
 /* =========================================================
-   متغيرات Firebase متاحة لباقي موقعك
-   ========================================================= */
-
-window.firebaseApp =
-    app;
-
-window.firebaseAuth =
-    auth;
-
-
-/* =========================================================
    جاهز
    ========================================================= */
 
 console.log(
-    "SAKAKER 18+ Google Authentication Ready"
+    "SAKAKER Firebase Ready"
 );
 
 </script>
+
+
+<!-- =========================================================
+     🌌 خلفية موقعك
+     ========================================================= -->
+
+<style>
+
+html,
+body{
+
+    margin:0;
+
+    padding:0;
+
+    width:100%;
+
+    min-height:100%;
+
+}
+
+
+body{
+
+    background-image:
+        url(
+            "https://d.top4top.io/p_3858dvoq11.png"
+        );
+
+    background-size:
+        cover;
+
+    background-position:
+        center center;
+
+    background-repeat:
+        no-repeat;
+
+    background-attachment:
+        fixed;
+
+    background-color:
+        #000;
+
+}
+
+
+/* =========================================================
+   💚 توهج زمردي
+   ========================================================= */
+
+body::before{
+
+    content:"";
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(0,255,200,.10),
+            rgba(0,0,0,.45)
+        );
+
+    pointer-events:none;
+
+    z-index:-1;
+
+}
+
+
+/* =========================================================
+   جميع عناصر الموقع
+   ========================================================= */
+
+body > *{
+
+    position:relative;
+
+    z-index:1;
+
+}
+
+</style>
   <!-- ================= خلفية موقع ================= -->
 <style>
 html,
