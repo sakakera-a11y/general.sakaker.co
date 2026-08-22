@@ -1,392 +1,847 @@
 
 
+<!-- =========================================================
+     🔐 SAKAKER GENERAL - نظام تسجيل الدخول
+     Firebase Project: general-sakaker
+     Domain: general.sakaker.co
+========================================================= -->
 
-
-<!-- 🔒 منع ظهور محتوى الموقع قبل تسجيل الدخول -->
+<!-- 🔒 منع ظهور محتوى الموقع قبل التحقق من حالة الدخول -->
 <style>
-body.locked > *:not(#loginOverlay){
-visibility:hidden;
+body.locked > *:not(#loginOverlay):not(#userProfile) {
+  visibility: hidden !important;
+}
+
+#loginOverlay {
+  box-sizing: border-box;
+}
+
+#loginOverlay input::placeholder {
+  color: rgba(255,255,255,0.7);
+}
+
+#loginOverlay input:focus {
+  outline: none;
+  box-shadow: 0 0 10px #00ffcc;
+}
+
+#loginButton,
+#googleButton,
+#signupButton,
+#logoutButton {
+  transition: 0.2s ease;
+}
+
+#loginButton:hover,
+#googleButton:hover,
+#signupButton:hover,
+#logoutButton:hover {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
+#logoutButton {
+  border: none;
+  border-radius: 8px;
+  padding: 7px 12px;
+  background: #ff4444;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
 }
 </style>
 
 <script>
+/* 🔒 قفل الموقع فورًا */
 document.body.classList.add("locked");
 </script>
 
 
-<!-- 🔒 نافذة الدخول -->
+<!-- =========================================================
+     🔐 نافذة تسجيل الدخول
+========================================================= -->
+
 <div id="loginOverlay" style="
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
-background-image: url("https://raw.githubusercontent.com/sakakera-a11y/sakaker/main/ChatGPT%20Image%20Jul%2026%2C%202026%2C%2003_16_55%20AM.png");
+background:
+linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.65)),
+url('https://raw.githubusercontent.com/sakakera-a11y/sakaker/main/ChatGPT%20Image%20Jul%2026%2C%202026%2C%2003_16_55%20AM.png')
+center center / cover no-repeat;
 display:flex;
 align-items:center;
 justify-content:center;
 z-index:999999;
 backdrop-filter:blur(5px);
+-webkit-backdrop-filter:blur(5px);
 ">
 
-<div style="
-background:rgba(0,0,0,.8);
-padding:25px;
-width:90%;
-max-width:420px;
-border-radius:18px;
-text-align:center;
-color:white;
-font-family:Tajawal;
-box-shadow:0 0 30px #00ffcc;
-">
+  <div style="
+  background:rgba(0,0,0,.82);
+  padding:25px;
+  width:90%;
+  max-width:420px;
+  border-radius:18px;
+  text-align:center;
+  color:white;
+  font-family:Tajawal,Tahoma,sans-serif;
+  box-shadow:
+  0 0 30px #00ffcc,
+  0 0 60px rgba(0,255,204,.25);
+  box-sizing:border-box;
+  ">
+
+    <h2 style="
+    color:#00ffcc;
+    margin-top:0;
+    margin-bottom:20px;
+    ">
+      🔐 تسجيل الدخول
+    </h2>
 
 
-<h2 style="color:#00ffcc">
-🔐 تسجيل الدخول
-</h2>
+    <!-- البريد -->
+    <input
+      id="emailInput"
+      type="email"
+      autocomplete="email"
+      placeholder="📧 البريد الإلكتروني"
+      style="
+      width:100%;
+      padding:12px;
+      margin:8px 0;
+      border-radius:10px;
+      border:none;
+      background:rgba(255,255,255,.13);
+      color:white;
+      box-sizing:border-box;
+      font-size:15px;
+      ">
 
 
-<input id="emailInput"
-type="email"
-placeholder="📧 البريد الإلكتروني"
-style="
-width:100%;
-padding:12px;
-margin:8px 0;
-border-radius:10px;
-border:none;
-background:#ffffff22;
-color:white;
-">
+    <!-- كلمة المرور -->
+    <input
+      id="passwordInput"
+      type="password"
+      autocomplete="current-password"
+      placeholder="🔒 كلمة المرور"
+      style="
+      width:100%;
+      padding:12px;
+      margin:8px 0;
+      border-radius:10px;
+      border:none;
+      background:rgba(255,255,255,.13);
+      color:white;
+      box-sizing:border-box;
+      font-size:15px;
+      ">
 
 
-<input id="passwordInput"
-type="password"
-placeholder="🔒 كلمة المرور"
-style="
-width:100%;
-padding:12px;
-margin:8px 0;
-border-radius:10px;
-border:none;
-background:#ffffff22;
-color:white;
-">
+    <!-- دخول -->
+    <button
+      id="loginButton"
+      style="
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      border:none;
+      border-radius:10px;
+      background:#00ffcc;
+      color:#000;
+      font-weight:bold;
+      cursor:pointer;
+      font-size:15px;
+      ">
+      دخول
+    </button>
 
 
-<button id="loginButton" style="
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:10px;
-background:#00ffcc;
-font-weight:bold;
-cursor:pointer;
-">
-دخول
-</button>
+    <!-- Google -->
+    <button
+      id="googleButton"
+      style="
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      border:none;
+      border-radius:10px;
+      background:#4285F4;
+      color:white;
+      font-weight:bold;
+      cursor:pointer;
+      font-size:15px;
+      ">
+      🔵 الدخول بواسطة Google
+    </button>
 
 
-<button id="googleButton" style="
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:10px;
-background:#4285F4;
-color:white;
-font-weight:bold;
-cursor:pointer;
-">
-🔵 الدخول بواسطة Google
-</button>
+    <!-- رسالة الخطأ -->
+    <div
+      id="loginError"
+      style="
+      color:#ff8888;
+      margin:12px 0;
+      min-height:22px;
+      font-size:14px;
+      ">
+    </div>
 
 
-<div id="loginError"
-style="color:#ff8888;margin:10px">
+    <!-- إنشاء حساب -->
+    <button
+      id="signupButton"
+      style="
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      background:rgba(255,255,255,.13);
+      color:white;
+      border:1px solid #00ffcc;
+      cursor:pointer;
+      font-weight:bold;
+      font-size:15px;
+      ">
+      📝 إنشاء حساب جديد
+    </button>
+
+  </div>
 </div>
 
 
-<button id="signupButton" style="
-width:100%;
-padding:12px;
-border-radius:10px;
-background:#ffffff22;
-color:white;
-border:1px solid #00ffcc;
-cursor:pointer;
-">
-📝 إنشاء حساب جديد
-</button>
 
+<!-- =========================================================
+     👤 بيانات المستخدم
+========================================================= -->
+
+<div
+  id="userProfile"
+  style="
+  display:none;
+  position:fixed;
+  top:15px;
+  right:15px;
+  z-index:99999;
+  background:rgba(0,0,0,.82);
+  padding:10px;
+  border-radius:15px;
+  border:1px solid #00ffcc;
+  color:white;
+  align-items:center;
+  gap:10px;
+  font-family:Tajawal,Tahoma,sans-serif;
+  box-shadow:0 0 15px rgba(0,255,204,.35);
+  ">
+
+  <img
+    id="userPhoto"
+    alt="صورة المستخدم"
+    style="
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    border:2px solid gold;
+    object-fit:cover;
+    ">
+
+  <span
+    id="userName"
+    style="
+    max-width:180px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    ">
+  </span>
+
+  <button id="logoutButton">
+    خروج
+  </button>
 
 </div>
-</div>
 
 
 
-<!-- 👤 بيانات المستخدم -->
-<div id="userProfile" style="
-display:none;
-position:fixed;
-top:15px;
-right:15px;
-z-index:99999;
-background:#000c;
-padding:10px;
-border-radius:15px;
-border:1px solid #00ffcc;
-color:white;
-align-items:center;
-gap:10px;
-">
-
-<img id="userPhoto"
-style="
-width:45px;
-height:45px;
-border-radius:50%;
-border:2px solid gold;
-">
-
-<span id="userName"></span>
-
-<button id="logoutButton">
-خروج
-</button>
-
-</div>
-
-
+<!-- =========================================================
+     🔥 FIREBASE
+========================================================= -->
 
 <script type="module">
-
 
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
-
 import { getAnalytics }
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
 
-
 import {
-getAuth,
-signInWithEmailAndPassword,
-createUserWithEmailAndPassword,
-GoogleAuthProvider,
-signInWithPopup,
-onAuthStateChanged,
-setPersistence,
-browserLocalPersistence,
-signOut
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence,
+  signOut
 }
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-
-import { getFirestore }
+import {
+  getFirestore
+}
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-
-import { getStorage }
+import {
+  getStorage
+}
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
 
 
 
+/* =========================================================
+   🔥 Firebase Configuration
+========================================================= */
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCltuh24M0X4KBlVpIFi8HXlrTObQRVk_s",
-  authDomain: "general-sakaker.firebaseapp.com",
-  projectId: "general-sakaker",
-  storageBucket: "general-sakaker.firebasestorage.app",
-  messagingSenderId: "999891768564",
-  appId: "1:999891768564:web:9821008d91378788b93aa1",
-  measurementId: "G-0LGSW71V74"
+
+  apiKey:
+    "AIzaSyCltuh24M0X4KBlVpIFi8HXlrTObQRVk_s",
+
+  authDomain:
+    "general-sakaker.firebaseapp.com",
+
+  projectId:
+    "general-sakaker",
+
+  storageBucket:
+    "general-sakaker.firebasestorage.app",
+
+  messagingSenderId:
+    "999891768564",
+
+  appId:
+    "1:999891768564:web:9821008d91378788b93aa1",
+
+  measurementId:
+    "G-0LGSW71V74"
+
 };
 
 
 
-const app=initializeApp(firebaseConfig);
+/* =========================================================
+   🚀 تشغيل Firebase
+========================================================= */
+
+const app = initializeApp(firebaseConfig);
 
 
-const analytics=getAnalytics(app);
+/* Analytics */
+let analytics = null;
 
-const auth=getAuth(app);
-
-const db=getFirestore(app);
-
-const storage=getStorage(app);
-
-
-
-window.firebaseApp=app;
-
-window.firebaseAuth=auth;
-
-window.firebaseDB=db;
-
-window.firebaseStorage=storage;
+try {
+  analytics = getAnalytics(app);
+} catch (e) {
+  console.warn("Firebase Analytics غير متاح:", e);
+}
 
 
+/* Authentication */
+const auth = getAuth(app);
+
+
+/* Firestore */
+const db = getFirestore(app);
+
+
+/* Storage */
+const storage = getStorage(app);
+
+
+/* إتاحة Firebase لبقية أكواد الموقع */
+window.firebaseApp = app;
+window.firebaseAuth = auth;
+window.firebaseDB = db;
+window.firebaseStorage = storage;
+
+
+
+/* =========================================================
+   💾 حفظ جلسة المستخدم
+========================================================= */
 
 await setPersistence(
-auth,
-browserLocalPersistence
+  auth,
+  browserLocalPersistence
 );
 
 
 
-const overlay=document.getElementById("loginOverlay");
+/* =========================================================
+   🎯 عناصر الصفحة
+========================================================= */
 
-const email=document.getElementById("emailInput");
+const overlay =
+  document.getElementById("loginOverlay");
 
-const pass=document.getElementById("passwordInput");
+const emailInput =
+  document.getElementById("emailInput");
 
-const error=document.getElementById("loginError");
+const passwordInput =
+  document.getElementById("passwordInput");
+
+const errorBox =
+  document.getElementById("loginError");
+
+const loginButton =
+  document.getElementById("loginButton");
+
+const googleButton =
+  document.getElementById("googleButton");
+
+const signupButton =
+  document.getElementById("signupButton");
+
+const logoutButton =
+  document.getElementById("logoutButton");
+
+const userProfile =
+  document.getElementById("userProfile");
+
+const userName =
+  document.getElementById("userName");
+
+const userPhoto =
+  document.getElementById("userPhoto");
 
 
 
-/* دخول */
+/* =========================================================
+   📝 رسائل Firebase بالعربية
+========================================================= */
 
-document.getElementById("loginButton").onclick=async()=>{
+function firebaseError(error) {
 
+  switch (error.code) {
 
-try{
+    case "auth/invalid-credential":
+      return "❌ البريد الإلكتروني أو كلمة المرور غير صحيحة.";
 
+    case "auth/invalid-email":
+      return "❌ البريد الإلكتروني غير صحيح.";
 
-await signInWithEmailAndPassword(
-auth,
-email.value,
-pass.value
-);
+    case "auth/user-not-found":
+      return "❌ لا يوجد حساب بهذا البريد الإلكتروني.";
 
+    case "auth/wrong-password":
+      return "❌ كلمة المرور غير صحيحة.";
 
-}catch(e){
+    case "auth/email-already-in-use":
+      return "❌ هذا البريد مستخدم بالفعل. حاول تسجيل الدخول.";
 
-error.textContent="❌ "+e.message;
+    case "auth/weak-password":
+      return "❌ كلمة المرور ضعيفة. استخدم 6 أحرف على الأقل.";
+
+    case "auth/popup-closed-by-user":
+      return "❌ تم إغلاق نافذة Google قبل إكمال الدخول.";
+
+    case "auth/popup-blocked":
+      return "❌ المتصفح منع نافذة Google. اسمح بالنوافذ المنبثقة.";
+
+    case "auth/cancelled-popup-request":
+      return "❌ تم إلغاء عملية تسجيل الدخول.";
+
+    case "auth/unauthorized-domain":
+      return "❌ هذا النطاق غير مصرح به في Firebase Authorized domains.";
+
+    case "auth/network-request-failed":
+      return "❌ حدثت مشكلة في الاتصال بالإنترنت.";
+
+    case "auth/too-many-requests":
+      return "❌ محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.";
+
+    case "auth/operation-not-allowed":
+      return "❌ طريقة تسجيل الدخول هذه غير مفعلة في Firebase.";
+
+    default:
+      return "❌ حدث خطأ أثناء تسجيل الدخول.";
+  }
 
 }
 
-};
 
 
+/* =========================================================
+   🔄 عرض الخطأ
+========================================================= */
 
-/* إنشاء حساب */
+function showError(message) {
 
-document.getElementById("signupButton").onclick=async()=>{
-
-
-try{
-
-
-await createUserWithEmailAndPassword(
-auth,
-email.value,
-pass.value
-);
-
-
-}catch(e){
-
-error.textContent="❌ "+e.message;
-
-}
-
-};
-
-
-
-
-/* Google */
-
-document.getElementById("googleButton").onclick=async()=>{
-
-
-const provider=new GoogleAuthProvider();
-
-
-try{
-
-
-await signInWithPopup(
-auth,
-provider
-);
-
-
-}catch(e){
-
-error.textContent="❌ "+e.message;
+  errorBox.textContent = message;
 
 }
 
 
-};
 
+/* =========================================================
+   🧹 مسح رسالة الخطأ
+========================================================= */
 
+function clearError() {
 
-
-
-/* مراقبة الدخول */
-
-onAuthStateChanged(auth,(user)=>{
-
-
-if(user){
-
-
-overlay.style.display="none";
-
-document.body.classList.remove("locked");
-
-
-document.getElementById("userProfile").style.display="flex";
-
-
-document.getElementById("userName").textContent =
-user.displayName || user.email;
-
-
-document.getElementById("userPhoto").src =
-user.photoURL ||
-"https://cdn-icons-png.flaticon.com/512/149/149071.png";
-
-
-}else{
-
-
-overlay.style.display="flex";
-
-document.body.classList.add("locked");
-
-
-document.getElementById("userProfile").style.display="none";
-
+  errorBox.textContent = "";
 
 }
 
+
+
+/* =========================================================
+   🔐 تسجيل الدخول بالبريد
+========================================================= */
+
+loginButton.addEventListener("click", async () => {
+
+  clearError();
+
+  const email =
+    emailInput.value.trim();
+
+  const password =
+    passwordInput.value;
+
+
+  if (!email) {
+
+    showError("❌ أدخل البريد الإلكتروني.");
+
+    emailInput.focus();
+
+    return;
+  }
+
+
+  if (!password) {
+
+    showError("❌ أدخل كلمة المرور.");
+
+    passwordInput.focus();
+
+    return;
+  }
+
+
+  loginButton.disabled = true;
+
+  loginButton.textContent =
+    "⏳ جارٍ تسجيل الدخول...";
+
+
+  try {
+
+    await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    showError(
+      firebaseError(error)
+    );
+
+  }
+
+  finally {
+
+    loginButton.disabled = false;
+
+    loginButton.textContent =
+      "دخول";
+
+  }
 
 });
 
 
 
+/* =========================================================
+   📝 إنشاء حساب جديد
+========================================================= */
+
+signupButton.addEventListener("click", async () => {
+
+  clearError();
+
+  const email =
+    emailInput.value.trim();
+
+  const password =
+    passwordInput.value;
 
 
-/* خروج */
+  if (!email) {
 
-document.getElementById("logoutButton").onclick=async()=>{
+    showError("❌ أدخل البريد الإلكتروني أولًا.");
 
-await signOut(auth);
+    emailInput.focus();
 
-};
+    return;
+  }
+
+
+  if (!password) {
+
+    showError("❌ أدخل كلمة مرور للحساب الجديد.");
+
+    passwordInput.focus();
+
+    return;
+  }
+
+
+  if (password.length < 6) {
+
+    showError(
+      "❌ كلمة المرور يجب أن تحتوي على 6 أحرف على الأقل."
+    );
+
+    passwordInput.focus();
+
+    return;
+  }
+
+
+  signupButton.disabled = true;
+
+  signupButton.textContent =
+    "⏳ جارٍ إنشاء الحساب...";
+
+
+  try {
+
+    await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    showError(
+      firebaseError(error)
+    );
+
+  }
+
+  finally {
+
+    signupButton.disabled = false;
+
+    signupButton.textContent =
+      "📝 إنشاء حساب جديد";
+
+  }
+
+});
 
 
 
-console.log("SAKAKER Firebase Ready");
+/* =========================================================
+   🔵 تسجيل الدخول بواسطة Google
+========================================================= */
 
-</script>
-console.log("SAKAKER Firebase Ready");
+googleButton.addEventListener("click", async () => {
+
+  clearError();
+
+  googleButton.disabled = true;
+
+  googleButton.textContent =
+    "⏳ جارٍ فتح Google...";
+
+
+  const provider =
+    new GoogleAuthProvider();
+
+
+  provider.setCustomParameters({
+    prompt: "select_account"
+  });
+
+
+  try {
+
+    await signInWithPopup(
+      auth,
+      provider
+    );
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    showError(
+      firebaseError(error)
+    );
+
+  }
+
+  finally {
+
+    googleButton.disabled = false;
+
+    googleButton.textContent =
+      "🔵 الدخول بواسطة Google";
+
+  }
+
+});
+
+
+
+/* =========================================================
+   👤 مراقبة حالة المستخدم
+========================================================= */
+
+onAuthStateChanged(auth, (user) => {
+
+  if (user) {
+
+    /* المستخدم مسجل الدخول */
+
+    overlay.style.display =
+      "none";
+
+
+    document.body.classList.remove(
+      "locked"
+    );
+
+
+    userProfile.style.display =
+      "flex";
+
+
+    userName.textContent =
+      user.displayName ||
+      user.email ||
+      "المستخدم";
+
+
+    userPhoto.src =
+      user.photoURL ||
+      "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+
+    console.log(
+      "✅ المستخدم مسجل الدخول:",
+      user.email
+    );
+
+  }
+
+  else {
+
+    /* لا يوجد مستخدم */
+
+    overlay.style.display =
+      "flex";
+
+
+    document.body.classList.add(
+      "locked"
+    );
+
+
+    userProfile.style.display =
+      "none";
+
+
+    console.log(
+      "🔒 المستخدم غير مسجل الدخول"
+    );
+
+  }
+
+});
+
+
+
+/* =========================================================
+   🚪 تسجيل الخروج
+========================================================= */
+
+logoutButton.addEventListener("click", async () => {
+
+  try {
+
+    await signOut(auth);
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    showError(
+      "❌ تعذر تسجيل الخروج."
+    );
+
+  }
+
+});
+
+
+
+/* =========================================================
+   ⌨️ الضغط على Enter لتسجيل الدخول
+========================================================= */
+
+passwordInput.addEventListener(
+  "keydown",
+  (event) => {
+
+    if (event.key === "Enter") {
+
+      loginButton.click();
+
+    }
+
+  }
+);
+
+
+
+/* =========================================================
+   🔥 Firebase جاهز
+========================================================= */
+
+console.log(
+  "🔥 SAKAKER GENERAL Firebase Ready"
+);
+
+console.log(
+  "📁 Project: general-sakaker"
+);
+
+console.log(
+  "🌐 Domain: general.sakaker.co"
+);
 
 </script>
   <!-- ================= خلفية موقع ================= -->
