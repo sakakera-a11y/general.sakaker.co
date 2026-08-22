@@ -1,273 +1,355 @@
-
-
 <!-- =========================================================
-     🔐 SAKAKER GENERAL - نظام تسجيل الدخول
+     🔐 SAKAKER 18+ GOOGLE LOGIN
      Firebase Project: general-sakaker
-     Domain: general.sakaker.co
-========================================================= -->
+     ========================================================= -->
 
-<!-- 🔒 منع ظهور محتوى الموقع قبل التحقق من حالة الدخول -->
 <style>
-body.locked > *:not(#loginOverlay):not(#userProfile) {
-  visibility: hidden !important;
+/* منع ظهور محتوى الموقع قبل التحقق */
+body.sakaker-locked > *:not(#sakakerLoginOverlay) {
+    visibility: hidden !important;
 }
 
-#loginOverlay {
-  box-sizing: border-box;
+/* نافذة الدخول */
+#sakakerLoginOverlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.75)),
+        url("https://raw.githubusercontent.com/sakakera-a11y/sakaker/main/ChatGPT%20Image%20Jul%2026%2C%202026%2C%2003_16_55%20AM.png")
+        center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999999;
+    backdrop-filter: blur(6px);
 }
 
-#loginOverlay input::placeholder {
-  color: rgba(255,255,255,0.7);
+/* صندوق الدخول */
+.sakaker-login-box {
+    width: 90%;
+    max-width: 430px;
+    padding: 30px;
+    border-radius: 24px;
+    text-align: center;
+    color: white;
+    font-family: Tahoma, Arial, sans-serif;
+    background: rgba(0,0,0,.82);
+    border: 1px solid rgba(0,255,204,.5);
+    box-shadow:
+        0 0 20px rgba(0,255,204,.35),
+        0 0 60px rgba(0,0,0,.8);
 }
 
-#loginOverlay input:focus {
-  outline: none;
-  box-shadow: 0 0 10px #00ffcc;
+/* الشعار */
+.sakaker-login-logo {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #00ffcc;
+    box-shadow: 0 0 25px #00ffcc;
 }
 
-#loginButton,
-#googleButton,
-#signupButton,
-#logoutButton {
-  transition: 0.2s ease;
+/* العنوان */
+.sakaker-login-title {
+    margin: 5px 0;
+    color: #00ffcc;
+    font-size: 27px;
 }
 
-#loginButton:hover,
-#googleButton:hover,
-#signupButton:hover,
-#logoutButton:hover {
-  transform: scale(1.02);
-  opacity: 0.9;
+.sakaker-login-subtitle {
+    color: #ddd;
+    font-size: 14px;
+    margin-bottom: 22px;
 }
 
-#logoutButton {
-  border: none;
-  border-radius: 8px;
-  padding: 7px 12px;
-  background: #ff4444;
-  color: white;
-  cursor: pointer;
-  font-weight: bold;
+/* زر Google */
+#sakakerGoogleButton {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: #fff;
+    color: #222;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .25s;
+    box-shadow: 0 4px 15px rgba(0,0,0,.4);
+}
+
+#sakakerGoogleButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(255,255,255,.5);
+}
+
+/* Google icon */
+.sakaker-google-icon {
+    display: inline-flex;
+    width: 22px;
+    height: 22px;
+    margin-left: 7px;
+    vertical-align: middle;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+/* رسالة الخطأ */
+#sakakerLoginError {
+    min-height: 22px;
+    margin-top: 15px;
+    color: #ff7777;
+    font-size: 14px;
+}
+
+/* نافذة العمر */
+#sakakerAgeOverlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.88);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000000000;
+    backdrop-filter: blur(8px);
+}
+
+.sakaker-age-box {
+    width: 90%;
+    max-width: 430px;
+    padding: 30px;
+    border-radius: 24px;
+    background: rgba(10,10,10,.96);
+    color: white;
+    text-align: center;
+    font-family: Tahoma, Arial, sans-serif;
+    border: 1px solid #00ffcc;
+    box-shadow: 0 0 35px rgba(0,255,204,.35);
+}
+
+.sakaker-age-icon {
+    font-size: 60px;
+    margin-bottom: 10px;
+}
+
+.sakaker-age-title {
+    color: #00ffcc;
+    font-size: 25px;
+    margin-bottom: 10px;
+}
+
+.sakaker-age-text {
+    color: #ddd;
+    line-height: 1.8;
+    font-size: 14px;
+}
+
+/* تاريخ الميلاد */
+#sakakerBirthDate {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px;
+    margin: 18px 0 10px;
+    border-radius: 12px;
+    border: 1px solid #00ffcc;
+    background: #111;
+    color: white;
+    font-size: 16px;
+}
+
+/* زر تأكيد */
+#sakakerAgeConfirm {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 12px;
+    background: #00ffcc;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 8px;
+}
+
+/* رسالة العمر */
+#sakakerAgeError {
+    min-height: 22px;
+    margin-top: 10px;
+    color: #ff7777;
+    font-size: 14px;
+}
+
+/* بيانات المستخدم */
+#sakakerUserProfile {
+    display: none;
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 999998;
+    background: rgba(0,0,0,.85);
+    padding: 8px 12px;
+    border-radius: 18px;
+    border: 1px solid #00ffcc;
+    color: white;
+    align-items: center;
+    gap: 9px;
+    box-shadow: 0 0 15px rgba(0,255,204,.25);
+    font-family: Tahoma, Arial, sans-serif;
+}
+
+#sakakerUserPhoto {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 2px solid gold;
+    object-fit: cover;
+}
+
+#sakakerLogout {
+    border: none;
+    border-radius: 8px;
+    padding: 7px 10px;
+    cursor: pointer;
+    background: #ff4444;
+    color: white;
+    font-weight: bold;
+}
+
+/* الهاتف */
+@media(max-width:600px) {
+
+    .sakaker-login-box,
+    .sakaker-age-box {
+        padding: 22px;
+    }
+
+    .sakaker-login-title {
+        font-size: 23px;
+    }
+
+    #sakakerUserProfile {
+        top: 8px;
+        right: 8px;
+    }
 }
 </style>
 
+
 <script>
-/* 🔒 قفل الموقع فورًا */
-document.body.classList.add("locked");
+
+/* =========================================================
+   🔒 قفل الموقع مباشرة
+   ========================================================= */
+
+document.body.classList.add("sakaker-locked");
+
 </script>
 
 
 <!-- =========================================================
      🔐 نافذة تسجيل الدخول
-========================================================= -->
+     ========================================================= -->
 
-<div id="loginOverlay" style="
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:
-linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.65)),
-url('https://raw.githubusercontent.com/sakakera-a11y/sakaker/main/ChatGPT%20Image%20Jul%2026%2C%202026%2C%2003_16_55%20AM.png')
-center center / cover no-repeat;
-display:flex;
-align-items:center;
-justify-content:center;
-z-index:999999;
-backdrop-filter:blur(5px);
--webkit-backdrop-filter:blur(5px);
-">
+<div id="sakakerLoginOverlay">
 
-  <div style="
-  background:rgba(0,0,0,.82);
-  padding:25px;
-  width:90%;
-  max-width:420px;
-  border-radius:18px;
-  text-align:center;
-  color:white;
-  font-family:Tajawal,Tahoma,sans-serif;
-  box-shadow:
-  0 0 30px #00ffcc,
-  0 0 60px rgba(0,255,204,.25);
-  box-sizing:border-box;
-  ">
+    <div class="sakaker-login-box">
 
-    <h2 style="
-    color:#00ffcc;
-    margin-top:0;
-    margin-bottom:20px;
-    ">
-      🔐 تسجيل الدخول
-    </h2>
+        <img
+            class="sakaker-login-logo"
+            src="https://raw.githubusercontent.com/sakakera-a11y/sakaker/main/ChatGPT%20Image%20Jul%2026%2C%202026%2C%2003_16_55%20AM.png"
+            alt="Sakaker">
 
+        <div class="sakaker-login-title">
+            🔐 الدخول إلى الموقع
+        </div>
 
-    <!-- البريد -->
-    <input
-      id="emailInput"
-      type="email"
-      autocomplete="email"
-      placeholder="📧 البريد الإلكتروني"
-      style="
-      width:100%;
-      padding:12px;
-      margin:8px 0;
-      border-radius:10px;
-      border:none;
-      background:rgba(255,255,255,.13);
-      color:white;
-      box-sizing:border-box;
-      font-size:15px;
-      ">
+        <div class="sakaker-login-subtitle">
+           مرحبا بكم في الموقع
+            <br>
+            الدخول متاح لمن يبلغ 18 سنة أو أكثر
+        </div>
 
+        <button id="sakakerGoogleButton">
+            <span class="sakaker-google-icon">🔵</span>
+            الدخول بواسطة Google
+        </button>
 
-    <!-- كلمة المرور -->
-    <input
-      id="passwordInput"
-      type="password"
-      autocomplete="current-password"
-      placeholder="🔒 كلمة المرور"
-      style="
-      width:100%;
-      padding:12px;
-      margin:8px 0;
-      border-radius:10px;
-      border:none;
-      background:rgba(255,255,255,.13);
-      color:white;
-      box-sizing:border-box;
-      font-size:15px;
-      ">
+        <div id="sakakerLoginError"></div>
 
-
-    <!-- دخول -->
-    <button
-      id="loginButton"
-      style="
-      width:100%;
-      padding:12px;
-      margin-top:10px;
-      border:none;
-      border-radius:10px;
-      background:#00ffcc;
-      color:#000;
-      font-weight:bold;
-      cursor:pointer;
-      font-size:15px;
-      ">
-      دخول
-    </button>
-
-
-    <!-- Google -->
-    <button
-      id="googleButton"
-      style="
-      width:100%;
-      padding:12px;
-      margin-top:10px;
-      border:none;
-      border-radius:10px;
-      background:#4285F4;
-      color:white;
-      font-weight:bold;
-      cursor:pointer;
-      font-size:15px;
-      ">
-      🔵 الدخول بواسطة Google
-    </button>
-
-
-    <!-- رسالة الخطأ -->
-    <div
-      id="loginError"
-      style="
-      color:#ff8888;
-      margin:12px 0;
-      min-height:22px;
-      font-size:14px;
-      ">
     </div>
 
-
-    <!-- إنشاء حساب -->
-    <button
-      id="signupButton"
-      style="
-      width:100%;
-      padding:12px;
-      border-radius:10px;
-      background:rgba(255,255,255,.13);
-      color:white;
-      border:1px solid #00ffcc;
-      cursor:pointer;
-      font-weight:bold;
-      font-size:15px;
-      ">
-      📝 إنشاء حساب جديد
-    </button>
-
-  </div>
 </div>
-
 
 
 <!-- =========================================================
-     👤 بيانات المستخدم
-========================================================= -->
+     🔞 نافذة التحقق من العمر
+     ========================================================= -->
 
-<div
-  id="userProfile"
-  style="
-  display:none;
-  position:fixed;
-  top:15px;
-  right:15px;
-  z-index:99999;
-  background:rgba(0,0,0,.82);
-  padding:10px;
-  border-radius:15px;
-  border:1px solid #00ffcc;
-  color:white;
-  align-items:center;
-  gap:10px;
-  font-family:Tajawal,Tahoma,sans-serif;
-  box-shadow:0 0 15px rgba(0,255,204,.35);
-  ">
+<div id="sakakerAgeOverlay">
 
-  <img
-    id="userPhoto"
-    alt="صورة المستخدم"
-    style="
-    width:45px;
-    height:45px;
-    border-radius:50%;
-    border:2px solid gold;
-    object-fit:cover;
-    ">
+    <div class="sakaker-age-box">
 
-  <span
-    id="userName"
-    style="
-    max-width:180px;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-    ">
-  </span>
+        <div class="sakaker-age-icon">
+            🔞
+        </div>
 
-  <button id="logoutButton">
-    خروج
-  </button>
+        <div class="sakaker-age-title">
+            التحقق من العمر
+        </div>
+
+        <div class="sakaker-age-text">
+
+            هذا الموقع مخصص للأشخاص
+            <strong>18 سنة أو أكثر</strong>.
+
+            <br>
+
+            يرجى إدخال تاريخ ميلادك للمتابعة.
+
+        </div>
+
+        <input
+            type="date"
+            id="sakakerBirthDate"
+        >
+
+        <button id="sakakerAgeConfirm">
+            ✅ تأكيد والمتابعة
+        </button>
+
+        <div id="sakakerAgeError"></div>
+
+    </div>
 
 </div>
 
+
+<!-- =========================================================
+     👤 المستخدم
+     ========================================================= -->
+
+<div id="sakakerUserProfile">
+
+    <img id="sakakerUserPhoto">
+
+    <span id="sakakerUserName"></span>
+
+    <button id="sakakerLogout">
+        خروج
+    </button>
+
+</div>
 
 
 <!-- =========================================================
      🔥 FIREBASE
-========================================================= -->
+     ========================================================= -->
 
 <script type="module">
 
@@ -278,569 +360,376 @@ import { getAnalytics }
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
 
 import {
-  getAuth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
-  onAuthStateChanged,
-  setPersistence,
-  browserLocalPersistence,
-  signOut
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    onAuthStateChanged,
+    setPersistence,
+    browserLocalPersistence,
+    signOut
 }
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-import {
-  getFirestore
-}
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
-import {
-  getStorage
-}
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
-
-
 
 /* =========================================================
-   🔥 Firebase Configuration
-========================================================= */
+   🔥 بيانات Firebase الخاصة بموقعك
+   ========================================================= */
 
 const firebaseConfig = {
 
-  apiKey:
+    apiKey:
     "AIzaSyCltuh24M0X4KBlVpIFi8HXlrTObQRVk_s",
 
-  authDomain:
+    authDomain:
     "general-sakaker.firebaseapp.com",
 
-  projectId:
+    projectId:
     "general-sakaker",
 
-  storageBucket:
+    storageBucket:
     "general-sakaker.firebasestorage.app",
 
-  messagingSenderId:
+    messagingSenderId:
     "999891768564",
 
-  appId:
+    appId:
     "1:999891768564:web:9821008d91378788b93aa1",
 
-  measurementId:
+    measurementId:
     "G-0LGSW71V74"
+};
+
+
+/* =========================================================
+   تشغيل Firebase
+   ========================================================= */
+
+const app = initializeApp(firebaseConfig);
+
+const analytics = getAnalytics(app);
+
+const auth = getAuth(app);
+
+
+/* =========================================================
+   حفظ الجلسة
+   ========================================================= */
+
+await setPersistence(
+    auth,
+    browserLocalPersistence
+);
+
+
+/* =========================================================
+   عناصر الصفحة
+   ========================================================= */
+
+const loginOverlay =
+    document.getElementById("sakakerLoginOverlay");
+
+const googleButton =
+    document.getElementById("sakakerGoogleButton");
+
+const loginError =
+    document.getElementById("sakakerLoginError");
+
+const ageOverlay =
+    document.getElementById("sakakerAgeOverlay");
+
+const birthDate =
+    document.getElementById("sakakerBirthDate");
+
+const ageConfirm =
+    document.getElementById("sakakerAgeConfirm");
+
+const ageError =
+    document.getElementById("sakakerAgeError");
+
+const userProfile =
+    document.getElementById("sakakerUserProfile");
+
+const userPhoto =
+    document.getElementById("sakakerUserPhoto");
+
+const userName =
+    document.getElementById("sakakerUserName");
+
+const logoutButton =
+    document.getElementById("sakakerLogout");
+
+
+/* =========================================================
+   حساب العمر
+   ========================================================= */
+
+function calculateAge(dateString) {
+
+    const birth = new Date(dateString);
+
+    if (isNaN(birth.getTime())) {
+        return -1;
+    }
+
+    const today = new Date();
+
+    let age =
+        today.getFullYear() -
+        birth.getFullYear();
+
+    const month =
+        today.getMonth() -
+        birth.getMonth();
+
+    if (
+        month < 0 ||
+        (
+            month === 0 &&
+            today.getDate() < birth.getDate()
+        )
+    ) {
+        age--;
+    }
+
+    return age;
+}
+
+
+/* =========================================================
+   Google Login
+   ========================================================= */
+
+googleButton.onclick = async () => {
+
+    loginError.textContent = "";
+
+    googleButton.disabled = true;
+
+    googleButton.style.opacity = "0.6";
+
+    try {
+
+        const provider =
+            new GoogleAuthProvider();
+
+        provider.setCustomParameters({
+            prompt: "select_account"
+        });
+
+        await signInWithPopup(
+            auth,
+            provider
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        loginError.textContent =
+            "❌ تعذر تسجيل الدخول بواسطة Google.";
+
+        googleButton.disabled = false;
+
+        googleButton.style.opacity = "1";
+
+    }
 
 };
 
 
-
 /* =========================================================
-   🚀 تشغيل Firebase
-========================================================= */
+   مراقبة المستخدم
+   ========================================================= */
 
-const app = initializeApp(firebaseConfig);
+onAuthStateChanged(auth, async (user) => {
 
+    if (!user) {
 
-/* Analytics */
-let analytics = null;
+        loginOverlay.style.display = "flex";
 
-try {
-  analytics = getAnalytics(app);
-} catch (e) {
-  console.warn("Firebase Analytics غير متاح:", e);
-}
+        ageOverlay.style.display = "none";
 
+        userProfile.style.display = "none";
 
-/* Authentication */
-const auth = getAuth(app);
+        document.body.classList.add(
+            "sakaker-locked"
+        );
 
+        return;
+    }
 
-/* Firestore */
-const db = getFirestore(app);
 
-
-/* Storage */
-const storage = getStorage(app);
-
-
-/* إتاحة Firebase لبقية أكواد الموقع */
-window.firebaseApp = app;
-window.firebaseAuth = auth;
-window.firebaseDB = db;
-window.firebaseStorage = storage;
-
-
-
-/* =========================================================
-   💾 حفظ جلسة المستخدم
-========================================================= */
-
-await setPersistence(
-  auth,
-  browserLocalPersistence
-);
-
-
-
-/* =========================================================
-   🎯 عناصر الصفحة
-========================================================= */
-
-const overlay =
-  document.getElementById("loginOverlay");
-
-const emailInput =
-  document.getElementById("emailInput");
-
-const passwordInput =
-  document.getElementById("passwordInput");
-
-const errorBox =
-  document.getElementById("loginError");
-
-const loginButton =
-  document.getElementById("loginButton");
-
-const googleButton =
-  document.getElementById("googleButton");
-
-const signupButton =
-  document.getElementById("signupButton");
-
-const logoutButton =
-  document.getElementById("logoutButton");
-
-const userProfile =
-  document.getElementById("userProfile");
-
-const userName =
-  document.getElementById("userName");
-
-const userPhoto =
-  document.getElementById("userPhoto");
-
-
-
-/* =========================================================
-   📝 رسائل Firebase بالعربية
-========================================================= */
-
-function firebaseError(error) {
-
-  switch (error.code) {
-
-    case "auth/invalid-credential":
-      return "❌ البريد الإلكتروني أو كلمة المرور غير صحيحة.";
-
-    case "auth/invalid-email":
-      return "❌ البريد الإلكتروني غير صحيح.";
-
-    case "auth/user-not-found":
-      return "❌ لا يوجد حساب بهذا البريد الإلكتروني.";
-
-    case "auth/wrong-password":
-      return "❌ كلمة المرور غير صحيحة.";
-
-    case "auth/email-already-in-use":
-      return "❌ هذا البريد مستخدم بالفعل. حاول تسجيل الدخول.";
-
-    case "auth/weak-password":
-      return "❌ كلمة المرور ضعيفة. استخدم 6 أحرف على الأقل.";
-
-    case "auth/popup-closed-by-user":
-      return "❌ تم إغلاق نافذة Google قبل إكمال الدخول.";
-
-    case "auth/popup-blocked":
-      return "❌ المتصفح منع نافذة Google. اسمح بالنوافذ المنبثقة.";
-
-    case "auth/cancelled-popup-request":
-      return "❌ تم إلغاء عملية تسجيل الدخول.";
-
-    case "auth/unauthorized-domain":
-      return "❌ هذا النطاق غير مصرح به في Firebase Authorized domains.";
-
-    case "auth/network-request-failed":
-      return "❌ حدثت مشكلة في الاتصال بالإنترنت.";
-
-    case "auth/too-many-requests":
-      return "❌ محاولات كثيرة. انتظر قليلًا ثم حاول مرة أخرى.";
-
-    case "auth/operation-not-allowed":
-      return "❌ طريقة تسجيل الدخول هذه غير مفعلة في Firebase.";
-
-    default:
-      return "❌ حدث خطأ أثناء تسجيل الدخول.";
-  }
-
-}
-
-
-
-/* =========================================================
-   🔄 عرض الخطأ
-========================================================= */
-
-function showError(message) {
-
-  errorBox.textContent = message;
-
-}
-
-
-
-/* =========================================================
-   🧹 مسح رسالة الخطأ
-========================================================= */
-
-function clearError() {
-
-  errorBox.textContent = "";
-
-}
-
-
-
-/* =========================================================
-   🔐 تسجيل الدخول بالبريد
-========================================================= */
-
-loginButton.addEventListener("click", async () => {
-
-  clearError();
-
-  const email =
-    emailInput.value.trim();
-
-  const password =
-    passwordInput.value;
-
-
-  if (!email) {
-
-    showError("❌ أدخل البريد الإلكتروني.");
-
-    emailInput.focus();
-
-    return;
-  }
-
-
-  if (!password) {
-
-    showError("❌ أدخل كلمة المرور.");
-
-    passwordInput.focus();
-
-    return;
-  }
-
-
-  loginButton.disabled = true;
-
-  loginButton.textContent =
-    "⏳ جارٍ تسجيل الدخول...";
-
-
-  try {
-
-    await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-
-  }
-
-  catch (error) {
-
-    console.error(error);
-
-    showError(
-      firebaseError(error)
-    );
-
-  }
-
-  finally {
-
-    loginButton.disabled = false;
-
-    loginButton.textContent =
-      "دخول";
-
-  }
-
-});
-
-
-
-/* =========================================================
-   📝 إنشاء حساب جديد
-========================================================= */
-
-signupButton.addEventListener("click", async () => {
-
-  clearError();
-
-  const email =
-    emailInput.value.trim();
-
-  const password =
-    passwordInput.value;
-
-
-  if (!email) {
-
-    showError("❌ أدخل البريد الإلكتروني أولًا.");
-
-    emailInput.focus();
-
-    return;
-  }
-
-
-  if (!password) {
-
-    showError("❌ أدخل كلمة مرور للحساب الجديد.");
-
-    passwordInput.focus();
-
-    return;
-  }
-
-
-  if (password.length < 6) {
-
-    showError(
-      "❌ كلمة المرور يجب أن تحتوي على 6 أحرف على الأقل."
-    );
-
-    passwordInput.focus();
-
-    return;
-  }
-
-
-  signupButton.disabled = true;
-
-  signupButton.textContent =
-    "⏳ جارٍ إنشاء الحساب...";
-
-
-  try {
-
-    await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-
-  }
-
-  catch (error) {
-
-    console.error(error);
-
-    showError(
-      firebaseError(error)
-    );
-
-  }
-
-  finally {
-
-    signupButton.disabled = false;
-
-    signupButton.textContent =
-      "📝 إنشاء حساب جديد";
-
-  }
-
-});
-
-
-
-/* =========================================================
-   🔵 تسجيل الدخول بواسطة Google
-========================================================= */
-
-googleButton.addEventListener("click", async () => {
-
-  clearError();
-
-  googleButton.disabled = true;
-
-  googleButton.textContent =
-    "⏳ جارٍ فتح Google...";
-
-
-  const provider =
-    new GoogleAuthProvider();
-
-
-  provider.setCustomParameters({
-    prompt: "select_account"
-  });
-
-
-  try {
-
-    await signInWithPopup(
-      auth,
-      provider
-    );
-
-  }
-
-  catch (error) {
-
-    console.error(error);
-
-    showError(
-      firebaseError(error)
-    );
-
-  }
-
-  finally {
-
-    googleButton.disabled = false;
-
-    googleButton.textContent =
-      "🔵 الدخول بواسطة Google";
-
-  }
-
-});
-
-
-
-/* =========================================================
-   👤 مراقبة حالة المستخدم
-========================================================= */
-
-onAuthStateChanged(auth, (user) => {
-
-  if (user) {
-
-    /* المستخدم مسجل الدخول */
-
-    overlay.style.display =
-      "none";
-
-
-    document.body.classList.remove(
-      "locked"
-    );
-
-
-    userProfile.style.display =
-      "flex";
-
+    /* =====================================================
+       بيانات المستخدم
+       ===================================================== */
 
     userName.textContent =
-      user.displayName ||
-      user.email ||
-      "المستخدم";
+        user.displayName ||
+        user.email ||
+        "مستخدم Google";
 
 
     userPhoto.src =
-      user.photoURL ||
-      "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+        user.photoURL ||
+        "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
 
-    console.log(
-      "✅ المستخدم مسجل الدخول:",
-      user.email
-    );
+    userProfile.style.display = "flex";
 
-  }
 
-  else {
+    /* =====================================================
+       التحقق هل سبق تأكيد العمر
+       ===================================================== */
 
-    /* لا يوجد مستخدم */
+    const ageVerified =
+        localStorage.getItem(
+            "sakaker_age_verified"
+        );
 
-    overlay.style.display =
-      "flex";
 
+    if (ageVerified === "18plus") {
+
+        loginOverlay.style.display = "none";
+
+        ageOverlay.style.display = "none";
+
+        document.body.classList.remove(
+            "sakaker-locked"
+        );
+
+        return;
+    }
+
+
+    /* =====================================================
+       أول دخول يحتاج تحقق عمر
+       ===================================================== */
+
+    loginOverlay.style.display = "none";
+
+    ageOverlay.style.display = "flex";
 
     document.body.classList.add(
-      "locked"
+        "sakaker-locked"
+    );
+
+});
+
+
+/* =========================================================
+   تأكيد العمر
+   ========================================================= */
+
+ageConfirm.onclick = async () => {
+
+    ageError.textContent = "";
+
+    const date =
+        birthDate.value;
+
+    if (!date) {
+
+        ageError.textContent =
+            "⚠️ يرجى إدخال تاريخ الميلاد.";
+
+        return;
+    }
+
+
+    const age =
+        calculateAge(date);
+
+
+    if (age < 0) {
+
+        ageError.textContent =
+            "⚠️ تاريخ الميلاد غير صحيح.";
+
+        return;
+    }
+
+
+    if (age < 18) {
+
+        ageError.textContent =
+            "🔞 عذرًا، يجب أن يكون عمرك 18 سنة أو أكثر.";
+
+        return;
+    }
+
+
+    /* =====================================================
+       تم اجتياز التحقق
+       ===================================================== */
+
+    localStorage.setItem(
+        "sakaker_age_verified",
+        "18plus"
     );
 
 
-    userProfile.style.display =
-      "none";
+    ageOverlay.style.display =
+        "none";
+
+    loginOverlay.style.display =
+        "none";
+
+    document.body.classList.remove(
+        "sakaker-locked"
+    );
 
 
     console.log(
-      "🔒 المستخدم غير مسجل الدخول"
+        "SAKAKER: Age verified 18+"
     );
 
-  }
-
-});
-
+};
 
 
 /* =========================================================
-   🚪 تسجيل الخروج
-========================================================= */
+   تسجيل الخروج
+   ========================================================= */
 
-logoutButton.addEventListener("click", async () => {
+logoutButton.onclick = async () => {
 
-  try {
+    try {
 
-    await signOut(auth);
+        await signOut(auth);
 
-  }
-
-  catch (error) {
-
-    console.error(error);
-
-    showError(
-      "❌ تعذر تسجيل الخروج."
-    );
-
-  }
-
-});
-
-
-
-/* =========================================================
-   ⌨️ الضغط على Enter لتسجيل الدخول
-========================================================= */
-
-passwordInput.addEventListener(
-  "keydown",
-  (event) => {
-
-    if (event.key === "Enter") {
-
-      loginButton.click();
+        localStorage.removeItem(
+            "sakaker_age_verified"
+        );
 
     }
 
-  }
-);
+    catch (error) {
 
+        console.error(error);
+
+    }
+
+};
 
 
 /* =========================================================
-   🔥 Firebase جاهز
-========================================================= */
+   متغيرات Firebase متاحة لباقي موقعك
+   ========================================================= */
+
+window.firebaseApp =
+    app;
+
+window.firebaseAuth =
+    auth;
+
+
+/* =========================================================
+   جاهز
+   ========================================================= */
 
 console.log(
-  "🔥 SAKAKER GENERAL Firebase Ready"
-);
-
-console.log(
-  "📁 Project: general-sakaker"
-);
-
-console.log(
-  "🌐 Domain: general.sakaker.co"
+    "SAKAKER 18+ Google Authentication Ready"
 );
 
 </script>
@@ -882,13 +771,2977 @@ body>*{
     z-index:1;
 }
 </style>
+<!-- =========================================================
+     💎 SAKAKER MODERN CHAT
+     CHAT + VIDEO + AUDIO
+     Firebase Authentication + Firestore
+     بدون Firebase Storage
+     ========================================================= -->
+
+
+<!-- =========================================================
+     💎 SAKAKER CHAT BUTTON
+     ========================================================= -->
+
+<div id="SKModernChatButton"
+     title="سكاكر للدردشة والمكالمات">
+
+  <div class="SKButtonGlow"></div>
+
+  <div class="SKButtonIcon">
+    <span>💬</span>
+    <span class="SKVideoMini">◉</span>
+  </div>
+
+  <div class="SKOnlineDot"></div>
+
+</div>
+
+
+<!-- =========================================================
+     💎 CHAT WINDOW
+     ========================================================= -->
+
+<div id="SKModernChatWindow">
+
+
+  <!-- HEADER -->
+
+  <div class="SKChatHeader">
+
+    <div class="SKChatHeaderInfo">
+
+      <div class="SKLogo">
+        💎
+      </div>
+
+      <div>
+
+        <div class="SKTitle">
+          سكاكر Chat
+        </div>
+
+        <div class="SKSubtitle">
+          <span class="SKGreenDot"></span>
+          دردشة ومكالمات مباشرة
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <button id="SKCloseChat">
+      ×
+    </button>
+
+  </div>
+
+
+
+  <!-- USER -->
+
+  <div class="SKCurrentUser">
+
+    <img id="SKCurrentPhoto"
+         src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+
+    <div>
+
+      <div id="SKCurrentName">
+        جاري التحميل...
+      </div>
+
+      <small>
+        متصل الآن
+      </small>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- VIDEO AREA -->
+
+  <div id="SKVideoContainer">
+
+
+    <!-- Remote -->
+
+    <video
+      id="SKRemoteVideo"
+      autoplay
+      playsinline>
+    </video>
+
+
+    <!-- Local -->
+
+    <video
+      id="SKLocalVideo"
+      autoplay
+      muted
+      playsinline>
+    </video>
+
+
+    <!-- Video overlay -->
+
+    <div id="SKVideoEmpty">
+
+      <div class="SKCameraIcon">
+        📹
+      </div>
+
+      <div>
+        اختر مستخدمًا لبدء المكالمة
+      </div>
+
+    </div>
+
+
+    <!-- Video status -->
+
+    <div id="SKCallStatus">
+      جاهز للمكالمة
+    </div>
+
+  </div>
+
+
+
+  <!-- VIDEO CONTROLS -->
+
+  <div class="SKVideoControls">
+
+
+    <button id="SKVideoCall"
+            class="SKControl blue"
+            title="مكالمة فيديو">
+
+      📹
+
+    </button>
+
+
+    <button id="SKAudioCall"
+            class="SKControl green"
+            title="تشغيل الميكروفون">
+
+      🎙️
+
+    </button>
+
+
+    <button id="SKMuteButton"
+            class="SKControl dark"
+            title="كتم الميكروفون">
+
+      🔊
+
+    </button>
+
+
+    <button id="SKCameraButton"
+            class="SKControl dark"
+            title="إيقاف الكاميرا">
+
+      📷
+
+    </button>
+
+
+    <button id="SKEndCall"
+            class="SKControl red"
+            title="إنهاء المكالمة">
+
+      ☎
+
+    </button>
+
+  </div>
+
+
+
+  <!-- USERS -->
+
+  <div class="SKSectionTitle">
+
+    <span>👥</span>
+    المستخدمون
+
+    <span id="SKUsersCount">
+      0
+    </span>
+
+  </div>
+
+
+  <div id="SKUsers">
+
+    <div class="SKLoading">
+      جاري تحميل المستخدمين...
+    </div>
+
+  </div>
+
+
+
+  <!-- CHAT -->
+
+  <div class="SKSectionTitle">
+
+    <span>💬</span>
+    المحادثة العامة
+
+  </div>
+
+
+  <div id="SKMessages"></div>
+
+
+
+  <!-- MESSAGE -->
+
+  <div class="SKMessageArea">
+
+    <input
+      id="SKMessageInput"
+      type="text"
+      maxlength="500"
+      placeholder="اكتب رسالتك هنا...">
+
+
+    <button id="SKSendMessage">
+      ➤
+    </button>
+
+  </div>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     💎 STYLE
+     ========================================================= -->
+
+<style>
+
+
+/* =========================================================
+   BUTTON
+   ========================================================= */
+
+#SKModernChatButton{
+
+  position:fixed !important;
+
+  right:525px !important;
+  bottom:225px !important;
+
+  width:70px !important;
+  height:70px !important;
+
+  border-radius:50% !important;
+
+  cursor:pointer !important;
+
+  z-index:2147483647 !important;
+
+  display:flex !important;
+
+  align-items:center !important;
+  justify-content:center !important;
+
+  background:
+
+    radial-gradient(
+      circle at 35% 30%,
+      #ffffff 0%,
+      #00ffcc 10%,
+      #00a889 45%,
+      #003b35 100%
+    ) !important;
+
+  box-shadow:
+
+    0 0 10px #00ffcc,
+    0 0 25px #00ffcc,
+    0 0 55px rgba(0,255,204,.65) !important;
+
+  border:
+    2px solid rgba(255,255,255,.8) !important;
+
+  user-select:none;
+
+  transition:
+    transform .3s ease,
+    box-shadow .3s ease;
+
+}
+
+
+/* Hover */
+
+#SKModernChatButton:hover{
+
+  transform:
+    scale(1.12)
+    rotate(3deg);
+
+  box-shadow:
+
+    0 0 15px #00ffcc,
+    0 0 40px #00ffcc,
+    0 0 80px rgba(0,255,204,.8);
+
+}
+
+
+/* Icon */
+
+.SKButtonIcon{
+
+  position:relative;
+
+  width:48px;
+  height:48px;
+
+  border-radius:50%;
+
+  background:
+    rgba(0,0,0,.45);
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  color:white;
+
+  font-size:28px;
+
+  box-shadow:
+    inset 0 0 15px rgba(0,255,204,.8);
+
+}
+
+
+.SKVideoMini{
+
+  position:absolute;
+
+  right:300px;
+  bottom:133px;
+
+  width:20px;
+  height:20px;
+
+  border-radius:50%;
+
+  background:#007bff;
+
+  color:white;
+
+  font-size:10px;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  border:
+    2px solid #fff;
+
+}
+
+
+/* Online dot */
+
+.SKOnlineDot{
+
+  position:absolute;
+
+  top:4px;
+  right:4px;
+
+  width:12px;
+  height:12px;
+
+  border-radius:50%;
+
+  background:#00ff66;
+
+  border:
+    2px solid #002d27;
+
+  animation:
+    SKPulse 1.5s infinite;
+
+}
+
+
+@keyframes SKPulse{
+
+  0%,100%{
+    box-shadow:
+      0 0 0 0 rgba(0,255,102,.7);
+  }
+
+  50%{
+    box-shadow:
+      0 0 0 7px rgba(0,255,102,0);
+  }
+
+}
+
+
+/* Glow */
+
+.SKButtonGlow{
+
+  position:absolute;
+
+  inset:-8px;
+
+  border-radius:50%;
+
+  border:
+    1px solid rgba(0,255,204,.35);
+
+  animation:
+    SKRotateGlow 5s linear infinite;
+
+}
+
+
+@keyframes SKRotateGlow{
+
+  from{
+    transform:rotate(0deg);
+  }
+
+  to{
+    transform:rotate(360deg);
+  }
+
+}
+
+
+
+/* =========================================================
+   WINDOW
+   ========================================================= */
+
+#SKModernChatWindow{
+
+  position:fixed !important;
+
+  right:25px !important;
+  bottom:110px !important;
+
+  width:420px !important;
+
+  max-width:
+    calc(100vw - 30px) !important;
+
+  height:650px !important;
+
+  max-height:
+    calc(100vh - 130px) !important;
+
+  background:
+    linear-gradient(
+      160deg,
+      rgba(3,18,25,.98),
+      rgba(0,8,12,.98)
+    ) !important;
+
+  border:
+    1px solid #00ffcc !important;
+
+  border-radius:
+    24px !important;
+
+  overflow:hidden !important;
+
+  z-index:2147483646 !important;
+
+  display:none;
+
+  flex-direction:column;
+
+  color:white;
+
+  font-family:
+    Tajawal,
+    Tahoma,
+    Arial,
+    sans-serif;
+
+  box-shadow:
+
+    0 0 20px rgba(0,255,204,.5),
+    0 0 80px rgba(0,255,204,.18);
+
+  backdrop-filter:
+    blur(20px);
+
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.SKChatHeader{
+
+  height:65px;
+
+  flex-shrink:0;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  padding:
+    0 14px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #002c27,
+      #005044,
+      #002c27
+    );
+
+  border-bottom:
+    1px solid rgba(0,255,204,.35);
+
+}
+
+
+.SKChatHeaderInfo{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+
+}
+
+
+.SKLogo{
+
+  width:42px;
+  height:42px;
+
+  border-radius:14px;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  background:
+    linear-gradient(
+      135deg,
+      #00ffcc,
+      #007b68
+    );
+
+  font-size:24px;
+
+  box-shadow:
+    0 0 15px rgba(0,255,204,.5);
+
+}
+
+
+.SKTitle{
+
+  font-size:17px;
+
+  font-weight:bold;
+
+  color:#fff;
+
+}
+
+
+.SKSubtitle{
+
+  font-size:10px;
+
+  color:#aaa;
+
+  margin-top:2px;
+
+}
+
+
+.SKGreenDot{
+
+  display:inline-block;
+
+  width:7px;
+  height:7px;
+
+  border-radius:50%;
+
+  background:#00ff66;
+
+  margin-left:3px;
+
+}
+
+
+#SKCloseChat{
+
+  width:35px;
+  height:35px;
+
+  border:none;
+
+  border-radius:50%;
+
+  background:#ffffff12;
+
+  color:white;
+
+  font-size:25px;
+
+  cursor:pointer;
+
+}
+
+
+#SKCloseChat:hover{
+
+  background:#ff174422;
+
+}
+
+
+
+/* =========================================================
+   USER
+   ========================================================= */
+
+.SKCurrentUser{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+
+  padding:8px 12px;
+
+  background:#ffffff06;
+
+  border-bottom:
+    1px solid #00ffcc18;
+
+  flex-shrink:0;
+
+}
+
+
+#SKCurrentPhoto{
+
+  width:38px;
+  height:38px;
+
+  border-radius:50%;
+
+  object-fit:cover;
+
+  border:
+    2px solid gold;
+
+}
+
+
+#SKCurrentName{
+
+  font-size:13px;
+
+  font-weight:bold;
+
+}
+
+
+.SKCurrentUser small{
+
+  font-size:9px;
+
+  color:#00ff88;
+
+}
+
+
+
+/* =========================================================
+   VIDEO
+   ========================================================= */
+
+#SKVideoContainer{
+
+  position:relative;
+
+  width:100%;
+
+  height:190px;
+
+  flex-shrink:0;
+
+  background:
+    radial-gradient(
+      circle,
+      #123,
+      #020609
+    );
+
+  overflow:hidden;
+
+}
+
+
+#SKRemoteVideo{
+
+  width:100%;
+  height:100%;
+
+  object-fit:cover;
+
+  background:#020609;
+
+}
+
+
+#SKLocalVideo{
+
+  position:absolute;
+
+  right:10px;
+  bottom:10px;
+
+  width:105px;
+  height:80px;
+
+  object-fit:cover;
+
+  border-radius:12px;
+
+  border:
+    2px solid #00ffcc;
+
+  background:#111;
+
+  z-index:5;
+
+  box-shadow:
+    0 0 15px rgba(0,255,204,.4);
+
+}
+
+
+#SKVideoEmpty{
+
+  position:absolute;
+
+  inset:0;
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+  justify-content:center;
+
+  color:#aaa;
+
+  font-size:11px;
+
+  pointer-events:none;
+
+}
+
+
+.SKCameraIcon{
+
+  font-size:36px;
+
+  margin-bottom:8px;
+
+  opacity:.8;
+
+}
+
+
+#SKCallStatus{
+
+  position:absolute;
+
+  left:10px;
+  bottom:10px;
+
+  background:
+    rgba(0,0,0,.7);
+
+  padding:
+    5px 9px;
+
+  border-radius:10px;
+
+  font-size:9px;
+
+  color:#00ffcc;
+
+  z-index:10;
+
+}
+
+
+
+/* =========================================================
+   CONTROLS
+   ========================================================= */
+
+.SKVideoControls{
+
+  display:flex;
+
+  gap:6px;
+
+  padding:7px 10px;
+
+  background:#00000055;
+
+  flex-shrink:0;
+
+}
+
+
+.SKControl{
+
+  flex:1;
+
+  height:38px;
+
+  border:none;
+
+  border-radius:11px;
+
+  color:white;
+
+  cursor:pointer;
+
+  font-size:16px;
+
+  transition:.2s;
+
+}
+
+
+.SKControl:hover{
+
+  transform:
+    translateY(-2px);
+
+}
+
+
+.SKControl.blue{
+
+  background:
+    linear-gradient(
+      135deg,
+      #007bff,
+      #0051a8
+    );
+
+}
+
+
+.SKControl.green{
+
+  background:
+    linear-gradient(
+      135deg,
+      #00a878,
+      #00664d
+    );
+
+}
+
+
+.SKControl.dark{
+
+  background:#222c;
+
+}
+
+
+.SKControl.red{
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff1744,
+      #a00020
+    );
+
+}
+
+
+
+/* =========================================================
+   SECTION
+   ========================================================= */
+
+.SKSectionTitle{
+
+  height:28px;
+
+  display:flex;
+
+  align-items:center;
+
+  gap:5px;
+
+  padding:
+    0 12px;
+
+  color:#00ffcc;
+
+  font-size:11px;
+
+  border-top:
+    1px solid #00ffcc12;
+
+  flex-shrink:0;
+
+}
+
+
+#SKUsersCount{
+
+  margin-right:auto;
+
+  background:#00ffcc22;
+
+  color:#00ffcc;
+
+  padding:
+    2px 7px;
+
+  border-radius:10px;
+
+  font-size:9px;
+
+}
+
+
+
+/* =========================================================
+   USERS
+   ========================================================= */
+
+#SKUsers{
+
+  display:flex;
+
+  gap:7px;
+
+  overflow-x:auto;
+
+  padding:
+    4px 10px 7px;
+
+  flex-shrink:0;
+
+}
+
+
+#SKUsers::-webkit-scrollbar{
+
+  height:3px;
+
+}
+
+
+#SKUsers::-webkit-scrollbar-thumb{
+
+  background:#00ffcc;
+
+  border-radius:10px;
+
+}
+
+
+.SKUser{
+
+  min-width:65px;
+
+  max-width:75px;
+
+  padding:5px;
+
+  border-radius:12px;
+
+  background:#ffffff08;
+
+  border:
+    1px solid transparent;
+
+  text-align:center;
+
+  cursor:pointer;
+
+  transition:.2s;
+
+}
+
+
+.SKUser:hover{
+
+  background:#00ffcc12;
+
+  border-color:#00ffcc66;
+
+  transform:
+    translateY(-2px);
+
+}
+
+
+.SKUser.selected{
+
+  border-color:#00ffcc;
+
+  box-shadow:
+    0 0 10px #00ffcc44;
+
+}
+
+
+.SKUser img{
+
+  width:34px;
+  height:34px;
+
+  border-radius:50%;
+
+  object-fit:cover;
+
+  border:
+    1px solid #00ffcc;
+
+}
+
+
+.SKUserName{
+
+  display:block;
+
+  margin-top:3px;
+
+  font-size:8px;
+
+  white-space:nowrap;
+
+  overflow:hidden;
+
+  text-overflow:ellipsis;
+
+}
+
+
+.SKUserOnline{
+
+  font-size:7px;
+
+  color:#00ff66;
+
+}
+
+
+
+/* =========================================================
+   MESSAGES
+   ========================================================= */
+
+#SKMessages{
+
+  flex:1;
+
+  min-height:80px;
+
+  overflow-y:auto;
+
+  padding:
+    8px 10px;
+
+}
+
+
+#SKMessages::-webkit-scrollbar{
+
+  width:4px;
+
+}
+
+
+#SKMessages::-webkit-scrollbar-thumb{
+
+  background:#00ffcc;
+
+  border-radius:10px;
+
+}
+
+
+.SKMessage{
+
+  display:flex;
+
+  flex-direction:column;
+
+  margin-bottom:8px;
+
+}
+
+
+.SKMessage.me{
+
+  align-items:flex-start;
+
+}
+
+
+.SKMessage.other{
+
+  align-items:flex-end;
+
+}
+
+
+.SKMessageName{
+
+  color:#00ffcc;
+
+  font-size:8px;
+
+  margin-bottom:2px;
+
+}
+
+
+.SKMessageBubble{
+
+  max-width:82%;
+
+  padding:
+    8px 11px;
+
+  border-radius:13px;
+
+  font-size:11px;
+
+  line-height:1.5;
+
+  word-break:break-word;
+
+}
+
+
+.SKMessage.me
+.SKMessageBubble{
+
+  background:
+    linear-gradient(
+      135deg,
+      #006b5b,
+      #00463d
+    );
+
+  border:
+    1px solid #00ffcc55;
+
+}
+
+
+.SKMessage.other
+.SKMessageBubble{
+
+  background:#ffffff0d;
+
+  border:
+    1px solid #ffffff15;
+
+}
+
+
+.SKMessageTime{
+
+  color:#666;
+
+  font-size:7px;
+
+  margin-top:2px;
+
+}
+
+
+
+/* =========================================================
+   INPUT
+   ========================================================= */
+
+.SKMessageArea{
+
+  display:flex;
+
+  gap:6px;
+
+  padding:8px;
+
+  border-top:
+    1px solid #00ffcc22;
+
+  flex-shrink:0;
+
+  background:#00000055;
+
+}
+
+
+#SKMessageInput{
+
+  flex:1;
+
+  min-width:0;
+
+  height:40px;
+
+  box-sizing:border-box;
+
+  border:
+    1px solid #ffffff15;
+
+  outline:none;
+
+  border-radius:12px;
+
+  padding:
+    0 12px;
+
+  background:#ffffff0a;
+
+  color:white;
+
+  font-family:inherit;
+
+}
+
+
+#SKMessageInput:focus{
+
+  border-color:#00ffcc66;
+
+}
+
+
+#SKMessageInput::placeholder{
+
+  color:#777;
+
+}
+
+
+#SKSendMessage{
+
+  width:45px;
+
+  height:40px;
+
+  border:none;
+
+  border-radius:12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #00ffcc,
+      #00a889
+    );
+
+  color:#002c27;
+
+  font-size:20px;
+
+  font-weight:bold;
+
+  cursor:pointer;
+
+}
+
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:600px){
+
+  #SKModernChatButton{
+
+    right:15px !important;
+    bottom:15px !important;
+
+    width:62px !important;
+    height:62px !important;
+
+  }
+
+
+  #SKModernChatWindow{
+
+    right:7px !important;
+    left:7px !important;
+
+    bottom:85px !important;
+
+    width:auto !important;
+
+    height:
+      calc(100vh - 100px) !important;
+
+    max-height:none !important;
+
+    border-radius:20px !important;
+
+  }
+
+
+  #SKVideoContainer{
+
+    height:160px;
+
+  }
+
+}
+
+
+
+/* =========================================================
+   LOCKED BODY FIX
+   ========================================================= */
+
+/*
+  إذا كان نظام تسجيل الدخول عندك يستخدم body.locked،
+  لا نخفي زر الدردشة.
+*/
+
+body.locked #SKModernChatButton{
+
+  visibility:visible !important;
+
+  opacity:1 !important;
+
+}
+
+</style>
+
+
+
+<!-- =========================================================
+     💎 JAVASCRIPT
+     ========================================================= -->
+
+<script type="module">
+
+/* =========================================================
+   FIREBASE
+   ========================================================= */
+
+import {
+
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  limit,
+  onSnapshot,
+  serverTimestamp,
+  doc,
+  setDoc,
+  deleteDoc
+
+}
+from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+
+/*
+  نستخدم Firebase Authentication
+  و Firestore الموجودين أصلًا في كود تسجيل الدخول.
+*/
+
+const SKAuth =
+  window.firebaseAuth;
+
+const SKDB =
+  window.firebaseDB;
+
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const SKButton =
+  document.getElementById(
+    "SKModernChatButton"
+  );
+
+const SKWindow =
+  document.getElementById(
+    "SKModernChatWindow"
+  );
+
+const SKClose =
+  document.getElementById(
+    "SKCloseChat"
+  );
+
+const SKUsers =
+  document.getElementById(
+    "SKUsers"
+  );
+
+const SKMessages =
+  document.getElementById(
+    "SKMessages"
+  );
+
+const SKInput =
+  document.getElementById(
+    "SKMessageInput"
+  );
+
+const SKSend =
+  document.getElementById(
+    "SKSendMessage"
+  );
+
+const SKCurrentName =
+  document.getElementById(
+    "SKCurrentName"
+  );
+
+const SKCurrentPhoto =
+  document.getElementById(
+    "SKCurrentPhoto"
+  );
+
+const SKUsersCount =
+  document.getElementById(
+    "SKUsersCount"
+  );
+
+const SKRemoteVideo =
+  document.getElementById(
+    "SKRemoteVideo"
+  );
+
+const SKLocalVideo =
+  document.getElementById(
+    "SKLocalVideo"
+  );
+
+const SKVideoEmpty =
+  document.getElementById(
+    "SKVideoEmpty"
+  );
+
+const SKCallStatus =
+  document.getElementById(
+    "SKCallStatus"
+  );
+
+
+
+/* =========================================================
+   OPEN / CLOSE
+   ========================================================= */
+
+SKButton.addEventListener(
+  "click",
+  function(){
+
+    SKWindow.style.display =
+      "flex";
+
+    SKButton.style.display =
+      "none";
+
+  }
+);
+
+
+SKClose.addEventListener(
+  "click",
+  function(){
+
+    SKWindow.style.display =
+      "none";
+
+    SKButton.style.display =
+      "flex";
+
+  }
+);
+
+
+
+/* =========================================================
+   STATE
+   ========================================================= */
+
+let SKCurrentUser =
+  null;
+
+let SKSelectedUser =
+  null;
+
+let SKLocalStream =
+  null;
+
+let SKPeer =
+  null;
+
+let SKCallId =
+  null;
+
+let SKUnsubscribeMessages =
+  null;
+
+let SKUnsubscribeUsers =
+  null;
+
+let SKUnsubscribeCall =
+  null;
+
+let SKUnsubscribeCandidates =
+  null;
+
+
+
+/* =========================================================
+   WEBRTC
+   ========================================================= */
+
+const SKRTCConfig = {
+
+  iceServers:[
+
+    {
+      urls:
+      "stun:stun.l.google.com:19302"
+    },
+
+    {
+      urls:
+      "stun:stun1.l.google.com:19302"
+    }
+
+  ]
+
+};
+
+
+
+/* =========================================================
+   AUTH
+   ========================================================= */
+
+if(!SKAuth || !SKDB){
+
+  console.error(
+    "SAKAKER: Firebase غير موجود."
+  );
+
+  SKCurrentName.textContent =
+    "Firebase غير متصل";
+
+}else{
+
+
+  SKAuth.onAuthStateChanged(
+    async function(user){
+
+      SKCurrentUser =
+        user;
+
+
+      if(!user){
+
+        SKCurrentName.textContent =
+          "سجل الدخول أولاً";
+
+        SKUsers.innerHTML =
+          '<div class="SKLoading">يجب تسجيل الدخول لفتح الدردشة</div>';
+
+        return;
+
+      }
+
+
+      SKCurrentName.textContent =
+        user.displayName ||
+        user.email ||
+        "مستخدم";
+
+
+      SKCurrentPhoto.src =
+        user.photoURL ||
+        "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+
+      /*
+        حفظ معلومات عامة فقط.
+        لا يتم حفظ كلمة المرور.
+      */
+
+      try{
+
+        await setDoc(
+
+          doc(
+            SKDB,
+            "sakakerUsers",
+            user.uid
+          ),
+
+          {
+
+            uid:
+              user.uid,
+
+            name:
+              user.displayName ||
+              user.email ||
+              "مستخدم",
+
+            email:
+              user.email || "",
+
+            photo:
+              user.photoURL ||
+              "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+
+            online:true,
+
+            lastSeen:
+              serverTimestamp()
+
+          },
+
+          {
+            merge:true
+          }
+
+        );
+
+      }catch(error){
+
+        console.error(
+          "User error:",
+          error
+        );
+
+      }
+
+
+      SKLoadUsers();
+
+      SKLoadMessages();
+
+      SKListenIncomingCalls();
+
+    }
+  );
+
+}
+
+
+
+/* =========================================================
+   USERS
+   ========================================================= */
+
+function SKLoadUsers(){
+
+  if(SKUnsubscribeUsers)
+    SKUnsubscribeUsers();
+
+
+  const q =
+    query(
+
+      collection(
+        SKDB,
+        "sakakerUsers"
+      ),
+
+      orderBy(
+        "lastSeen",
+        "desc"
+      ),
+
+      limit(30)
+
+    );
+
+
+  SKUnsubscribeUsers =
+    onSnapshot(
+
+      q,
+
+      function(snapshot){
+
+        SKUsers.innerHTML =
+          "";
+
+        let count =
+          0;
+
+
+        snapshot.forEach(
+          function(item){
+
+            const user =
+              item.data();
+
+
+            if(
+              SKCurrentUser &&
+              user.uid ===
+              SKCurrentUser.uid
+            ){
+
+              return;
+
+            }
+
+
+            count++;
+
+
+            const element =
+              document.createElement(
+                "div"
+              );
+
+
+            element.className =
+              "SKUser";
+
+
+            if(
+              SKSelectedUser &&
+              SKSelectedUser.uid ===
+              user.uid
+            ){
+
+              element.classList.add(
+                "selected"
+              );
+
+            }
+
+
+            element.innerHTML = `
+
+              <img
+                src="${SKEscape(
+                  user.photo ||
+                  "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                )}"
+              >
+
+              <span class="SKUserName">
+                ${SKEscape(
+                  user.name ||
+                  "مستخدم"
+                )}
+              </span>
+
+              <span class="SKUserOnline">
+                ● متصل
+              </span>
+
+            `;
+
+
+            element.addEventListener(
+              "click",
+              function(){
+
+                SKSelectedUser =
+                  user;
+
+
+                document
+                  .querySelectorAll(
+                    ".SKUser"
+                  )
+                  .forEach(
+                    x =>
+                      x.classList.remove(
+                        "selected"
+                      )
+                  );
+
+
+                element.classList.add(
+                  "selected"
+                );
+
+
+                SKCallStatus.textContent =
+                  "تم اختيار " +
+                  (
+                    user.name ||
+                    "المستخدم"
+                  );
+
+              }
+            );
+
+
+            SKUsers.appendChild(
+              element
+            );
+
+          }
+        );
+
+
+        SKUsersCount.textContent =
+          count;
+
+      }
+
+    );
+
+}
+
+
+
+/* =========================================================
+   MESSAGES
+   ========================================================= */
+
+function SKLoadMessages(){
+
+  if(SKUnsubscribeMessages)
+    SKUnsubscribeMessages();
+
+
+  const q =
+    query(
+
+      collection(
+        SKDB,
+        "sakakerChatMessages"
+      ),
+
+      orderBy(
+        "createdAt",
+        "asc"
+      ),
+
+      limit(100)
+
+    );
+
+
+  SKUnsubscribeMessages =
+    onSnapshot(
+
+      q,
+
+      function(snapshot){
+
+        SKMessages.innerHTML =
+          "";
+
+
+        snapshot.forEach(
+          function(item){
+
+            const data =
+              item.data();
+
+
+            const mine =
+              SKCurrentUser &&
+              data.uid ===
+              SKCurrentUser.uid;
+
+
+            const message =
+              document.createElement(
+                "div"
+              );
+
+
+            message.className =
+              "SKMessage " +
+              (
+                mine
+                  ? "me"
+                  : "other"
+              );
+
+
+            let time =
+              "";
+
+
+            if(
+              data.createdAt &&
+              data.createdAt.toDate
+            ){
+
+              time =
+                data.createdAt
+                  .toDate()
+                  .toLocaleTimeString(
+                    "ar-SA",
+                    {
+                      hour:
+                        "2-digit",
+
+                      minute:
+                        "2-digit"
+                    }
+                  );
+
+            }
+
+
+            message.innerHTML = `
+
+              <span class="SKMessageName">
+                ${SKEscape(
+                  data.name ||
+                  "مستخدم"
+                )}
+              </span>
+
+              <div class="SKMessageBubble">
+                ${SKEscape(
+                  data.text ||
+                  ""
+                )}
+              </div>
+
+              <span class="SKMessageTime">
+                ${time}
+              </span>
+
+            `;
+
+
+            SKMessages.appendChild(
+              message
+            );
+
+          }
+        );
+
+
+        SKMessages.scrollTop =
+          SKMessages.scrollHeight;
+
+      }
+
+    );
+
+}
+
+
+
+/* =========================================================
+   SEND MESSAGE
+   ========================================================= */
+
+async function SKSendMessageNow(){
+
+  if(!SKCurrentUser){
+
+    SKCallStatus.textContent =
+      "يجب تسجيل الدخول أولاً";
+
+    return;
+
+  }
+
+
+  const text =
+    SKInput.value.trim();
+
+
+  if(!text)
+    return;
+
+
+  SKInput.value =
+    "";
+
+
+  try{
+
+    await addDoc(
+
+      collection(
+        SKDB,
+        "sakakerChatMessages"
+      ),
+
+      {
+
+        uid:
+          SKCurrentUser.uid,
+
+        name:
+          SKCurrentUser.displayName ||
+          SKCurrentUser.email ||
+          "مستخدم",
+
+        photo:
+          SKCurrentUser.photoURL ||
+          "",
+
+        text:
+          text,
+
+        createdAt:
+          serverTimestamp()
+
+      }
+
+    );
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+  }
+
+}
+
+
+SKSend.addEventListener(
+  "click",
+  SKSendMessageNow
+);
+
+
+SKInput.addEventListener(
+  "keydown",
+  function(event){
+
+    if(
+      event.key ===
+      "Enter"
+    ){
+
+      event.preventDefault();
+
+      SKSendMessageNow();
+
+    }
+
+  }
+);
+
+
+
+/* =========================================================
+   CAMERA
+   ========================================================= */
+
+async function SKStartMedia(
+  withVideo
+){
+
+  try{
+
+    SKLocalStream =
+      await navigator.mediaDevices
+        .getUserMedia({
+
+          video:
+            withVideo,
+
+          audio:true
+
+        });
+
+
+    SKLocalVideo.srcObject =
+      SKLocalStream;
+
+
+    return true;
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+
+    SKCallStatus.textContent =
+      "❌ اسمح للمتصفح بالكاميرا والميكروفون";
+
+
+    return false;
+
+  }
+
+}
+
+
+
+/* =========================================================
+   CREATE PEER
+   ========================================================= */
+
+function SKCreatePeer(){
+
+  SKPeer =
+    new RTCPeerConnection(
+      SKRTCConfig
+    );
+
+
+  SKPeer.ontrack =
+    function(event){
+
+      if(
+        event.streams &&
+        event.streams[0]
+      ){
+
+        SKRemoteVideo.srcObject =
+          event.streams[0];
+
+        SKVideoEmpty.style.display =
+          "none";
+
+      }
+
+    };
+
+
+  return SKPeer;
+
+}
+
+
+
+/* =========================================================
+   START VIDEO CALL
+   ========================================================= */
+
+async function SKStartVideoCall(){
+
+  if(!SKCurrentUser){
+
+    SKCallStatus.textContent =
+      "سجل الدخول أولاً";
+
+    return;
+
+  }
+
+
+  if(!SKSelectedUser){
+
+    SKCallStatus.textContent =
+      "اختر مستخدمًا من القائمة";
+
+    return;
+
+  }
+
+
+  if(
+    SKSelectedUser.uid ===
+    SKCurrentUser.uid
+  ){
+
+    return;
+
+  }
+
+
+  const media =
+    await SKStartMedia(
+      true
+    );
+
+
+  if(!media)
+    return;
+
+
+  SKCreatePeer();
+
+
+  SKLocalStream
+    .getTracks()
+    .forEach(
+      function(track){
+
+        SKPeer.addTrack(
+          track,
+          SKLocalStream
+        );
+
+      }
+    );
+
+
+  const callId =
+    SKCurrentUser.uid +
+    "_" +
+    SKSelectedUser.uid +
+    "_" +
+    Date.now();
+
+
+  SKCallId =
+    callId;
+
+
+  const callRef =
+    doc(
+      SKDB,
+      "sakakerCalls",
+      callId
+    );
+
+
+  const callerCandidates =
+    collection(
+      callRef,
+      "callerCandidates"
+    );
+
+
+  SKPeer.onicecandidate =
+    function(event){
+
+      if(
+        event.candidate
+      ){
+
+        addDoc(
+          callerCandidates,
+          event.candidate.toJSON()
+        );
+
+      }
+
+    };
+
+
+  const offer =
+    await SKPeer.createOffer();
+
+
+  await SKPeer.setLocalDescription(
+    offer
+  );
+
+
+  await setDoc(
+
+    callRef,
+
+    {
+
+      caller:
+        SKCurrentUser.uid,
+
+      callerName:
+        SKCurrentUser.displayName ||
+        SKCurrentUser.email ||
+        "مستخدم",
+
+      callee:
+        SKSelectedUser.uid,
+
+      calleeName:
+        SKSelectedUser.name ||
+        "مستخدم",
+
+      offer:{
+        type:
+          offer.type,
+
+        sdp:
+          offer.sdp
+      },
+
+      createdAt:
+        serverTimestamp()
+
+    }
+
+  );
+
+
+  SKCallStatus.textContent =
+    "📞 جاري الاتصال...";
+
+
+  /*
+    مراقبة رد الطرف الآخر
+  */
+
+  SKUnsubscribeCall =
+    onSnapshot(
+
+      callRef,
+
+      async function(snapshot){
+
+        const data =
+          snapshot.data();
+
+
+        if(!data)
+          return;
+
+
+        if(
+          data.answer &&
+          SKPeer &&
+          !SKPeer.currentRemoteDescription
+        ){
+
+          await SKPeer.setRemoteDescription(
+            new RTCSessionDescription(
+              data.answer
+            )
+          );
+
+
+          SKCallStatus.textContent =
+            "📹 تم الاتصال";
+
+        }
+
+      }
+
+    );
+
+
+  SKListenCandidates(
+    callRef,
+    "calleeCandidates"
+  );
+
+}
+
+
+
+/* =========================================================
+   INCOMING CALLS
+   ========================================================= */
+
+function SKListenIncomingCalls(){
+
+  const q =
+    query(
+
+      collection(
+        SKDB,
+        "sakakerCalls"
+      ),
+
+      orderBy(
+        "createdAt",
+        "desc"
+      ),
+
+      limit(20)
+
+    );
+
+
+  onSnapshot(
+
+    q,
+
+    function(snapshot){
+
+      snapshot.forEach(
+        function(item){
+
+          const data =
+            item.data();
+
+
+          if(
+            !SKCurrentUser ||
+            data.callee !==
+            SKCurrentUser.uid ||
+            !data.offer
+          ){
+
+            return;
+
+          }
+
+
+          /*
+            إذا لم يكن هناك اتصال
+            نعرض المكالمة.
+          */
+
+          if(
+            SKPeer ||
+            SKCallId ===
+            item.id
+          ){
+
+            return;
+
+          }
+
+
+          SKCallId =
+            item.id;
+
+
+          const callerName =
+            data.callerName ||
+            "مستخدم";
+
+
+          const accept =
+            confirm(
+              "📞 مكالمة واردة من:\n\n" +
+              callerName +
+              "\n\nهل تريد الرد؟"
+            );
+
+
+          if(accept){
+
+            SKAnswerCall(
+              item.id,
+              data
+            );
+
+          }else{
+
+            SKCallId =
+              null;
+
+          }
+
+        }
+      );
+
+    }
+
+  );
+
+}
+
+
+
+/* =========================================================
+   ANSWER CALL
+   ========================================================= */
+
+async function SKAnswerCall(
+  callId,
+  data
+){
+
+  const media =
+    await SKStartMedia(
+      true
+    );
+
+
+  if(!media)
+    return;
+
+
+  SKCreatePeer();
+
+
+  SKLocalStream
+    .getTracks()
+    .forEach(
+      function(track){
+
+        SKPeer.addTrack(
+          track,
+          SKLocalStream
+        );
+
+      }
+    );
+
+
+  const callRef =
+    doc(
+      SKDB,
+      "sakakerCalls",
+      callId
+    );
+
+
+  const calleeCandidates =
+    collection(
+      callRef,
+      "calleeCandidates"
+    );
+
+
+  SKPeer.onicecandidate =
+    function(event){
+
+      if(
+        event.candidate
+      ){
+
+        addDoc(
+          calleeCandidates,
+          event.candidate.toJSON()
+        );
+
+      }
+
+    };
+
+
+  await SKPeer.setRemoteDescription(
+
+    new RTCSessionDescription(
+      data.offer
+    )
+
+  );
+
+
+  const answer =
+    await SKPeer.createAnswer();
+
+
+  await SKPeer.setLocalDescription(
+    answer
+  );
+
+
+  await setDoc(
+
+    callRef,
+
+    {
+
+      answer:{
+        type:
+          answer.type,
+
+        sdp:
+          answer.sdp
+      }
+
+    },
+
+    {
+      merge:true
+    }
+
+  );
+
+
+  SKListenCandidates(
+    callRef,
+    "callerCandidates"
+  );
+
+
+  SKCallStatus.textContent =
+    "📹 تم الاتصال";
+
+}
+
+
+
+/* =========================================================
+   ICE CANDIDATES
+   ========================================================= */
+
+function SKListenCandidates(
+  callRef,
+  name
+){
+
+  const candidates =
+    collection(
+      callRef,
+      name
+    );
+
+
+  SKUnsubscribeCandidates =
+    onSnapshot(
+
+      candidates,
+
+      function(snapshot){
+
+        snapshot.docChanges()
+          .forEach(
+            async function(change){
+
+              if(
+                change.type ===
+                "added" &&
+                SKPeer
+              ){
+
+                try{
+
+                  await SKPeer
+                    .addIceCandidate(
+
+                      new RTCIceCandidate(
+                        change.doc.data()
+                      )
+
+                    );
+
+                }catch(error){
+
+                  console.log(
+                    "ICE:",
+                    error
+                  );
+
+                }
+
+              }
+
+            }
+          );
+
+      }
+
+    );
+
+}
+
+
+
+/* =========================================================
+   AUDIO CALL
+   ========================================================= */
+
+document
+  .getElementById(
+    "SKAudioCall"
+  )
+  .addEventListener(
+    "click",
+    async function(){
+
+      if(!SKSelectedUser){
+
+        SKCallStatus.textContent =
+          "اختر مستخدمًا أولاً";
+
+        return;
+
+      }
+
+
+      const media =
+        await SKStartMedia(
+          false
+        );
+
+
+      if(media){
+
+        SKCallStatus.textContent =
+          "🎙️ الميكروفون يعمل — يمكنك تطوير الاتصال الصوتي لاحقًا";
+
+      }
+
+    }
+  );
+
+
+
+/* =========================================================
+   MUTE
+   ========================================================= */
+
+document
+  .getElementById(
+    "SKMuteButton"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      if(!SKLocalStream)
+        return;
+
+
+      const tracks =
+        SKLocalStream
+          .getAudioTracks();
+
+
+      if(!tracks.length)
+        return;
+
+
+      tracks[0].enabled =
+        !tracks[0].enabled;
+
+
+      this.textContent =
+        tracks[0].enabled
+          ? "🔊"
+          : "🔇";
+
+    }
+  );
+
+
+
+/* =========================================================
+   CAMERA ON / OFF
+   ========================================================= */
+
+document
+  .getElementById(
+    "SKCameraButton"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      if(!SKLocalStream)
+        return;
+
+
+      const tracks =
+        SKLocalStream
+          .getVideoTracks();
+
+
+      if(!tracks.length)
+        return;
+
+
+      tracks[0].enabled =
+        !tracks[0].enabled;
+
+
+      this.textContent =
+        tracks[0].enabled
+          ? "📷"
+          : "🚫";
+
+    }
+  );
+
+
+
+/* =========================================================
+   END CALL
+   ========================================================= */
+
+document
+  .getElementById(
+    "SKEndCall"
+  )
+  .addEventListener(
+    "click",
+    SKEndCall
+  );
+
+
+async function SKEndCall(){
+
+  if(
+    SKLocalStream
+  ){
+
+    SKLocalStream
+      .getTracks()
+      .forEach(
+        function(track){
+          track.stop();
+        }
+      );
+
+  }
+
+
+  if(SKPeer){
+
+    SKPeer.close();
+
+    SKPeer =
+      null;
+
+  }
+
+
+  SKLocalStream =
+    null;
+
+
+  SKLocalVideo.srcObject =
+    null;
+
+  SKRemoteVideo.srcObject =
+    null;
+
+
+  SKVideoEmpty.style.display =
+    "flex";
+
+
+  if(
+    SKUnsubscribeCall
+  ){
+
+    SKUnsubscribeCall();
+
+    SKUnsubscribeCall =
+      null;
+
+  }
+
+
+  if(
+    SKUnsubscribeCandidates
+  ){
+
+    SKUnsubscribeCandidates();
+
+    SKUnsubscribeCandidates =
+      null;
+
+  }
+
+
+  if(
+    SKCallId
+  ){
+
+    try{
+
+      await deleteDoc(
+
+        doc(
+          SKDB,
+          "sakakerCalls",
+          SKCallId
+        )
+
+      );
+
+    }catch(error){
+
+      console.log(
+        error
+      );
+
+    }
+
+  }
+
+
+  SKCallId =
+    null;
+
+
+  SKCallStatus.textContent =
+    "تم إنهاء المكالمة";
+
+}
+
+
+
+/* =========================================================
+   HTML SECURITY
+   ========================================================= */
+
+function SKEscape(value){
+
+  const div =
+    document.createElement(
+      "div"
+    );
+
+  div.textContent =
+    String(
+      value ?? ""
+    );
+
+  return div.innerHTML;
+
+}
+
+
+
+/* =========================================================
+   READY
+   ========================================================= */
+
+console.log(
+  "💎 SAKAKER Modern Chat Ready"
+);
+
+</script>
 <!-- ================= أيقونة القصة + النافذة المعدلة ================= -->
 <style>
 /* أيقونة القصة */
 #shipIcon_new {
   position: fixed;
-  bottom: 50px;
-  right: 380px;
+  bottom: 250px;
+  right: 180px;
   width: 110px;
   height: 110px;
   background: url('https://i.top4top.io/p_3602p1v3s1.png') center/cover no-repeat;
@@ -6823,3 +9676,1893 @@ svg{
     box-sizing:border-box !important;
 }
 </style>
+<!-- =========================================================
+     💬 SAKAKER CHAT + VIDEO
+     كتابة + فيديو مباشر
+     Firebase Authentication + Firestore
+     لا يحتاج Firebase Storage
+     ========================================================= -->
+
+<div id="sakakerChatApp">
+
+  <!-- زر فتح الدردشة -->
+  <button id="sakakerChatOpen">
+    💬
+    <span>دردشة</span>
+  </button>
+
+  <!-- نافذة الدردشة -->
+  <div id="sakakerChatBox">
+
+    <!-- الرأس -->
+    <div id="sakakerChatHeader">
+
+      <div>
+        <strong>💎 سكاكر دردشة</strong>
+        <small id="sakakerOnlineStatus">
+          ● متصل
+        </small>
+      </div>
+
+      <button id="sakakerChatClose">✕</button>
+
+    </div>
+
+
+    <!-- معلومات المستخدم -->
+    <div id="sakakerCurrentUser">
+      <img id="sakakerCurrentPhoto"
+           src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+
+      <span id="sakakerCurrentName">
+        جاري التحميل...
+      </span>
+    </div>
+
+
+    <!-- الفيديو -->
+    <div id="sakakerVideoArea">
+
+      <div class="sakakerVideoTitle">
+        📹 مكالمة فيديو مباشرة
+      </div>
+
+      <div id="sakakerVideos">
+
+        <video
+          id="sakakerRemoteVideo"
+          autoplay
+          playsinline>
+        </video>
+
+        <video
+          id="sakakerLocalVideo"
+          autoplay
+          muted
+          playsinline>
+        </video>
+
+      </div>
+
+      <div id="sakakerVideoStatus">
+        جاهز للمكالمة
+      </div>
+
+    </div>
+
+
+    <!-- أزرار الاتصال -->
+    <div id="sakakerCallControls">
+
+      <button id="sakakerStartVideo">
+        📹 بدء فيديو
+      </button>
+
+      <button id="sakakerStartAudio">
+        🎙️ صوت
+      </button>
+
+      <button id="sakakerStopCall">
+        🔴 إنهاء
+      </button>
+
+    </div>
+
+
+    <!-- قائمة المستخدمين -->
+    <div class="sakakerSectionTitle">
+      👥 المستخدمون
+    </div>
+
+    <div id="sakakerUsersList">
+      جاري تحميل المستخدمين...
+    </div>
+
+
+    <!-- الرسائل -->
+    <div class="sakakerSectionTitle">
+      💬 المحادثة
+    </div>
+
+    <div id="sakakerMessages"></div>
+
+
+    <!-- كتابة الرسالة -->
+    <div id="sakakerMessageArea">
+
+      <input
+        id="sakakerMessageInput"
+        type="text"
+        placeholder="اكتب رسالتك هنا..."
+        maxlength="500"
+      >
+
+      <button id="sakakerSendMessage">
+        ➤
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<style>
+
+/* =========================================================
+   النافذة الرئيسية
+   ========================================================= */
+
+#sakakerChatApp{
+  font-family:
+  Tajawal,
+  Tahoma,
+  Arial,
+  sans-serif;
+}
+
+
+/* زر الدردشة */
+
+#sakakerChatOpen{
+
+  position:fixed;
+
+  left:20px;
+  bottom:25px;
+
+  width:65px;
+  height:65px;
+
+  border:none;
+  border-radius:50%;
+
+  background:
+  radial-gradient(circle,#00ffcc,#006b59);
+
+  color:white;
+
+  font-size:27px;
+
+  cursor:pointer;
+
+  z-index:99990;
+
+  box-shadow:
+  0 0 10px #00ffcc,
+  0 0 30px #00ffcc;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  transition:.3s;
+}
+
+
+#sakakerChatOpen:hover{
+
+  transform:scale(1.1);
+
+}
+
+
+#sakakerChatOpen span{
+
+  font-size:10px;
+  margin-top:2px;
+
+}
+
+
+/* صندوق الدردشة */
+
+#sakakerChatBox{
+
+  position:fixed;
+
+  left:20px;
+  bottom:100px;
+
+  width:390px;
+  max-width:calc(100vw - 30px);
+
+  height:650px;
+  max-height:calc(100vh - 120px);
+
+  background:
+  rgba(0,0,0,.94);
+
+  border:
+  1px solid #00ffcc;
+
+  border-radius:20px;
+
+  overflow:hidden;
+
+  z-index:99991;
+
+  display:none;
+
+  flex-direction:column;
+
+  color:white;
+
+  box-shadow:
+  0 0 20px #00ffcc,
+  0 0 60px rgba(0,255,204,.2);
+
+  backdrop-filter:blur(10px);
+
+}
+
+
+/* الرأس */
+
+#sakakerChatHeader{
+
+  min-height:58px;
+
+  background:
+  linear-gradient(
+    90deg,
+    #002c27,
+    #004d43,
+    #002c27
+  );
+
+  border-bottom:
+  1px solid #00ffcc;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 15px;
+
+}
+
+
+#sakakerChatHeader strong{
+
+  color:#00ffcc;
+  font-size:18px;
+
+}
+
+
+#sakakerOnlineStatus{
+
+  display:block;
+
+  color:#00ff88;
+
+  font-size:11px;
+
+  margin-top:3px;
+
+}
+
+
+#sakakerChatClose{
+
+  border:none;
+
+  background:transparent;
+
+  color:white;
+
+  font-size:22px;
+
+  cursor:pointer;
+
+}
+
+
+/* المستخدم الحالي */
+
+#sakakerCurrentUser{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+
+  padding:8px 12px;
+
+  border-bottom:
+  1px solid rgba(0,255,204,.2);
+
+}
+
+
+#sakakerCurrentPhoto{
+
+  width:38px;
+  height:38px;
+
+  border-radius:50%;
+
+  border:
+  2px solid gold;
+
+  object-fit:cover;
+
+}
+
+
+#sakakerCurrentName{
+
+  font-size:13px;
+  color:#fff;
+
+}
+
+
+/* منطقة الفيديو */
+
+#sakakerVideoArea{
+
+  padding:8px;
+
+}
+
+
+.sakakerVideoTitle{
+
+  color:#00ffcc;
+
+  font-size:13px;
+
+  margin-bottom:6px;
+
+}
+
+
+#sakakerVideos{
+
+  position:relative;
+
+  width:100%;
+  height:180px;
+
+  background:#050505;
+
+  border-radius:12px;
+
+  overflow:hidden;
+
+  border:
+  1px solid rgba(0,255,204,.4);
+
+}
+
+
+#sakakerRemoteVideo{
+
+  width:100%;
+  height:100%;
+
+  object-fit:cover;
+
+  background:#050505;
+
+}
+
+
+#sakakerLocalVideo{
+
+  position:absolute;
+
+  right:8px;
+  bottom:8px;
+
+  width:100px;
+  height:75px;
+
+  object-fit:cover;
+
+  background:#111;
+
+  border:
+  2px solid #00ffcc;
+
+  border-radius:10px;
+
+}
+
+
+#sakakerVideoStatus{
+
+  text-align:center;
+
+  font-size:11px;
+
+  color:#aaa;
+
+  padding:4px;
+
+}
+
+
+/* أزرار المكالمة */
+
+#sakakerCallControls{
+
+  display:flex;
+
+  gap:5px;
+
+  padding:5px 8px;
+
+}
+
+
+#sakakerCallControls button{
+
+  flex:1;
+
+  padding:8px 3px;
+
+  border:none;
+
+  border-radius:8px;
+
+  cursor:pointer;
+
+  color:white;
+
+  font-weight:bold;
+
+  font-size:11px;
+
+}
+
+
+#sakakerStartVideo{
+
+  background:#007bff;
+
+}
+
+
+#sakakerStartAudio{
+
+  background:#008c68;
+
+}
+
+
+#sakakerStopCall{
+
+  background:#b00020;
+
+}
+
+
+/* العنوان */
+
+.sakakerSectionTitle{
+
+  padding:
+  6px 12px;
+
+  color:#00ffcc;
+
+  font-size:13px;
+
+  border-top:
+  1px solid rgba(0,255,204,.15);
+
+}
+
+
+/* المستخدمون */
+
+#sakakerUsersList{
+
+  max-height:70px;
+
+  overflow-x:auto;
+  overflow-y:hidden;
+
+  display:flex;
+
+  gap:7px;
+
+  padding:5px 10px;
+
+}
+
+
+.sakakerUser{
+
+  min-width:70px;
+
+  text-align:center;
+
+  cursor:pointer;
+
+  padding:4px;
+
+  border-radius:10px;
+
+  background:#ffffff0d;
+
+}
+
+
+.sakakerUser:hover{
+
+  background:#00ffcc22;
+
+}
+
+
+.sakakerUser img{
+
+  width:35px;
+  height:35px;
+
+  border-radius:50%;
+
+  border:1px solid #00ffcc;
+
+  object-fit:cover;
+
+}
+
+
+.sakakerUserName{
+
+  display:block;
+
+  font-size:9px;
+
+  white-space:nowrap;
+
+  overflow:hidden;
+
+  text-overflow:ellipsis;
+
+}
+
+
+/* الرسائل */
+
+#sakakerMessages{
+
+  flex:1;
+
+  overflow-y:auto;
+
+  padding:10px;
+
+  min-height:80px;
+
+}
+
+
+.sakakerMessage{
+
+  margin-bottom:8px;
+
+  display:flex;
+
+  flex-direction:column;
+
+}
+
+
+.sakakerMessage.me{
+
+  align-items:flex-start;
+
+}
+
+
+.sakakerMessage.other{
+
+  align-items:flex-end;
+
+}
+
+
+.sakakerMessageBubble{
+
+  max-width:80%;
+
+  padding:8px 11px;
+
+  border-radius:13px;
+
+  font-size:12px;
+
+  line-height:1.5;
+
+  word-break:break-word;
+
+}
+
+
+.sakakerMessage.me
+.sakakerMessageBubble{
+
+  background:#005f50;
+
+  border:
+  1px solid #00ffcc;
+
+}
+
+
+.sakakerMessage.other
+.sakakerMessageBubble{
+
+  background:#222;
+
+  border:
+  1px solid #555;
+
+}
+
+
+.sakakerMessageName{
+
+  font-size:9px;
+
+  color:#00ffcc;
+
+  margin-bottom:2px;
+
+}
+
+
+.sakakerMessageTime{
+
+  font-size:8px;
+
+  color:#777;
+
+  margin-top:2px;
+
+}
+
+
+/* منطقة الكتابة */
+
+#sakakerMessageArea{
+
+  display:flex;
+
+  gap:5px;
+
+  padding:8px;
+
+  border-top:
+  1px solid #00ffcc44;
+
+}
+
+
+#sakakerMessageInput{
+
+  flex:1;
+
+  min-width:0;
+
+  padding:10px;
+
+  border:none;
+
+  border-radius:10px;
+
+  background:#ffffff12;
+
+  color:white;
+
+  outline:none;
+
+}
+
+
+#sakakerMessageInput::placeholder{
+
+  color:#aaa;
+
+}
+
+
+#sakakerSendMessage{
+
+  width:45px;
+
+  border:none;
+
+  border-radius:10px;
+
+  background:#00ffcc;
+
+  color:#002c27;
+
+  font-size:18px;
+
+  cursor:pointer;
+
+}
+
+
+/* الهاتف */
+
+@media(max-width:600px){
+
+  #sakakerChatBox{
+
+    left:7px;
+    right:7px;
+
+    bottom:80px;
+
+    width:auto;
+
+    height:
+    calc(100vh - 95px);
+
+    max-height:none;
+
+  }
+
+
+  #sakakerChatOpen{
+
+    left:12px;
+    bottom:15px;
+
+  }
+
+
+  #sakakerVideos{
+
+    height:150px;
+
+  }
+
+}
+
+</style>
+
+
+<script type="module">
+
+/* =========================================================
+   FIREBASE
+   ========================================================= */
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  limit,
+  onSnapshot,
+  serverTimestamp,
+  doc,
+  setDoc,
+  deleteDoc,
+  getDocs
+}
+from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+
+/* نستخدم Firebase الموجود في كود تسجيل الدخول */
+
+const chatAuth = window.firebaseAuth;
+const chatDB = window.firebaseDB;
+
+
+/* التأكد من وجود تسجيل الدخول */
+
+if(!chatAuth || !chatDB){
+
+  console.error(
+    "SAKAKER: Firebase Authentication / Firestore غير موجود"
+  );
+
+}
+
+
+/* =========================================================
+   العناصر
+   ========================================================= */
+
+const chatOpen =
+document.getElementById("sakakerChatOpen");
+
+const chatBox =
+document.getElementById("sakakerChatBox");
+
+const chatClose =
+document.getElementById("sakakerChatClose");
+
+const messageInput =
+document.getElementById("sakakerMessageInput");
+
+const sendMessage =
+document.getElementById("sakakerSendMessage");
+
+const messagesBox =
+document.getElementById("sakakerMessages");
+
+const usersList =
+document.getElementById("sakakerUsersList");
+
+const currentName =
+document.getElementById("sakakerCurrentName");
+
+const currentPhoto =
+document.getElementById("sakakerCurrentPhoto");
+
+const localVideo =
+document.getElementById("sakakerLocalVideo");
+
+const remoteVideo =
+document.getElementById("sakakerRemoteVideo");
+
+const videoStatus =
+document.getElementById("sakakerVideoStatus");
+
+
+/* =========================================================
+   فتح / إغلاق الدردشة
+   ========================================================= */
+
+chatOpen.onclick=()=>{
+
+  chatBox.style.display="flex";
+
+};
+
+
+chatClose.onclick=()=>{
+
+  chatBox.style.display="none";
+
+};
+
+
+/* =========================================================
+   المستخدم الحالي
+   ========================================================= */
+
+let currentUser=null;
+
+
+onAuthStateChangedSafe();
+
+
+function onAuthStateChangedSafe(){
+
+  chatAuth.onAuthStateChanged(async user=>{
+
+    currentUser=user;
+
+    if(!user){
+
+      currentName.textContent=
+      "يجب تسجيل الدخول";
+
+      return;
+
+    }
+
+
+    currentName.textContent=
+    user.displayName ||
+    user.email ||
+    "مستخدم";
+
+
+    currentPhoto.src=
+    user.photoURL ||
+    "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+
+    /*
+      حفظ المستخدم في Firestore
+      لا يتم حفظ كلمة المرور.
+    */
+
+    await setDoc(
+      doc(chatDB,"sakakerUsers",user.uid),
+      {
+        uid:user.uid,
+
+        name:
+        user.displayName ||
+        user.email ||
+        "مستخدم",
+
+        email:user.email || "",
+
+        photo:
+        user.photoURL ||
+        "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+
+        lastSeen:
+        serverTimestamp()
+      },
+      {merge:true}
+    );
+
+
+    loadUsers();
+
+    loadMessages();
+
+  });
+
+}
+
+
+/* =========================================================
+   المستخدمون
+   ========================================================= */
+
+let usersUnsubscribe=null;
+
+
+function loadUsers(){
+
+  if(usersUnsubscribe)
+    usersUnsubscribe();
+
+
+  const q=query(
+    collection(chatDB,"sakakerUsers"),
+    orderBy("lastSeen","desc"),
+    limit(30)
+  );
+
+
+  usersUnsubscribe=
+  onSnapshot(q,snapshot=>{
+
+    usersList.innerHTML="";
+
+
+    snapshot.forEach(item=>{
+
+      const user=item.data();
+
+
+      if(
+        currentUser &&
+        user.uid===currentUser.uid
+      ){
+        return;
+      }
+
+
+      const div=
+      document.createElement("div");
+
+
+      div.className=
+      "sakakerUser";
+
+
+      div.innerHTML=`
+
+        <img
+          src="${escapeHtml(
+            user.photo ||
+            "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+          )}"
+        >
+
+        <span class="sakakerUserName">
+          ${escapeHtml(
+            user.name || "مستخدم"
+          )}
+        </span>
+
+      `;
+
+
+      /*
+        عند الضغط على المستخدم
+        نجهز اتصال الفيديو معه.
+      */
+
+      div.onclick=()=>{
+
+        selectedUser=user;
+
+        videoStatus.textContent=
+        "تم اختيار: "+
+        (user.name || "المستخدم");
+
+      };
+
+
+      usersList.appendChild(div);
+
+    });
+
+  });
+
+}
+
+
+/* =========================================================
+   الرسائل
+   ========================================================= */
+
+let messagesUnsubscribe=null;
+
+
+function loadMessages(){
+
+  if(messagesUnsubscribe)
+    messagesUnsubscribe();
+
+
+  const q=query(
+
+    collection(
+      chatDB,
+      "sakakerChatMessages"
+    ),
+
+    orderBy(
+      "createdAt",
+      "asc"
+    ),
+
+    limit(100)
+
+  );
+
+
+  messagesUnsubscribe=
+  onSnapshot(q,snapshot=>{
+
+    messagesBox.innerHTML="";
+
+
+    snapshot.forEach(item=>{
+
+      const data=item.data();
+
+
+      const mine=
+      currentUser &&
+      data.uid===currentUser.uid;
+
+
+      const message=
+      document.createElement("div");
+
+
+      message.className=
+      "sakakerMessage "+
+      (mine ? "me":"other");
+
+
+      const time=
+      data.createdAt &&
+      data.createdAt.toDate
+      ?
+      data.createdAt
+      .toDate()
+      .toLocaleTimeString(
+        "ar-SA",
+        {
+          hour:"2-digit",
+          minute:"2-digit"
+        }
+      )
+      :
+      "";
+
+
+      message.innerHTML=`
+
+        <span class="sakakerMessageName">
+          ${escapeHtml(
+            data.name || "مستخدم"
+          )}
+        </span>
+
+        <div class="sakakerMessageBubble">
+          ${escapeHtml(
+            data.text || ""
+          )}
+        </div>
+
+        <span class="sakakerMessageTime">
+          ${time}
+        </span>
+
+      `;
+
+
+      messagesBox.appendChild(message);
+
+    });
+
+
+    messagesBox.scrollTop=
+    messagesBox.scrollHeight;
+
+  });
+
+}
+
+
+/* =========================================================
+   إرسال رسالة
+   ========================================================= */
+
+async function sendChatMessage(){
+
+  if(!currentUser)
+    return;
+
+
+  const text=
+  messageInput.value.trim();
+
+
+  if(!text)
+    return;
+
+
+  messageInput.value="";
+
+
+  try{
+
+    await addDoc(
+      collection(
+        chatDB,
+        "sakakerChatMessages"
+      ),
+      {
+
+        uid:
+        currentUser.uid,
+
+        name:
+        currentUser.displayName ||
+        currentUser.email ||
+        "مستخدم",
+
+        photo:
+        currentUser.photoURL || "",
+
+        text:text,
+
+        createdAt:
+        serverTimestamp()
+
+      }
+    );
+
+  }catch(error){
+
+    console.error(
+      "Chat message error:",
+      error
+    );
+
+  }
+
+}
+
+
+sendMessage.onclick=
+sendChatMessage;
+
+
+messageInput.addEventListener(
+  "keydown",
+  event=>{
+
+    if(event.key==="Enter"){
+
+      event.preventDefault();
+
+      sendChatMessage();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   VIDEO WEBRTC
+   ========================================================= */
+
+let localStream=null;
+
+let peerConnection=null;
+
+let selectedUser=null;
+
+let currentCallId=null;
+
+
+/*
+  خوادم STUN مجانية.
+  لا يتم تخزين الفيديو فيها.
+*/
+
+const rtcConfig={
+
+  iceServers:[
+
+    {
+      urls:
+      "stun:stun.l.google.com:19302"
+    },
+
+    {
+      urls:
+      "stun:stun1.l.google.com:19302"
+    }
+
+  ]
+
+};
+
+
+/* =========================================================
+   تشغيل الكاميرا
+   ========================================================= */
+
+async function startLocalMedia(
+  video=true
+){
+
+  try{
+
+    localStream=
+    await navigator.mediaDevices
+    .getUserMedia({
+
+      video:video,
+
+      audio:true
+
+    });
+
+
+    localVideo.srcObject=
+    localStream;
+
+
+    return true;
+
+  }catch(error){
+
+    console.error(error);
+
+    videoStatus.textContent=
+    "❌ لم يتم السماح بالكاميرا والميكروفون";
+
+    return false;
+
+  }
+
+}
+
+
+/* =========================================================
+   بدء مكالمة
+   ========================================================= */
+
+async function startVideoCall(){
+
+  if(!currentUser){
+
+    videoStatus.textContent=
+    "يجب تسجيل الدخول أولاً";
+
+    return;
+
+  }
+
+
+  if(!selectedUser){
+
+    videoStatus.textContent=
+    "اختر مستخدماً من القائمة أولاً";
+
+    return;
+
+  }
+
+
+  const ok=
+  await startLocalMedia(true);
+
+
+  if(!ok)
+    return;
+
+
+  peerConnection=
+  new RTCPeerConnection(
+    rtcConfig
+  );
+
+
+  localStream
+  .getTracks()
+  .forEach(track=>{
+
+    peerConnection.addTrack(
+      track,
+      localStream
+    );
+
+  });
+
+
+  peerConnection.ontrack=
+  event=>{
+
+    remoteVideo.srcObject=
+    event.streams[0];
+
+  };
+
+
+  currentCallId=
+  currentUser.uid+
+  "_" +
+  selectedUser.uid;
+
+
+  const callRef=
+  doc(
+    chatDB,
+    "sakakerCalls",
+    currentCallId
+  );
+
+
+  /*
+    ICE candidates
+  */
+
+  const callerCandidates=
+  collection(
+    callRef,
+    "callerCandidates"
+  );
+
+
+  peerConnection.onicecandidate=
+  event=>{
+
+    if(event.candidate){
+
+      addDoc(
+        callerCandidates,
+        event.candidate.toJSON()
+      );
+
+    }
+
+  };
+
+
+  const offer=
+  await peerConnection.createOffer();
+
+
+  await peerConnection.setLocalDescription(
+    offer
+  );
+
+
+  await setDoc(
+    callRef,
+    {
+
+      caller:
+      currentUser.uid,
+
+      callee:
+      selectedUser.uid,
+
+      offer:{
+        type:offer.type,
+        sdp:offer.sdp
+      },
+
+      createdAt:
+      serverTimestamp()
+
+    }
+  );
+
+
+  /*
+    مراقبة الرد
+  */
+
+  onSnapshot(
+    callRef,
+    async snapshot=>{
+
+      const data=
+      snapshot.data();
+
+
+      if(
+        !peerConnection ||
+        !data
+      )
+        return;
+
+
+      if(
+        data.answer &&
+        !peerConnection.currentRemoteDescription
+      ){
+
+        await peerConnection.setRemoteDescription(
+          new RTCSessionDescription(
+            data.answer
+          )
+        );
+
+      }
+
+    }
+  );
+
+
+  videoStatus.textContent=
+  "📞 جاري الاتصال بـ "+
+  (selectedUser.name || "المستخدم");
+
+
+  listenForRemoteCandidates(
+    callRef,
+    "calleeCandidates"
+  );
+
+}
+
+
+/* =========================================================
+   استقبال المكالمة
+   ========================================================= */
+
+async function answerCall(
+  callId,
+  callData
+){
+
+  const ok=
+  await startLocalMedia(true);
+
+
+  if(!ok)
+    return;
+
+
+  peerConnection=
+  new RTCPeerConnection(
+    rtcConfig
+  );
+
+
+  localStream
+  .getTracks()
+  .forEach(track=>{
+
+    peerConnection.addTrack(
+      track,
+      localStream
+    );
+
+  });
+
+
+  peerConnection.ontrack=
+  event=>{
+
+    remoteVideo.srcObject=
+    event.streams[0];
+
+  };
+
+
+  const callRef=
+  doc(
+    chatDB,
+    "sakakerCalls",
+    callId
+  );
+
+
+  const calleeCandidates=
+  collection(
+    callRef,
+    "calleeCandidates"
+  );
+
+
+  peerConnection.onicecandidate=
+  event=>{
+
+    if(event.candidate){
+
+      addDoc(
+        calleeCandidates,
+        event.candidate.toJSON()
+      );
+
+    }
+
+  };
+
+
+  await peerConnection.setRemoteDescription(
+
+    new RTCSessionDescription(
+      callData.offer
+    )
+
+  );
+
+
+  const answer=
+  await peerConnection.createAnswer();
+
+
+  await peerConnection.setLocalDescription(
+    answer
+  );
+
+
+  await setDoc(
+
+    callRef,
+
+    {
+
+      answer:{
+        type:answer.type,
+        sdp:answer.sdp
+      }
+
+    },
+
+    {merge:true}
+
+  );
+
+
+  listenForRemoteCandidates(
+    callRef,
+    "callerCandidates"
+  );
+
+
+  videoStatus.textContent=
+  "📹 تم الاتصال";
+
+}
+
+
+/* =========================================================
+   مراقبة المكالمات الواردة
+   ========================================================= */
+
+onAuthStateChangedSafeCall();
+
+
+function onAuthStateChangedSafeCall(){
+
+  chatAuth.onAuthStateChanged(
+    user=>{
+
+      if(!user)
+        return;
+
+
+      const q=query(
+        collection(
+          chatDB,
+          "sakakerCalls"
+        ),
+        orderBy(
+          "createdAt",
+          "desc"
+        ),
+        limit(20)
+      );
+
+
+      onSnapshot(
+        q,
+        snapshot=>{
+
+          snapshot.forEach(item=>{
+
+            const data=
+            item.data();
+
+
+            if(
+              data.callee===
+              user.uid &&
+              data.offer
+            ){
+
+              const answer=
+              confirm(
+                "📞 يوجد اتصال فيديو وارد.\n\nهل تريد الرد؟"
+              );
+
+
+              if(answer){
+
+                answerCall(
+                  item.id,
+                  data
+                );
+
+              }
+
+            }
+
+          });
+
+        }
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   ICE
+   ========================================================= */
+
+function listenForRemoteCandidates(
+  callRef,
+  collectionName
+){
+
+  const candidates=
+  collection(
+    callRef,
+    collectionName
+  );
+
+
+  onSnapshot(
+    candidates,
+    snapshot=>{
+
+      snapshot.docChanges()
+      .forEach(async change=>{
+
+        if(
+          change.type==="added" &&
+          peerConnection
+        ){
+
+          try{
+
+            await peerConnection
+            .addIceCandidate(
+              new RTCIceCandidate(
+                change.doc.data()
+              )
+            );
+
+          }catch(error){
+
+            console.log(
+              "ICE error",
+              error
+            );
+
+          }
+
+        }
+
+      });
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   زر الفيديو
+   ========================================================= */
+
+document
+.getElementById(
+  "sakakerStartVideo"
+)
+.onclick=
+startVideoCall;
+
+
+/* =========================================================
+   صوت فقط
+   ========================================================= */
+
+document
+.getElementById(
+  "sakakerStartAudio"
+)
+.onclick=
+async()=>{
+
+  if(!selectedUser){
+
+    videoStatus.textContent=
+    "اختر مستخدماً أولاً";
+
+    return;
+
+  }
+
+
+  /*
+    نستخدم نفس الاتصال
+    لكن بدون فيديو.
+  */
+
+  const ok=
+  await startLocalMedia(false);
+
+
+  if(!ok)
+    return;
+
+
+  /*
+    نبدأ اتصال WebRTC صوتي.
+    يمكن تطويره لاحقاً إلى
+    مكالمة صوتية كاملة.
+  */
+
+  videoStatus.textContent=
+  "🎙️ تم تشغيل الميكروفون";
+
+};
+
+
+/* =========================================================
+   إنهاء المكالمة
+   ========================================================= */
+
+document
+.getElementById(
+  "sakakerStopCall"
+)
+.onclick=
+async()=>{
+
+  if(localStream){
+
+    localStream
+    .getTracks()
+    .forEach(
+      track=>track.stop()
+    );
+
+  }
+
+
+  if(peerConnection){
+
+    peerConnection.close();
+
+    peerConnection=null;
+
+  }
+
+
+  localVideo.srcObject=null;
+
+  remoteVideo.srcObject=null;
+
+
+  if(
+    currentCallId &&
+    currentUser
+  ){
+
+    try{
+
+      await deleteDoc(
+        doc(
+          chatDB,
+          "sakakerCalls",
+          currentCallId
+        )
+      );
+
+    }catch(e){
+
+      console.log(e);
+
+    }
+
+  }
+
+
+  currentCallId=null;
+
+
+  videoStatus.textContent=
+  "تم إنهاء المكالمة";
+
+};
+
+
+/* =========================================================
+   حماية النصوص
+   ========================================================= */
+
+function escapeHtml(text){
+
+  const div=
+  document.createElement("div");
+
+  div.textContent=
+  String(text ?? "");
+
+  return div.innerHTML;
+
+}
+
+
+console.log(
+  "💎 SAKAKER Chat + Video Ready"
+);
+
+</script>
