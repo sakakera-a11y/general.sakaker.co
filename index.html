@@ -1,4 +1,4 @@
- 
+
 
 <!-- 🔒 منع ظهور محتوى الموقع قبل تسجيل الدخول -->
 <style>
@@ -22,6 +22,8 @@ background-image:url('https://raw.githubusercontent.com/sakakera-a11y/general.sa
 background-size:cover;
 background-position:center center;
 background-repeat:no-repeat;
+background-attachment:fixed;
+background-color:#000;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -39,10 +41,10 @@ color:white;
 font-family:Tajawal;
 box-shadow:0 0 30px #00ffcc;
 ">
+
 <h2 style="color:#00ffcc">
 🔐 تسجيل الدخول
 </h2>
-
 
 <input id="emailInput"
 type="email"
@@ -398,15 +400,449 @@ await signOut(auth);
 console.log("SAKAKER Firebase Ready");
 
 </script>
+ 
   <!-- ================= خلفية موقع ================= -->
 <style>
-body {
-  background-image: url("https://raw.githubusercontent.com/sakakera-a11y/general.sakaker.co/main/ChatGPT%20Image%20Aug%2029%2C%202026%2C%2003_01_28%20PM.png");
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-color: #000;
+
+
+<!-- 🔒 منع ظهور محتوى الموقع قبل تسجيل الدخول -->
+<style>
+body.locked > *:not(#loginOverlay){
+visibility:hidden;
+}
+</style>
+
+<script>
+document.body.classList.add("locked");
+</script>
+
+<!-- 🔒 نافذة الدخول -->
+<div id="loginOverlay" style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background-image:url('https://raw.githubusercontent.com/sakakera-a11y/general.sakaker.co/main/ChatGPT%20Image%20Aug%2029%2C%202026%2C%2003_01_28%20PM.png');
+background-size:cover;
+background-position:center center;
+background-repeat:no-repeat;
+background-attachment:fixed;
+background-color:#000;
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:999999;
+">
+
+<div style="
+background:rgba(0,0,0,.8);
+padding:25px;
+width:90%;
+max-width:420px;
+border-radius:18px;
+text-align:center;
+color:white;
+font-family:Tajawal;
+box-shadow:0 0 30px #00ffcc;
+">
+
+<h2 style="color:#00ffcc">
+🔐 تسجيل الدخول
+</h2>
+
+<input id="emailInput"
+type="email"
+placeholder="📧 البريد الإلكتروني"
+style="
+width:100%;
+padding:12px;
+margin:8px 0;
+border-radius:10px;
+border:none;
+background:#ffffff22;
+color:white;
+">
+
+
+<input id="passwordInput"
+type="password"
+placeholder="🔒 كلمة المرور"
+style="
+width:100%;
+padding:12px;
+margin:8px 0;
+border-radius:10px;
+border:none;
+background:#ffffff22;
+color:white;
+">
+
+
+<button id="loginButton" style="
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+background:#00ffcc;
+font-weight:bold;
+cursor:pointer;
+">
+دخول
+</button>
+
+
+<button id="googleButton" style="
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+background:#4285F4;
+color:white;
+font-weight:bold;
+cursor:pointer;
+">
+🔵 الدخول بواسطة Google
+</button>
+
+
+<div id="loginError"
+style="color:#ff8888;margin:10px">
+</div>
+
+
+<button id="signupButton" style="
+width:100%;
+padding:12px;
+border-radius:10px;
+background:#ffffff22;
+color:white;
+border:1px solid #00ffcc;
+cursor:pointer;
+">
+📝 إنشاء حساب جديد
+</button>
+
+
+</div>
+</div>
+
+
+
+<!-- 👤 بيانات المستخدم -->
+<div id="userProfile" style="
+display:none;
+position:fixed;
+top:15px;
+right:15px;
+z-index:99999;
+background:#000c;
+padding:10px;
+border-radius:15px;
+border:1px solid #00ffcc;
+color:white;
+align-items:center;
+gap:10px;
+">
+
+<img id="userPhoto"
+style="
+width:45px;
+height:45px;
+border-radius:50%;
+border:2px solid gold;
+">
+
+<span id="userName"></span>
+
+<button id="logoutButton">
+خروج
+</button>
+
+</div>
+
+
+
+<script type="module">
+
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+
+import { getAnalytics }
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
+
+
+import {
+getAuth,
+signInWithEmailAndPassword,
+createUserWithEmailAndPassword,
+GoogleAuthProvider,
+signInWithPopup,
+onAuthStateChanged,
+setPersistence,
+browserLocalPersistence,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+
+import { getFirestore }
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+
+import { getStorage }
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
+
+
+
+const firebaseConfig = {
+
+    apiKey:
+    "AIzaSyCltuh24M0X4KBlVpIFi8HXlrTObQRVk_s",
+
+    authDomain:
+    "general-sakaker.firebaseapp.com",
+
+    projectId:
+    "general-sakaker",
+
+    storageBucket:
+    "general-sakaker.firebasestorage.app",
+
+    messagingSenderId:
+    "999891768564",
+
+    appId:
+    "1:999891768564:web:9821008d91378788b93aa1",
+
+    measurementId:
+    "G-0LGSW71V74"
+
+};
+
+
+
+const app=initializeApp(firebaseConfig);
+
+
+const analytics=getAnalytics(app);
+
+const auth=getAuth(app);
+
+const db=getFirestore(app);
+
+const storage=getStorage(app);
+
+
+
+window.firebaseApp=app;
+
+window.firebaseAuth=auth;
+
+window.firebaseDB=db;
+
+window.firebaseStorage=storage;
+
+
+
+await setPersistence(
+auth,
+browserLocalPersistence
+);
+
+
+
+const overlay=document.getElementById("loginOverlay");
+
+const email=document.getElementById("emailInput");
+
+const pass=document.getElementById("passwordInput");
+
+const error=document.getElementById("loginError");
+
+
+
+/* دخول */
+
+document.getElementById("loginButton").onclick=async()=>{
+
+
+try{
+
+
+await signInWithEmailAndPassword(
+auth,
+email.value,
+pass.value
+);
+
+
+}catch(e){
+
+error.textContent="❌ "+e.message;
+
+}
+
+};
+
+
+
+/* إنشاء حساب */
+
+document.getElementById("signupButton").onclick=async()=>{
+
+
+try{
+
+
+await createUserWithEmailAndPassword(
+auth,
+email.value,
+pass.value
+);
+
+
+}catch(e){
+
+error.textContent="❌ "+e.message;
+
+}
+
+};
+
+
+
+
+/* Google */
+
+document.getElementById("googleButton").onclick=async()=>{
+
+
+const provider=new GoogleAuthProvider();
+
+
+try{
+
+
+await signInWithPopup(
+auth,
+provider
+);
+
+
+}catch(e){
+
+error.textContent="❌ "+e.message;
+
+}
+
+
+};
+
+
+
+
+
+/* مراقبة الدخول */
+
+onAuthStateChanged(auth,(user)=>{
+
+
+if(user){
+
+
+overlay.style.display="none";
+
+document.body.classList.remove("locked");
+
+
+document.getElementById("userProfile").style.display="flex";
+
+
+document.getElementById("userName").textContent =
+user.displayName || user.email;
+
+
+document.getElementById("userPhoto").src =
+user.photoURL ||
+"https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+
+}else{
+
+
+overlay.style.display="flex";
+
+document.body.classList.add("locked");
+
+
+document.getElementById("userProfile").style.display="none";
+
+
+}
+
+
+});
+
+
+
+
+
+/* خروج */
+
+document.getElementById("logoutButton").onclick=async()=>{
+
+await signOut(auth);
+
+};
+
+
+
+console.log("SAKAKER Firebase Ready");
+
+</script>
+ 
+<style>
+html,
+body{
+    margin:0;
+    padding:0;
+    width:100%;
+    min-height:100%;
+}
+
+body{
+    background-image:url("https://raw.githubusercontent.com/sakakera-a11y/general.sakaker.co/main/ChatGPT%20Image%20Aug%2029%2C%202026%2C%2003_01_28%20PM.png");
+    background-size:cover;
+    background-position:center center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+    background-color:#000;
+}
+
+/* طبقة التوهج الزمردي */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(0,255,200,.10),
+            rgba(0,0,0,.45)
+        );
+    pointer-events:none;
+    z-index:0;
+}
+
+/* جميع عناصر الموقع فوق الخلفية */
+body > *{
+    position:relative;
+    z-index:1;
 }
 </style>
 <!-- =========================================================
@@ -3602,184 +4038,650 @@ closeBtn.addEventListener('click', () => {
   <div style="text-align:center;margin-top:120px;font-size:26px;text-shadow:0 0 12px #00ffff;">
 
   <!-- ================= خلفية موقع ================= -->
-<style>
-html,
-body{
-    margin:0;
-    padding:0;
-    width:100%;
-    height:100%;
-}
-
-body{
-    background-image:url("https://d.top4top.io/p_3858dvoq11.png");
-    background-size:cover;
-    background-position:center center;
-    background-repeat:no-repeat;
-    background-attachment:fixed;
-    background-color:#000;
-}
-
-/* طبقة توهج زمردي */
-body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    background:
-        radial-gradient(circle at center,
-        rgba(0,255,200,.10),
-        rgba(0,0,0,.45));
-    pointer-events:none;
-    z-index:-1;
-}
-
-/* جميع عناصر الموقع فوق الخلفية */
-body>*{
-    position:relative;
-    z-index:1;
-}
-</style>
 <!-- ====== الدوائر ====== -->
 <div class="video-top-container-fixed">
 
   <div class="video-circle" data-video="n7eQejkXbnM">
+    <div class="circle-glow"></div>
+    <div class="circle-shine"></div>
+
     <iframe class="miniVideo"
       src="https://www.youtube.com/embed/n7eQejkXbnM?autoplay=1&mute=1&playsinline=1&controls=0&loop=1&playlist=n7eQejkXbnM"
       title="YouTube video player"
       frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen>
+      allow="autoplay; encrypted-media">
     </iframe>
   </div>
 
   <div class="video-circle" data-video="-EEHXzLNS6o">
+    <div class="circle-glow"></div>
+    <div class="circle-shine"></div>
+
     <iframe class="miniVideo"
       src="https://www.youtube.com/embed/-EEHXzLNS6o?autoplay=1&mute=1&playsinline=1&controls=0&loop=1&playlist=-EEHXzLNS6o"
       title="YouTube video player"
       frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen>
+      allow="autoplay; encrypted-media">
     </iframe>
   </div>
 
 </div>
 
+
 <!-- ====== مربع الفيديو ====== -->
 <div id="videoBoxFixed">
+
+  <div class="video-box-border"></div>
+
+  <button id="videoCloseBtn" onclick="closeFixedVideo()">✕</button>
+
   <iframe id="fixedVideo" src="" allowfullscreen></iframe>
+
 </div>
 
+
 <style>
-/* ====== الدوائر ====== */
+
+/* =====================================================
+   الدوائر العلوية
+===================================================== */
+
 .video-top-container-fixed {
   position: fixed;
   top: 250px;
+  left: 0;
   width: 100%;
+  box-sizing: border-box;
+
   display: flex;
   justify-content: space-between;
-  padding: 0 25px;
+  align-items: center;
+
+  padding: 0 28px;
+
   z-index: 50000;
+
+  pointer-events: none;
 }
+
+
+/* =====================================================
+   الدائرة
+===================================================== */
 
 .video-circle {
-  width:125px;
+
+  width: 125px;
   height: 105px;
+
   border-radius: 50%;
-  background: rgba(255,255,255,0.08);
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  user-select: none;
-  transition: 0.3s ease;
-  overflow: hidden;
-  font-size: 12px;
-  border: 1px solid rgba(255,255,255,0.4);
+
   position: relative;
+
+  overflow: hidden;
+
+  cursor: pointer;
+
+  pointer-events: auto;
+
+  background: rgba(0,0,0,.35);
+
+  border: 2px solid rgba(0,255,200,.75);
+
+  box-shadow:
+
+    0 0 8px rgba(0,255,200,.9),
+    0 0 20px rgba(0,255,200,.7),
+    0 0 40px rgba(0,255,200,.45),
+    inset 0 0 20px rgba(0,255,200,.25);
+
+  transition:
+    transform .35s ease,
+    box-shadow .35s ease;
+
+  isolation: isolate;
+
+  animation: emeraldPulse 2.5s ease-in-out infinite;
 }
 
-.video-circle:hover {
-  transform: scale(1.1);
-  background: rgba(255,255,255,0.2);
-}
 
-/* ====== الفيديو المصغّر داخل الدائرة ====== */
-.miniVideo {
+/* =====================================================
+   بريق الدائرة الخارجي
+===================================================== */
+
+.video-circle::before {
+
+  content: "";
+
   position: absolute;
+
+  inset: -4px;
+
+  border-radius: 50%;
+
+  border: 2px solid transparent;
+
+  border-top-color: #00ffcc;
+  border-right-color: #ffd700;
+
+  filter:
+    drop-shadow(0 0 5px #00ffcc)
+    drop-shadow(0 0 10px #ffd700);
+
+  animation: rotateRing 3s linear infinite;
+
+  z-index: 5;
+
+  pointer-events: none;
+}
+
+
+/* =====================================================
+   الحلقة الثانية
+===================================================== */
+
+.video-circle::after {
+
+  content: "";
+
+  position: absolute;
+
+  inset: 6px;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(255,215,0,.7);
+
+  box-shadow:
+    0 0 8px rgba(255,215,0,.8),
+    inset 0 0 12px rgba(255,215,0,.25);
+
+  z-index: 4;
+
+  pointer-events: none;
+}
+
+
+/* =====================================================
+   الفيديو داخل الدائرة
+===================================================== */
+
+.miniVideo {
+
+  position: absolute;
+
   width: 160%;
   height: 160%;
+
   top: -30%;
   left: -30%;
+
   border: none;
-  pointer-events: none; /* يمنع مشاكل الضغط */
-  opacity: 0.85;
+
+  pointer-events: none;
+
+  opacity: .88;
+
+  z-index: 1;
+
+  transform: scale(1.03);
+
+  transition:
+    transform .5s ease,
+    opacity .5s ease;
 }
 
-/* ====== مربع الفيديو ====== */
+
+/* =====================================================
+   الوهج الداخلي
+===================================================== */
+
+.circle-glow {
+
+  position: absolute;
+
+  inset: 0;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      transparent 35%,
+      rgba(0,255,200,.08) 60%,
+      rgba(0,255,200,.25) 100%
+    );
+
+  z-index: 2;
+
+  pointer-events: none;
+}
+
+
+/* =====================================================
+   انعكاس زجاجي
+===================================================== */
+
+.circle-shine {
+
+  position: absolute;
+
+  top: -60%;
+
+  left: -80%;
+
+  width: 45%;
+
+  height: 220%;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.55),
+    transparent
+  );
+
+  transform: rotate(25deg);
+
+  z-index: 6;
+
+  pointer-events: none;
+
+  animation: shineMove 4s ease-in-out infinite;
+}
+
+
+/* =====================================================
+   عند تمرير الماوس
+===================================================== */
+
+.video-circle:hover {
+
+  transform: scale(1.16);
+
+  box-shadow:
+
+    0 0 12px #00ffcc,
+    0 0 30px #00ffcc,
+    0 0 60px rgba(255,215,0,.8),
+    inset 0 0 25px rgba(0,255,200,.4);
+
+  border-color: #ffd700;
+}
+
+
+.video-circle:hover .miniVideo {
+
+  transform: scale(1.10);
+
+  opacity: 1;
+}
+
+
+/* =====================================================
+   عند الضغط
+===================================================== */
+
+.video-circle:active {
+
+  transform: scale(.96);
+
+  box-shadow:
+
+    0 0 15px #ffd700,
+    0 0 45px #00ffcc;
+}
+
+
+/* =====================================================
+   مربع الفيديو
+===================================================== */
+
 #videoBoxFixed {
+
   position: fixed;
+
   top: 50px;
   left: 50%;
+
   transform: translateX(-50%);
+
   width: 330px;
   height: 200px;
+
   background: #000;
-  border-radius: 14px;
-  box-shadow: 0 0 20px rgba(0,255,255,0.5);
-  display: none;
-  z-index: 49999;
+
+  border-radius: 18px;
+
   overflow: hidden;
+
+  display: none;
+
+  z-index: 49999;
+
+  border: 2px solid rgba(0,255,200,.8);
+
+  box-shadow:
+
+    0 0 10px #00ffcc,
+    0 0 25px rgba(0,255,200,.8),
+    0 0 50px rgba(255,215,0,.45);
+
+  animation: videoAppear .35s ease;
 }
+
+
+/* =====================================================
+   إطار متوهج داخل المربع
+===================================================== */
+
+.video-box-border {
+
+  position: absolute;
+
+  inset: 0;
+
+  border-radius: 18px;
+
+  border: 1px solid rgba(255,215,0,.6);
+
+  box-shadow:
+    inset 0 0 15px rgba(0,255,200,.3);
+
+  pointer-events: none;
+
+  z-index: 3;
+}
+
+
+/* =====================================================
+   فيديو المربع
+===================================================== */
 
 #videoBoxFixed iframe {
+
   width: 100%;
   height: 100%;
+
   border: none;
 }
+
+
+/* =====================================================
+   زر الإغلاق
+===================================================== */
+
+#videoCloseBtn {
+
+  position: absolute;
+
+  top: 7px;
+  right: 7px;
+
+  width: 30px;
+  height: 30px;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(255,215,0,.8);
+
+  background: rgba(0,0,0,.75);
+
+  color: #ffd700;
+
+  font-size: 15px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  z-index: 10;
+
+  transition: .3s;
+
+  box-shadow:
+    0 0 8px rgba(255,215,0,.6);
+}
+
+
+#videoCloseBtn:hover {
+
+  color: #fff;
+
+  background: rgba(255,0,0,.75);
+
+  border-color: #fff;
+
+  box-shadow:
+    0 0 15px red;
+
+  transform: rotate(90deg) scale(1.1);
+}
+
+
+/* =====================================================
+   الحركات
+===================================================== */
+
+@keyframes rotateRing {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+@keyframes shineMove {
+
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  50% {
+    left: 150%;
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 0;
+  }
+
+  100% {
+    left: 150%;
+    opacity: 0;
+  }
+
+}
+
+
+@keyframes emeraldPulse {
+
+  0%,
+  100% {
+
+    box-shadow:
+      0 0 8px rgba(0,255,200,.8),
+      0 0 20px rgba(0,255,200,.55),
+      0 0 35px rgba(0,255,200,.3);
+
+  }
+
+  50% {
+
+    box-shadow:
+      0 0 12px #00ffcc,
+      0 0 30px #00ffcc,
+      0 0 55px rgba(255,215,0,.55);
+
+  }
+
+}
+
+
+@keyframes videoAppear {
+
+  from {
+
+    opacity: 0;
+
+    transform:
+      translateX(-50%)
+      scale(.75);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform:
+      translateX(-50%)
+      scale(1);
+
+  }
+
+}
+
+
+/* =====================================================
+   الجوال
+===================================================== */
+
+@media (max-width:600px) {
+
+  .video-top-container-fixed {
+
+    top: 180px;
+
+    padding: 0 12px;
+
+  }
+
+  .video-circle {
+
+    width: 90px;
+    height: 78px;
+
+  }
+
+  #videoBoxFixed {
+
+    width: 88%;
+    height: 190px;
+
+    top: 55px;
+
+  }
+
+}
+
 </style>
 
-<!-- ====== سكربت الفتح والإغلاق ====== -->
-<script>
-document.querySelectorAll(".video-circle").forEach(circle => {
-  circle.addEventListener("click", () => {
-    const box = document.getElementById("videoBoxFixed");
-    const iframe = document.getElementById("fixedVideo");
-    const videoId = circle.getAttribute("data-video");
-
-    // إغلاق إذا كان مفتوح
-    if (box.style.display === "block") {
-      iframe.src = "";
-      box.style.display = "none";
-      return;
-    }
-
-    // فتح المربع
-    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&playsinline=1`;
-    box.style.display = "block";
-  });
-});
-</script>
 
 <!-- ====== JavaScript ====== -->
+
 <script>
-function openVideoModal(videoId) {
-  const modal = document.getElementById('videoModal');
-  const modalVideo = document.getElementById('modalVideo');
-  modalVideo.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0`;
-  modal.style.display = 'flex';
+
+document.querySelectorAll(".video-circle").forEach(circle => {
+
+  circle.addEventListener("click", () => {
+
+    const box =
+      document.getElementById("videoBoxFixed");
+
+    const iframe =
+      document.getElementById("fixedVideo");
+
+    const videoId =
+      circle.getAttribute("data-video");
+
+
+    /* إذا كان مفتوحًا */
+    if (box.style.display === "block") {
+
+      iframe.src = "";
+
+      box.style.display = "none";
+
+      return;
+
+    }
+
+
+    /* فتح الفيديو */
+
+    iframe.src =
+      `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&playsinline=1`;
+
+    box.style.display = "block";
+
+  });
+
+});
+
+
+/* إغلاق الفيديو */
+
+function closeFixedVideo() {
+
+  const box =
+    document.getElementById("videoBoxFixed");
+
+  const iframe =
+    document.getElementById("fixedVideo");
+
+  iframe.src = "";
+
+  box.style.display = "none";
+
 }
 
-function closeVideoModal() {
-  const modal = document.getElementById('videoModal');
-  const modalVideo = document.getElementById('modalVideo');
-  modalVideo.src = ''; // إيقاف الفيديو عند الإغلاق
-  modal.style.display = 'none';
+
+/* =====================================================
+   نظام الفيديو القديم
+===================================================== */
+
+function openVideoModal(videoId) {
+
+  const modal =
+    document.getElementById('videoModal');
+
+  const modalVideo =
+    document.getElementById('modalVideo');
+
+  modalVideo.src =
+    `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0`;
+
+  modal.style.display = 'flex';
+
 }
+
+
+function closeVideoModal() {
+
+  const modal =
+    document.getElementById('videoModal');
+
+  const modalVideo =
+    document.getElementById('modalVideo');
+
+  modalVideo.src = '';
+
+  modal.style.display = 'none';
+
+}
+
 </script>
- 
 <!-- Emerald Music Overlay START -->
 <div id="emeraldMusicHost">
   <div id="emOpenBtn">🎹💎</div>
@@ -5066,36 +5968,53 @@ content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cove
 </div>
 
 <!-- نافذة القنوات المباشرة -->
+<!-- نافذة القنوات المباشرة -->
 <div id="livePopup">
   <button id="closePopup" onclick="toggleLivePopup()">❌</button>
+
   <div id="liveVideosContainer">
-    <!-- القنوات الأصلية -->
-    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/LuKwFajn37U')">
-      <iframe src="https://www.youtube.com/embed/LuKwFajn37U?mute=1" allowfullscreen></iframe>
+
+    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/AGkp2AL8e7o')">
+      <iframe src="https://www.youtube.com/embed/AGkp2AL8e7o?mute=1" allowfullscreen></iframe>
     </div>
-    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/zi9knajcejY')">
-      <iframe src="https://www.youtube.com/embed/zi9knajcejY?mute=1" allowfullscreen></iframe>
-    </div>
-    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/daqB3i9WYIY')">
-      <iframe src="https://www.youtube.com/embed/daqB3i9WYIY?mute=1" allowfullscreen></iframe>
-    </div>
-    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/FFkOEautPBs')">
-      <iframe src="https://www.youtube.com/embed/FFkOEautPBs?mute=1" allowfullscreen></iframe>
-    </div>
+<div class="live-video" onclick="openVideo('https://www.youtube.com/embed/0FBiyFpV__g')">
+  <iframe src="https://www.youtube.com/embed/0FBiyFpV__g?mute=1" allowfullscreen></iframe>
+</div>
+
+<div class="live-video" onclick="openVideo('https://www.youtube.com/embed/HfgIFGbdGJ0')">
+  <iframe src="https://www.youtube.com/embed/HfgIFGbdGJ0?mute=1" allowfullscreen></iframe>
+</div>
+
+<div class="live-video" onclick="openVideo('https://www.youtube.com/embed/LuKwFajn37U')">
+  <iframe src="https://www.youtube.com/embed/LuKwFajn37U?mute=1" allowfullscreen></iframe>
+</div>
+
     <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/n7eQejkXbnM')">
       <iframe src="https://www.youtube.com/embed/n7eQejkXbnM?mute=1" allowfullscreen></iframe>
     </div>
-    <!-- القنوات الجديدة -->
-    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/iTtkHlvMRzw')">
-      <iframe src="https://www.youtube.com/embed/iTtkHlvMRzw?mute=1" allowfullscreen></iframe>
+
+    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/J2TXKYeBUi4')">
+      <iframe src="https://www.youtube.com/embed/J2TXKYeBUi4?mute=1" allowfullscreen></iframe>
     </div>
-    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/BEgQdyuWhDQ')">
-      <iframe src="https://www.youtube.com/embed/BEgQdyuWhDQ?mute=1" allowfullscreen></iframe>
+
+    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/GNi0keWY1io')">
+      <iframe src="https://www.youtube.com/embed/GNi0keWY1io?mute=1" allowfullscreen></iframe>
     </div>
-    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/77mDQNA84uI')">
-      <iframe src="https://www.youtube.com/embed/77mDQNA84uI?mute=1" allowfullscreen></iframe>
+
+    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/Va6QU9n3q18')">
+      <iframe src="https://www.youtube.com/embed/Va6QU9n3q18?mute=1" allowfullscreen></iframe>
     </div>
+
+    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/MiQe9ob9aDc')">
+      <iframe src="https://www.youtube.com/embed/MiQe9ob9aDc?mute=1" allowfullscreen></iframe>
+    </div>
+
+    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/TLRlAlyiT7Y')">
+      <iframe src="https://www.youtube.com/embed/TLRlAlyiT7Y?mute=1" allowfullscreen></iframe>
+    </div>
+
   </div>
+</div>
 </div>
 
 <!-- الإطار المنبثق للفيديو الكبير -->
