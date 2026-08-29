@@ -1,4 +1,4 @@
-
+ 
 
 <!-- 🔒 منع ظهور محتوى الموقع قبل تسجيل الدخول -->
 <style>
@@ -22,8 +22,6 @@ background-image:url('https://raw.githubusercontent.com/sakakera-a11y/general.sa
 background-size:cover;
 background-position:center center;
 background-repeat:no-repeat;
-background-attachment:fixed;
-background-color:#000;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -41,10 +39,10 @@ color:white;
 font-family:Tajawal;
 box-shadow:0 0 30px #00ffcc;
 ">
-
 <h2 style="color:#00ffcc">
 🔐 تسجيل الدخول
 </h2>
+
 
 <input id="emailInput"
 type="email"
@@ -400,412 +398,16 @@ await signOut(auth);
 console.log("SAKAKER Firebase Ready");
 
 </script>
- 
   <!-- ================= خلفية موقع ================= -->
 <style>
-
-
-<!-- 🔒 منع ظهور محتوى الموقع قبل تسجيل الدخول -->
-<style>
-body.locked > *:not(#loginOverlay){
-visibility:hidden;
+body {
+  background-image: url("https://raw.githubusercontent.com/sakakera-a11y/general.sakaker.co/main/ChatGPT%20Image%20Aug%2029%2C%202026%2C%2003_01_28%20PM.png");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: #000;
 }
-</style>
-
-<script>
-document.body.classList.add("locked");
-</script>
-
-<!-- 🔒 نافذة الدخول -->
-<div id="loginOverlay" style="
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background-image:url('https://raw.githubusercontent.com/sakakera-a11y/general.sakaker.co/main/ChatGPT%20Image%20Aug%2029%2C%202026%2C%2003_01_28%20PM.png');
-background-size:cover;
-background-position:center center;
-background-repeat:no-repeat;
-background-attachment:fixed;
-background-color:#000;
-display:flex;
-align-items:center;
-justify-content:center;
-z-index:999999;
-">
-
-<div style="
-background:rgba(0,0,0,.8);
-padding:25px;
-width:90%;
-max-width:420px;
-border-radius:18px;
-text-align:center;
-color:white;
-font-family:Tajawal;
-box-shadow:0 0 30px #00ffcc;
-">
-
-<h2 style="color:#00ffcc">
-🔐 تسجيل الدخول
-</h2>
-
-<input id="emailInput"
-type="email"
-placeholder="📧 البريد الإلكتروني"
-style="
-width:100%;
-padding:12px;
-margin:8px 0;
-border-radius:10px;
-border:none;
-background:#ffffff22;
-color:white;
-">
-
-
-<input id="passwordInput"
-type="password"
-placeholder="🔒 كلمة المرور"
-style="
-width:100%;
-padding:12px;
-margin:8px 0;
-border-radius:10px;
-border:none;
-background:#ffffff22;
-color:white;
-">
-
-
-<button id="loginButton" style="
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:10px;
-background:#00ffcc;
-font-weight:bold;
-cursor:pointer;
-">
-دخول
-</button>
-
-
-<button id="googleButton" style="
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:10px;
-background:#4285F4;
-color:white;
-font-weight:bold;
-cursor:pointer;
-">
-🔵 الدخول بواسطة Google
-</button>
-
-
-<div id="loginError"
-style="color:#ff8888;margin:10px">
-</div>
-
-
-<button id="signupButton" style="
-width:100%;
-padding:12px;
-border-radius:10px;
-background:#ffffff22;
-color:white;
-border:1px solid #00ffcc;
-cursor:pointer;
-">
-📝 إنشاء حساب جديد
-</button>
-
-
-</div>
-</div>
-
-
-
-<!-- 👤 بيانات المستخدم -->
-<div id="userProfile" style="
-display:none;
-position:fixed;
-top:15px;
-right:15px;
-z-index:99999;
-background:#000c;
-padding:10px;
-border-radius:15px;
-border:1px solid #00ffcc;
-color:white;
-align-items:center;
-gap:10px;
-">
-
-<img id="userPhoto"
-style="
-width:45px;
-height:45px;
-border-radius:50%;
-border:2px solid gold;
-">
-
-<span id="userName"></span>
-
-<button id="logoutButton">
-خروج
-</button>
-
-</div>
-
-
-
-<script type="module">
-
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-
-
-import { getAnalytics }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
-
-
-import {
-getAuth,
-signInWithEmailAndPassword,
-createUserWithEmailAndPassword,
-GoogleAuthProvider,
-signInWithPopup,
-onAuthStateChanged,
-setPersistence,
-browserLocalPersistence,
-signOut
-}
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
-
-import { getFirestore }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
-
-import { getStorage }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
-
-
-
-const firebaseConfig = {
-
-    apiKey:
-    "AIzaSyCltuh24M0X4KBlVpIFi8HXlrTObQRVk_s",
-
-    authDomain:
-    "general-sakaker.firebaseapp.com",
-
-    projectId:
-    "general-sakaker",
-
-    storageBucket:
-    "general-sakaker.firebasestorage.app",
-
-    messagingSenderId:
-    "999891768564",
-
-    appId:
-    "1:999891768564:web:9821008d91378788b93aa1",
-
-    measurementId:
-    "G-0LGSW71V74"
-
-};
-
-
-
-const app=initializeApp(firebaseConfig);
-
-
-const analytics=getAnalytics(app);
-
-const auth=getAuth(app);
-
-const db=getFirestore(app);
-
-const storage=getStorage(app);
-
-
-
-window.firebaseApp=app;
-
-window.firebaseAuth=auth;
-
-window.firebaseDB=db;
-
-window.firebaseStorage=storage;
-
-
-
-await setPersistence(
-auth,
-browserLocalPersistence
-);
-
-
-
-const overlay=document.getElementById("loginOverlay");
-
-const email=document.getElementById("emailInput");
-
-const pass=document.getElementById("passwordInput");
-
-const error=document.getElementById("loginError");
-
-
-
-/* دخول */
-
-document.getElementById("loginButton").onclick=async()=>{
-
-
-try{
-
-
-await signInWithEmailAndPassword(
-auth,
-email.value,
-pass.value
-);
-
-
-}catch(e){
-
-error.textContent="❌ "+e.message;
-
-}
-
-};
-
-
-
-/* إنشاء حساب */
-
-document.getElementById("signupButton").onclick=async()=>{
-
-
-try{
-
-
-await createUserWithEmailAndPassword(
-auth,
-email.value,
-pass.value
-);
-
-
-}catch(e){
-
-error.textContent="❌ "+e.message;
-
-}
-
-};
-
-
-
-
-/* Google */
-
-document.getElementById("googleButton").onclick=async()=>{
-
-
-const provider=new GoogleAuthProvider();
-
-
-try{
-
-
-await signInWithPopup(
-auth,
-provider
-);
-
-
-}catch(e){
-
-error.textContent="❌ "+e.message;
-
-}
-
-
-};
-
-
-
-
-
-/* مراقبة الدخول */
-
-onAuthStateChanged(auth,(user)=>{
-
-
-if(user){
-
-
-overlay.style.display="none";
-
-document.body.classList.remove("locked");
-
-
-document.getElementById("userProfile").style.display="flex";
-
-
-document.getElementById("userName").textContent =
-user.displayName || user.email;
-
-
-document.getElementById("userPhoto").src =
-user.photoURL ||
-"https://cdn-icons-png.flaticon.com/512/149/149071.png";
-
-
-}else{
-
-
-overlay.style.display="flex";
-
-document.body.classList.add("locked");
-
-
-document.getElementById("userProfile").style.display="none";
-
-
-}
-
-
-});
-
-
-
-
-
-/* خروج */
-
-document.getElementById("logoutButton").onclick=async()=>{
-
-await signOut(auth);
-
-};
-
-
-
-console.log("SAKAKER Firebase Ready");
-
-</script>
- 
 </style>
 <!-- =========================================================
      💎 SAKAKER MODERN CHAT
@@ -5464,53 +5066,36 @@ content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cove
 </div>
 
 <!-- نافذة القنوات المباشرة -->
-<!-- نافذة القنوات المباشرة -->
 <div id="livePopup">
   <button id="closePopup" onclick="toggleLivePopup()">❌</button>
-
   <div id="liveVideosContainer">
-
-    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/AGkp2AL8e7o')">
-      <iframe src="https://www.youtube.com/embed/AGkp2AL8e7o?mute=1" allowfullscreen></iframe>
+    <!-- القنوات الأصلية -->
+    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/LuKwFajn37U')">
+      <iframe src="https://www.youtube.com/embed/LuKwFajn37U?mute=1" allowfullscreen></iframe>
     </div>
-<div class="live-video" onclick="openVideo('https://www.youtube.com/embed/0FBiyFpV__g')">
-  <iframe src="https://www.youtube.com/embed/0FBiyFpV__g?mute=1" allowfullscreen></iframe>
-</div>
-
-<div class="live-video" onclick="openVideo('https://www.youtube.com/embed/HfgIFGbdGJ0')">
-  <iframe src="https://www.youtube.com/embed/HfgIFGbdGJ0?mute=1" allowfullscreen></iframe>
-</div>
-
-<div class="live-video" onclick="openVideo('https://www.youtube.com/embed/LuKwFajn37U')">
-  <iframe src="https://www.youtube.com/embed/LuKwFajn37U?mute=1" allowfullscreen></iframe>
-</div>
-
+    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/zi9knajcejY')">
+      <iframe src="https://www.youtube.com/embed/zi9knajcejY?mute=1" allowfullscreen></iframe>
+    </div>
+    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/daqB3i9WYIY')">
+      <iframe src="https://www.youtube.com/embed/daqB3i9WYIY?mute=1" allowfullscreen></iframe>
+    </div>
+    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/FFkOEautPBs')">
+      <iframe src="https://www.youtube.com/embed/FFkOEautPBs?mute=1" allowfullscreen></iframe>
+    </div>
     <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/n7eQejkXbnM')">
       <iframe src="https://www.youtube.com/embed/n7eQejkXbnM?mute=1" allowfullscreen></iframe>
     </div>
-
-    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/J2TXKYeBUi4')">
-      <iframe src="https://www.youtube.com/embed/J2TXKYeBUi4?mute=1" allowfullscreen></iframe>
+    <!-- القنوات الجديدة -->
+    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/iTtkHlvMRzw')">
+      <iframe src="https://www.youtube.com/embed/iTtkHlvMRzw?mute=1" allowfullscreen></iframe>
     </div>
-
-    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/GNi0keWY1io')">
-      <iframe src="https://www.youtube.com/embed/GNi0keWY1io?mute=1" allowfullscreen></iframe>
+    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/BEgQdyuWhDQ')">
+      <iframe src="https://www.youtube.com/embed/BEgQdyuWhDQ?mute=1" allowfullscreen></iframe>
     </div>
-
-    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/Va6QU9n3q18')">
-      <iframe src="https://www.youtube.com/embed/Va6QU9n3q18?mute=1" allowfullscreen></iframe>
+    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/77mDQNA84uI')">
+      <iframe src="https://www.youtube.com/embed/77mDQNA84uI?mute=1" allowfullscreen></iframe>
     </div>
-
-    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/MiQe9ob9aDc')">
-      <iframe src="https://www.youtube.com/embed/MiQe9ob9aDc?mute=1" allowfullscreen></iframe>
-    </div>
-
-    <div class="live-video" onclick="openVideo('https://www.youtube.com/embed/TLRlAlyiT7Y')">
-      <iframe src="https://www.youtube.com/embed/TLRlAlyiT7Y?mute=1" allowfullscreen></iframe>
-    </div>
-
   </div>
-</div>
 </div>
 
 <!-- الإطار المنبثق للفيديو الكبير -->
