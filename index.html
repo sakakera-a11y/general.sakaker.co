@@ -1,4 +1,4 @@
-
+ 
 
 <!-- 🔒 منع ظهور محتوى الموقع قبل تسجيل الدخول -->
 <style>
@@ -10,7 +10,6 @@ visibility:hidden;
 <script>
 document.body.classList.add("locked");
 </script>
-
 <!-- 🔒 نافذة الدخول -->
 <div id="loginOverlay" style="
 position:fixed;
@@ -18,33 +17,399 @@ top:0;
 left:0;
 width:100%;
 height:100%;
+
 background-image:url('https://raw.githubusercontent.com/sakakera-a11y/general.sakaker.co/main/ChatGPT%20Image%20Aug%2029%2C%202026%2C%2003_01_28%20PM.png');
 background-size:cover;
 background-position:center center;
 background-repeat:no-repeat;
-background-attachment:fixed;
-background-color:#000;
+
 display:flex;
 align-items:center;
 justify-content:center;
+
 z-index:999999;
+
+font-family:Tajawal,Arial,sans-serif;
+
+overflow:hidden;
 ">
 
+<!-- ✨ طبقة التوهج -->
 <div style="
-background:rgba(0,0,0,.8);
-padding:25px;
+position:absolute;
+inset:0;
+background:
+radial-gradient(circle at center,
+rgba(0,255,200,.18),
+rgba(0,0,0,.45) 55%,
+rgba(0,0,0,.75));
+pointer-events:none;
+"></div>
+
+
+<!-- 🔐 صندوق الدخول -->
+<div style="
+position:relative;
 width:90%;
 max-width:420px;
-border-radius:18px;
+
+padding:35px 28px;
+
+box-sizing:border-box;
+
+background:rgba(0,0,0,.72);
+
+border:1px solid rgba(0,255,200,.7);
+
+border-radius:25px;
+
 text-align:center;
 color:white;
-font-family:Tajawal;
-box-shadow:0 0 30px #00ffcc;
+
+backdrop-filter:blur(14px);
+
+box-shadow:
+0 0 15px rgba(0,255,200,.8),
+0 0 40px rgba(0,255,200,.35),
+inset 0 0 25px rgba(0,255,200,.08);
+
+overflow:hidden;
+
+animation:loginGlow 3s ease-in-out infinite alternate;
 ">
 
-<h2 style="color:#00ffcc">
+
+<!-- ✨ بريق متحرك أعلى الصندوق -->
+<div style="
+position:absolute;
+top:0;
+left:-100%;
+width:60%;
+height:2px;
+
+background:linear-gradient(
+90deg,
+transparent,
+#00ffcc,
+#ffd700,
+transparent
+);
+
+box-shadow:
+0 0 10px #00ffcc,
+0 0 20px #ffd700;
+
+animation:loginShine 3s linear infinite;
+"></div>
+
+
+<!-- 💎 العنوان -->
+<h2 style="
+margin:5px 0 25px;
+
+font-size:28px;
+
+color:#00ffcc;
+
+text-shadow:
+0 0 5px #00ffcc,
+0 0 15px #00ffcc,
+0 0 30px rgba(0,255,200,.8);
+
+letter-spacing:1px;
+">
 🔐 تسجيل الدخول
 </h2>
+
+
+<!-- 📧 البريد -->
+<input id="emailInput"
+type="email"
+placeholder="📧 البريد الإلكتروني"
+style="
+width:100%;
+box-sizing:border-box;
+
+padding:14px;
+
+margin:8px 0;
+
+border-radius:12px;
+
+border:1px solid rgba(0,255,200,.35);
+
+outline:none;
+
+background:rgba(255,255,255,.08);
+
+color:white;
+
+font-size:15px;
+
+transition:.3s;
+
+box-shadow:inset 0 0 10px rgba(0,255,200,.05);
+">
+
+
+<!-- 🔒 كلمة المرور -->
+<input id="passwordInput"
+type="password"
+placeholder="🔒 كلمة المرور"
+style="
+width:100%;
+box-sizing:border-box;
+
+padding:14px;
+
+margin:8px 0;
+
+border-radius:12px;
+
+border:1px solid rgba(0,255,200,.35);
+
+outline:none;
+
+background:rgba(255,255,255,.08);
+
+color:white;
+
+font-size:15px;
+
+transition:.3s;
+
+box-shadow:inset 0 0 10px rgba(0,255,200,.05);
+">
+
+
+<!-- 🚪 دخول -->
+<button id="loginButton" style="
+width:100%;
+
+padding:14px;
+
+margin-top:12px;
+
+border:none;
+
+border-radius:12px;
+
+background:linear-gradient(
+135deg,
+#00ffcc,
+#00cfa3
+);
+
+color:#001a15;
+
+font-weight:bold;
+
+font-size:16px;
+
+cursor:pointer;
+
+box-shadow:
+0 0 10px rgba(0,255,200,.7),
+0 0 25px rgba(0,255,200,.3);
+
+transition:.3s;
+">
+دخول
+</button>
+
+
+<!-- 🔵 Google -->
+<button id="googleButton" style="
+width:100%;
+
+padding:14px;
+
+margin-top:10px;
+
+border:none;
+
+border-radius:12px;
+
+background:linear-gradient(
+135deg,
+#4285F4,
+#2468d8
+);
+
+color:white;
+
+font-weight:bold;
+
+font-size:15px;
+
+cursor:pointer;
+
+box-shadow:
+0 0 10px rgba(66,133,244,.6);
+
+transition:.3s;
+">
+🔵 الدخول بواسطة Google
+</button>
+
+
+<!-- ❌ الخطأ -->
+<div id="loginError" style="
+color:#ff7777;
+margin:12px 0;
+
+font-size:14px;
+
+text-shadow:0 0 8px rgba(255,0,0,.6);
+">
+</div>
+
+
+<!-- 📝 إنشاء حساب -->
+<button id="signupButton" style="
+width:100%;
+
+padding:13px;
+
+border-radius:12px;
+
+background:rgba(255,255,255,.06);
+
+color:#00ffcc;
+
+border:1px solid rgba(0,255,200,.7);
+
+cursor:pointer;
+
+font-weight:bold;
+
+font-size:15px;
+
+box-shadow:
+0 0 10px rgba(0,255,200,.15);
+
+transition:.3s;
+">
+📝 إنشاء حساب جديد
+</button>
+
+</div>
+</div>
+
+
+<style>
+
+/* ✨ بريق الصندوق */
+
+@keyframes loginGlow {
+
+0% {
+box-shadow:
+0 0 15px rgba(0,255,200,.6),
+0 0 35px rgba(0,255,200,.25),
+inset 0 0 20px rgba(0,255,200,.05);
+}
+
+100% {
+box-shadow:
+0 0 25px rgba(0,255,200,1),
+0 0 60px rgba(255,215,0,.35),
+inset 0 0 30px rgba(0,255,200,.12);
+}
+
+}
+
+
+/* ✨ خط البريق */
+
+@keyframes loginShine {
+
+0% {
+left:-100%;
+}
+
+100% {
+left:160%;
+}
+
+}
+
+
+/* 🔥 تأثير الحقول */
+
+#emailInput:focus,
+#passwordInput:focus {
+
+border-color:#00ffcc !important;
+
+box-shadow:
+0 0 10px rgba(0,255,200,.5),
+inset 0 0 10px rgba(0,255,200,.08) !important;
+
+}
+
+
+/* 🚪 زر الدخول */
+
+#loginButton:hover {
+
+transform:translateY(-2px) scale(1.02);
+
+box-shadow:
+0 0 15px #00ffcc,
+0 0 35px rgba(0,255,200,.7) !important;
+
+}
+
+
+/* 🔵 زر Google */
+
+#googleButton:hover {
+
+transform:translateY(-2px) scale(1.02);
+
+box-shadow:
+0 0 15px #4285F4,
+0 0 30px rgba(66,133,244,.6) !important;
+
+}
+
+
+/* 📝 إنشاء حساب */
+
+#signupButton:hover {
+
+background:rgba(0,255,200,.12) !important;
+
+box-shadow:
+0 0 15px rgba(0,255,200,.5) !important;
+
+transform:translateY(-2px);
+
+}
+
+
+/* 📱 الجوال */
+
+@media(max-width:600px){
+
+#loginOverlay > div:nth-child(2){
+
+padding:28px 20px !important;
+
+border-radius:20px !important;
+
+}
+
+#loginOverlay h2{
+
+font-size:24px !important;
+
+}
+
+}
+
+</style>
 
 <input id="emailInput"
 type="email"
@@ -400,451 +765,7 @@ await signOut(auth);
 console.log("SAKAKER Firebase Ready");
 
 </script>
- 
-  <!-- ================= خلفية موقع ================= -->
-<style>
 
-
-<!-- 🔒 منع ظهور محتوى الموقع قبل تسجيل الدخول -->
-<style>
-body.locked > *:not(#loginOverlay){
-visibility:hidden;
-}
-</style>
-
-<script>
-document.body.classList.add("locked");
-</script>
-
-<!-- 🔒 نافذة الدخول -->
-<div id="loginOverlay" style="
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background-image:url('https://raw.githubusercontent.com/sakakera-a11y/general.sakaker.co/main/ChatGPT%20Image%20Aug%2029%2C%202026%2C%2003_01_28%20PM.png');
-background-size:cover;
-background-position:center center;
-background-repeat:no-repeat;
-background-attachment:fixed;
-background-color:#000;
-display:flex;
-align-items:center;
-justify-content:center;
-z-index:999999;
-">
-
-<div style="
-background:rgba(0,0,0,.8);
-padding:25px;
-width:90%;
-max-width:420px;
-border-radius:18px;
-text-align:center;
-color:white;
-font-family:Tajawal;
-box-shadow:0 0 30px #00ffcc;
-">
-
-<h2 style="color:#00ffcc">
-🔐 تسجيل الدخول
-</h2>
-
-<input id="emailInput"
-type="email"
-placeholder="📧 البريد الإلكتروني"
-style="
-width:100%;
-padding:12px;
-margin:8px 0;
-border-radius:10px;
-border:none;
-background:#ffffff22;
-color:white;
-">
-
-
-<input id="passwordInput"
-type="password"
-placeholder="🔒 كلمة المرور"
-style="
-width:100%;
-padding:12px;
-margin:8px 0;
-border-radius:10px;
-border:none;
-background:#ffffff22;
-color:white;
-">
-
-
-<button id="loginButton" style="
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:10px;
-background:#00ffcc;
-font-weight:bold;
-cursor:pointer;
-">
-دخول
-</button>
-
-
-<button id="googleButton" style="
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:10px;
-background:#4285F4;
-color:white;
-font-weight:bold;
-cursor:pointer;
-">
-🔵 الدخول بواسطة Google
-</button>
-
-
-<div id="loginError"
-style="color:#ff8888;margin:10px">
-</div>
-
-
-<button id="signupButton" style="
-width:100%;
-padding:12px;
-border-radius:10px;
-background:#ffffff22;
-color:white;
-border:1px solid #00ffcc;
-cursor:pointer;
-">
-📝 إنشاء حساب جديد
-</button>
-
-
-</div>
-</div>
-
-
-
-<!-- 👤 بيانات المستخدم -->
-<div id="userProfile" style="
-display:none;
-position:fixed;
-top:15px;
-right:15px;
-z-index:99999;
-background:#000c;
-padding:10px;
-border-radius:15px;
-border:1px solid #00ffcc;
-color:white;
-align-items:center;
-gap:10px;
-">
-
-<img id="userPhoto"
-style="
-width:45px;
-height:45px;
-border-radius:50%;
-border:2px solid gold;
-">
-
-<span id="userName"></span>
-
-<button id="logoutButton">
-خروج
-</button>
-
-</div>
-
-
-
-<script type="module">
-
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-
-
-import { getAnalytics }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
-
-
-import {
-getAuth,
-signInWithEmailAndPassword,
-createUserWithEmailAndPassword,
-GoogleAuthProvider,
-signInWithPopup,
-onAuthStateChanged,
-setPersistence,
-browserLocalPersistence,
-signOut
-}
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
-
-import { getFirestore }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
-
-import { getStorage }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
-
-
-
-const firebaseConfig = {
-
-    apiKey:
-    "AIzaSyCltuh24M0X4KBlVpIFi8HXlrTObQRVk_s",
-
-    authDomain:
-    "general-sakaker.firebaseapp.com",
-
-    projectId:
-    "general-sakaker",
-
-    storageBucket:
-    "general-sakaker.firebasestorage.app",
-
-    messagingSenderId:
-    "999891768564",
-
-    appId:
-    "1:999891768564:web:9821008d91378788b93aa1",
-
-    measurementId:
-    "G-0LGSW71V74"
-
-};
-
-
-
-const app=initializeApp(firebaseConfig);
-
-
-const analytics=getAnalytics(app);
-
-const auth=getAuth(app);
-
-const db=getFirestore(app);
-
-const storage=getStorage(app);
-
-
-
-window.firebaseApp=app;
-
-window.firebaseAuth=auth;
-
-window.firebaseDB=db;
-
-window.firebaseStorage=storage;
-
-
-
-await setPersistence(
-auth,
-browserLocalPersistence
-);
-
-
-
-const overlay=document.getElementById("loginOverlay");
-
-const email=document.getElementById("emailInput");
-
-const pass=document.getElementById("passwordInput");
-
-const error=document.getElementById("loginError");
-
-
-
-/* دخول */
-
-document.getElementById("loginButton").onclick=async()=>{
-
-
-try{
-
-
-await signInWithEmailAndPassword(
-auth,
-email.value,
-pass.value
-);
-
-
-}catch(e){
-
-error.textContent="❌ "+e.message;
-
-}
-
-};
-
-
-
-/* إنشاء حساب */
-
-document.getElementById("signupButton").onclick=async()=>{
-
-
-try{
-
-
-await createUserWithEmailAndPassword(
-auth,
-email.value,
-pass.value
-);
-
-
-}catch(e){
-
-error.textContent="❌ "+e.message;
-
-}
-
-};
-
-
-
-
-/* Google */
-
-document.getElementById("googleButton").onclick=async()=>{
-
-
-const provider=new GoogleAuthProvider();
-
-
-try{
-
-
-await signInWithPopup(
-auth,
-provider
-);
-
-
-}catch(e){
-
-error.textContent="❌ "+e.message;
-
-}
-
-
-};
-
-
-
-
-
-/* مراقبة الدخول */
-
-onAuthStateChanged(auth,(user)=>{
-
-
-if(user){
-
-
-overlay.style.display="none";
-
-document.body.classList.remove("locked");
-
-
-document.getElementById("userProfile").style.display="flex";
-
-
-document.getElementById("userName").textContent =
-user.displayName || user.email;
-
-
-document.getElementById("userPhoto").src =
-user.photoURL ||
-"https://cdn-icons-png.flaticon.com/512/149/149071.png";
-
-
-}else{
-
-
-overlay.style.display="flex";
-
-document.body.classList.add("locked");
-
-
-document.getElementById("userProfile").style.display="none";
-
-
-}
-
-
-});
-
-
-
-
-
-/* خروج */
-
-document.getElementById("logoutButton").onclick=async()=>{
-
-await signOut(auth);
-
-};
-
-
-
-console.log("SAKAKER Firebase Ready");
-
-</script>
- 
-<style>
-html,
-body{
-    margin:0;
-    padding:0;
-    width:100%;
-    min-height:100%;
-}
-
-body{
-    background-image:url("https://raw.githubusercontent.com/sakakera-a11y/general.sakaker.co/main/ChatGPT%20Image%20Aug%2029%2C%202026%2C%2003_01_28%20PM.png");
-    background-size:cover;
-    background-position:center center;
-    background-repeat:no-repeat;
-    background-attachment:fixed;
-    background-color:#000;
-}
-
-/* طبقة التوهج الزمردي */
-body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    background:
-        radial-gradient(
-            circle at center,
-            rgba(0,255,200,.10),
-            rgba(0,0,0,.45)
-        );
-    pointer-events:none;
-    z-index:0;
-}
-
-/* جميع عناصر الموقع فوق الخلفية */
-body > *{
-    position:relative;
-    z-index:1;
-}
-</style>
 <!-- =========================================================
      💎 SAKAKER MODERN CHAT
      CHAT + VIDEO + AUDIO
@@ -928,7 +849,7 @@ birdBtn.addEventListener('click', async () => {
   }
 });
 </script>
-```html
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -6459,4 +6380,81 @@ select{
 }
 
 }
+</style>
+<style>
+
+/* 🔒 تغطية الموقع بالكامل أثناء تسجيل الدخول */
+body.locked #loginOverlay {
+
+    position:fixed !important;
+
+    top:0 !important;
+    left:0 !important;
+    right:0 !important;
+    bottom:0 !important;
+
+    width:100vw !important;
+    height:100vh !important;
+
+    min-width:100vw !important;
+    min-height:100vh !important;
+
+    display:flex !important;
+
+    align-items:center !important;
+    justify-content:center !important;
+
+    z-index:2147483647 !important;
+
+    visibility:visible !important;
+
+    opacity:1 !important;
+
+    pointer-events:auto !important;
+
+}
+
+
+/* 🚫 إخفاء كل محتوى الموقع أثناء الدخول */
+body.locked > *:not(#loginOverlay) {
+
+    visibility:hidden !important;
+
+    pointer-events:none !important;
+
+}
+
+
+/* 🚫 إخفاء العناصر الثابتة والمطلقة */
+body.locked .video-top-container-fixed,
+body.locked #videoBoxFixed,
+body.locked .userProfile,
+body.locked [style*="position:fixed"],
+body.locked [style*="position: fixed"],
+body.locked [style*="position:absolute"],
+body.locked [style*="position: absolute"] {
+
+    visibility:hidden !important;
+
+    pointer-events:none !important;
+
+}
+
+
+/* 🔐 محتويات نافذة الدخول تبقى ظاهرة */
+body.locked #loginOverlay,
+body.locked #loginOverlay * {
+
+    visibility:visible !important;
+
+}
+
+
+/* 🌑 منع التمرير خلف نافذة الدخول */
+body.locked {
+
+    overflow:hidden !important;
+
+}
+
 </style>
