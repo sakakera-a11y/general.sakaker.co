@@ -192,6 +192,7 @@ import { getStorage }
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
 
 
+
 const firebaseConfig = {
 
     apiKey:
@@ -199,9 +200,6 @@ const firebaseConfig = {
 
     authDomain:
     "general-sakaker.firebaseapp.com",
-
-    databaseURL:
-    "https://general-sakaker-default-rtdb.asia-southeast1.firebasedatabase.app",
 
     projectId:
     "general-sakaker",
@@ -217,7 +215,10 @@ const firebaseConfig = {
 
     measurementId:
     "G-0LGSW71V74"
+
 };
+
+
 
 const app=initializeApp(firebaseConfig);
 
@@ -519,20 +520,18 @@ birdBtn.addEventListener('click', async () => {
   }
 });
 </script>
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Sakaker Public Chat</title>
-
 </head>
 
 <body>
 
-<div id="sakaker-chat-host"></div>
+<div id="sakaker-public-chat"></div>
 
 <script type="module">
 
@@ -577,7 +576,7 @@ const firebaseConfig = {
     "general-sakaker.firebaseapp.com",
 
     databaseURL:
-    "https://general-sakaker-default-rtdb.firebaseio.com",
+    "https://general-sakaker-default-rtdb.asia-southeast1.firebasedatabase.app",
 
     projectId:
     "general-sakaker",
@@ -597,27 +596,26 @@ const firebaseConfig = {
 
 
 /* =========================================================
-   INITIALIZE
+   FIREBASE INITIALIZE
 ========================================================= */
 
 const app =
     initializeApp(firebaseConfig);
 
-const sakakerChatDB =
+const db =
     getDatabase(app);
 
-const sakakerChatAuth =
+const auth =
     getAuth(app);
 
 
 /* =========================================================
    SHADOW DOM
-   يمنع تعارض الدردشة مع أيقونات الموقع
 ========================================================= */
 
 const host =
     document.getElementById(
-        "sakaker-chat-host"
+        "sakaker-public-chat"
     );
 
 const shadow =
@@ -627,7 +625,7 @@ const shadow =
 
 
 /* =========================================================
-   DESIGN
+   HTML + CSS
 ========================================================= */
 
 shadow.innerHTML = `
@@ -642,11 +640,14 @@ shadow.innerHTML = `
 
     position:fixed;
 
-    right:220px;
-    bottom:220px;
+    left:50%;
+    top:50%;
 
-    width:68px;
-    height:68px;
+    transform:
+    translate(-50%,-50%);
+
+    width:115px;
+    height:115px;
 
     border-radius:50%;
 
@@ -654,59 +655,90 @@ shadow.innerHTML = `
     2px solid #ffd700;
 
     background:
-    linear-gradient(
-        145deg,
-        #075878,
-        #021923
+    radial-gradient(
+        circle at 35% 30%,
+        #1689b8,
+        #063b58 45%,
+        #01151f 100%
     );
 
     color:#fff;
 
-    font:bold 13px Arial;
+    font-family:
+    Arial,
+    Tahoma,
+    sans-serif;
+
+    font-size:18px;
+
+    font-weight:bold;
 
     cursor:pointer;
 
-    pointer-events:auto;
+    z-index:999999;
 
     box-shadow:
-    0 0 15px rgba(255,215,0,.7),
-    0 0 35px rgba(0,180,255,.35);
+    0 0 15px rgba(255,215,0,.8),
+    0 0 35px rgba(0,200,255,.5),
+    inset 0 0 20px rgba(255,255,255,.12);
 
-    z-index:999999;
+    transition:
+    transform .25s ease,
+    box-shadow .25s ease;
 }
 
 #chatButton:hover{
 
-    transform:scale(1.07);
+    transform:
+    translate(-50%,-50%)
+    scale(1.08);
+
+    box-shadow:
+    0 0 25px rgba(255,215,0,1),
+    0 0 55px rgba(0,200,255,.65);
 }
 
-#chatButton span{
+#chatButton .chatIcon{
 
     display:block;
 
-    color:#75e2ff;
+    font-size:38px;
 
-    font-size:18px;
-
-    margin-top:2px;
+    margin-bottom:4px;
 }
 
+#chatButton .chatText{
+
+    display:block;
+
+    color:#ffd700;
+
+    letter-spacing:1px;
+}
+
+
+/* =========================================================
+   CHAT WINDOW
+========================================================= */
 
 #chatWindow{
 
     position:fixed;
 
-    right:280px;
-    bottom:100px;
+    left:50%;
+    top:50%;
 
-    width:760px;
+    transform:
+    translate(-50%,-50%);
+
+    width:850px;
     height:650px;
 
     max-width:
-    calc(100vw - 30px);
+    calc(100vw - 24px);
 
     max-height:
-    calc(100vh - 120px);
+    calc(100vh - 24px);
 
     display:none;
 
@@ -714,15 +746,13 @@ shadow.innerHTML = `
 
     overflow:hidden;
 
-    pointer-events:auto;
-
-    border-radius:22px;
+    border-radius:24px;
 
     border:
     1px solid
-    rgba(100,220,255,.45);
+    rgba(255,215,0,.45);
 
-    background:#031824;
+    background:#021923;
 
     color:#fff;
 
@@ -732,15 +762,15 @@ shadow.innerHTML = `
     sans-serif;
 
     box-shadow:
-    0 0 40px rgba(0,0,0,.8),
-    0 0 80px rgba(0,150,220,.25);
+    0 0 50px rgba(0,0,0,.9),
+    0 0 100px rgba(0,170,230,.28);
 
-    z-index:999998;
+    z-index:1000000;
 }
 
 
 /* =========================================================
-   SEA
+   SEA BACKGROUND
 ========================================================= */
 
 #sea{
@@ -749,16 +779,17 @@ shadow.innerHTML = `
 
     inset:0;
 
-    overflow:hidden;
-
     z-index:0;
+
+    overflow:hidden;
 
     background:
     linear-gradient(
         180deg,
-        #06415f 0%,
-        #075875 45%,
-        #021722 100%
+        #07577a 0%,
+        #064865 38%,
+        #032a3c 70%,
+        #01151f 100%
     );
 }
 
@@ -769,31 +800,31 @@ shadow.innerHTML = `
     position:absolute;
 
     width:220%;
-    height:60%;
+    height:70%;
 
     left:-60%;
-    bottom:-25%;
+    bottom:-35%;
 
     background:
     repeating-radial-gradient(
         ellipse at center,
         rgba(255,255,255,.20) 0 2px,
-        transparent 3px 22px
+        transparent 3px 23px
     );
 
-    opacity:.25;
+    opacity:.23;
 
     animation:
-    waves 14s linear infinite;
+    seaMove 15s linear infinite;
 }
 
-@keyframes waves{
+@keyframes seaMove{
 
-    from{
+    0%{
         transform:translateX(0);
     }
 
-    to{
+    100%{
         transform:translateX(-12%);
     }
 
@@ -810,7 +841,7 @@ shadow.innerHTML = `
 
     z-index:5;
 
-    height:72px;
+    height:75px;
 
     flex-shrink:0;
 
@@ -821,37 +852,36 @@ shadow.innerHTML = `
     justify-content:center;
 
     background:
-    rgba(0,10,20,.82);
+    rgba(0,12,20,.82);
 
     border-bottom:
     1px solid
-    rgba(100,220,255,.2);
+    rgba(255,215,0,.18);
 }
 
 #title{
 
-    text-align:center;
+    color:#fff;
 
-    color:#eaffff;
-
-    font-size:21px;
+    font-size:22px;
 
     font-weight:bold;
 
+    text-align:center;
+
     text-shadow:
-    0 0 12px
-    rgba(90,220,255,.8);
+    0 0 12px #36d7ff;
 }
 
 #subtitle{
 
+    color:#7fd9ee;
+
+    font-size:10px;
+
     margin-top:4px;
 
     text-align:center;
-
-    color:#72d7f5;
-
-    font-size:10px;
 }
 
 #closeButton{
@@ -859,10 +889,10 @@ shadow.innerHTML = `
     position:absolute;
 
     left:14px;
-    top:14px;
+    top:15px;
 
-    width:40px;
-    height:40px;
+    width:42px;
+    height:42px;
 
     border-radius:50%;
 
@@ -875,7 +905,7 @@ shadow.innerHTML = `
 
     color:#fff;
 
-    font-size:22px;
+    font-size:25px;
 
     cursor:pointer;
 }
@@ -885,20 +915,20 @@ shadow.innerHTML = `
     position:absolute;
 
     right:14px;
-    top:14px;
+    top:17px;
 
-    padding:7px 12px;
+    padding:7px 13px;
 
-    border-radius:20px;
+    border-radius:18px;
 
     border:
     1px solid
-    rgba(100,220,255,.4);
+    rgba(255,215,0,.35);
 
     background:
-    rgba(0,35,55,.85);
+    rgba(0,20,30,.85);
 
-    color:#fff;
+    color:#ffd700;
 
     cursor:pointer;
 
@@ -922,7 +952,7 @@ shadow.innerHTML = `
 
     display:grid;
 
-    grid-template-columns:190px 1fr;
+    grid-template-columns:200px 1fr;
 }
 
 
@@ -939,33 +969,33 @@ shadow.innerHTML = `
     flex-direction:column;
 
     background:
-    rgba(0,10,20,.55);
+    rgba(0,8,15,.58);
 
     border-left:
     1px solid
-    rgba(100,220,255,.15);
+    rgba(255,255,255,.10);
 }
 
 #usersHeader{
 
     flex-shrink:0;
 
-    padding:14px 5px;
+    padding:15px 5px;
 
     text-align:center;
 
-    color:#8de8ff;
+    color:#8deaff;
 
     font-size:13px;
 
     border-bottom:
     1px solid
-    rgba(100,220,255,.15);
+    rgba(255,255,255,.10);
 }
 
 #onlineCount{
 
-    color:#fff;
+    color:#ffd700;
 
     font-weight:bold;
 }
@@ -978,7 +1008,7 @@ shadow.innerHTML = `
 
     overflow-y:auto;
 
-    padding:8px;
+    padding:9px;
 }
 
 .chatUser{
@@ -989,14 +1019,14 @@ shadow.innerHTML = `
 
     gap:8px;
 
-    padding:9px;
+    padding:10px;
 
-    margin-bottom:5px;
+    margin-bottom:6px;
 
-    border-radius:9px;
+    border-radius:10px;
 
     background:
-    rgba(255,255,255,.06);
+    rgba(255,255,255,.07);
 
     color:#fff;
 
@@ -1008,14 +1038,12 @@ shadow.innerHTML = `
     width:8px;
     height:8px;
 
-    flex-shrink:0;
-
     border-radius:50%;
 
-    background:#22e58b;
+    background:#21e58a;
 
     box-shadow:
-    0 0 10px #22e58b;
+    0 0 10px #21e58a;
 }
 
 
@@ -1040,16 +1068,16 @@ shadow.innerHTML = `
     padding:10px 15px;
 
     background:
-    rgba(0,0,0,.22);
+    rgba(0,0,0,.20);
 
     border-bottom:
     1px solid
-    rgba(100,220,255,.12);
+    rgba(255,255,255,.08);
 }
 
 #roomName{
 
-    color:#e7fbff;
+    color:#fff;
 
     font-size:13px;
 
@@ -1060,7 +1088,7 @@ shadow.innerHTML = `
 
     margin-top:3px;
 
-    color:#72bdd1;
+    color:#7eb5c4;
 
     font-size:9px;
 }
@@ -1069,7 +1097,7 @@ shadow.innerHTML = `
 
     float:left;
 
-    color:#f0c000;
+    color:#ffd700;
 
     font-size:9px;
 }
@@ -1093,23 +1121,23 @@ shadow.innerHTML = `
 
     flex-direction:column;
 
-    gap:8px;
+    gap:9px;
 }
 
 .chatMessage{
 
     max-width:82%;
 
-    padding:9px 12px;
+    padding:10px 13px;
 
-    border-radius:13px;
+    border-radius:14px;
 
     background:
-    rgba(255,255,255,.07);
+    rgba(255,255,255,.08);
 
     border:
     1px solid
-    rgba(100,220,255,.12);
+    rgba(100,220,255,.13);
 
     animation:
     messageIn .2s ease;
@@ -1131,9 +1159,9 @@ shadow.innerHTML = `
 
 .messageUser{
 
-    margin-bottom:3px;
+    margin-bottom:4px;
 
-    color:#73ddfb;
+    color:#67ddff;
 
     font-size:10px;
 
@@ -1146,20 +1174,11 @@ shadow.innerHTML = `
 
     font-size:13px;
 
-    line-height:1.6;
+    line-height:1.65;
 
     white-space:pre-wrap;
 
     word-break:break-word;
-}
-
-.messageTime{
-
-    margin-top:4px;
-
-    color:#7196a3;
-
-    font-size:8px;
 }
 
 #welcome{
@@ -1168,7 +1187,7 @@ shadow.innerHTML = `
 
     text-align:center;
 
-    color:#80a9b8;
+    color:#8ab2bf;
 
     font-size:12px;
 
@@ -1182,7 +1201,7 @@ shadow.innerHTML = `
 
 
 /* =========================================================
-   LOGIN / SEND
+   INPUT
 ========================================================= */
 
 #loginArea,
@@ -1194,14 +1213,14 @@ shadow.innerHTML = `
 
     gap:7px;
 
-    padding:10px;
+    padding:11px;
+
+    background:
+    rgba(0,0,0,.35);
 
     border-top:
     1px solid
-    rgba(100,220,255,.13);
-
-    background:
-    rgba(0,0,0,.30);
+    rgba(255,255,255,.10);
 }
 
 #sendArea{
@@ -1215,7 +1234,7 @@ shadow.innerHTML = `
 
     min-width:0;
 
-    padding:11px 12px;
+    padding:11px 13px;
 
     border-radius:10px;
 
@@ -1223,28 +1242,31 @@ shadow.innerHTML = `
     1px solid
     rgba(100,220,255,.3);
 
+    outline:none;
+
     background:
-    rgba(0,8,15,.82);
+    rgba(0,8,15,.9);
 
     color:#fff;
-
-    outline:none;
 
     font-family:
     Tahoma,
     Arial,
     sans-serif;
+
+    font-size:13px;
 }
 
 .chatInput:focus{
 
     border-color:
-    rgba(100,220,255,.75);
+    rgba(100,220,255,.8);
 }
 
 .actionButton{
 
-    padding:0 18px;
+    padding:
+    0 20px;
 
     border:none;
 
@@ -1253,8 +1275,8 @@ shadow.innerHTML = `
     background:
     linear-gradient(
         135deg,
-        #42d8ff,
-        #126ea8
+        #18aeda,
+        #07547e
     );
 
     color:#fff;
@@ -1262,8 +1284,13 @@ shadow.innerHTML = `
     font-weight:bold;
 
     cursor:pointer;
+}
 
-    white-space:nowrap;
+.actionButton:disabled{
+
+    opacity:.55;
+
+    cursor:wait;
 }
 
 
@@ -1275,36 +1302,50 @@ shadow.innerHTML = `
 
     #chatButton{
 
-        right:14px;
-        bottom:14px;
+        width:100px;
+        height:100px;
+    }
 
-        width:62px;
-        height:62px;
+    #chatButton .chatIcon{
+
+        font-size:32px;
+    }
+
+    #chatButton .chatText{
+
+        font-size:14px;
     }
 
     #chatWindow{
 
-        right:7px;
-        bottom:85px;
-
         width:
-        calc(100vw - 14px);
-
-        max-width:none;
+        calc(100vw - 12px);
 
         height:
-        calc(100vh - 100px);
+        calc(100vh - 12px);
+
+        max-width:none;
 
         max-height:none;
 
         border-radius:18px;
     }
 
+    #header{
+
+        height:64px;
+    }
+
+    #title{
+
+        font-size:17px;
+    }
+
     #body{
 
         grid-template-columns:1fr;
 
-        grid-template-rows:78px 1fr;
+        grid-template-rows:82px 1fr;
     }
 
     #usersPanel{
@@ -1313,19 +1354,19 @@ shadow.innerHTML = `
 
         border-bottom:
         1px solid
-        rgba(100,220,255,.15);
+        rgba(255,255,255,.10);
     }
 
     #usersHeader{
 
-        padding:7px;
+        padding:6px;
     }
 
     #usersList{
 
         display:flex;
 
-        gap:5px;
+        gap:6px;
 
         overflow-x:auto;
 
@@ -1340,17 +1381,7 @@ shadow.innerHTML = `
 
         margin:0;
 
-        padding:7px 9px;
-    }
-
-    #title{
-
-        font-size:17px;
-    }
-
-    #header{
-
-        height:62px;
+        padding:7px 10px;
     }
 
     .chatMessage{
@@ -1358,23 +1389,83 @@ shadow.innerHTML = `
         max-width:92%;
     }
 
+    .actionButton{
+
+        padding:
+        0 14px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media(max-width:420px){
+
+    #languageButton{
+
+        right:8px;
+
+        padding:6px 8px;
+
+        font-size:9px;
+    }
+
+    #closeButton{
+
+        left:8px;
+
+        width:36px;
+        height:36px;
+
+        font-size:20px;
+    }
+
+    #title{
+
+        font-size:15px;
+    }
+
+    .chatInput{
+
+        font-size:12px;
+    }
+
+    .actionButton{
+
+        padding:
+        0 11px;
+
+        font-size:11px;
+    }
+
 }
 
 </style>
 
 
-<!-- BUTTON -->
+<!-- =======================================================
+     CHAT BUTTON
+======================================================== -->
 
 <button id="chatButton">
 
-    CHAT
+    <span class="chatIcon">
+        💬
+    </span>
 
-    <span>💬</span>
+    <span class="chatText">
+        CHAT
+    </span>
 
 </button>
 
 
-<!-- WINDOW -->
+<!-- =======================================================
+     CHAT WINDOW
+======================================================== -->
 
 <div id="chatWindow">
 
@@ -1481,7 +1572,9 @@ shadow.innerHTML = `
                 <button
                     id="enterChat"
                     class="actionButton">
+
                     دخول
+
                 </button>
 
             </div>
@@ -1502,7 +1595,9 @@ shadow.innerHTML = `
                 <button
                     id="sendButton"
                     class="actionButton">
+
                     إرسال
+
                 </button>
 
             </div>
@@ -1531,7 +1626,7 @@ const chatWindow =
 const closeButton =
     $("closeButton");
 
-const chatLanguage =
+const languageButton =
     $("languageButton");
 
 const userNameInput =
@@ -1592,11 +1687,11 @@ let myName =
 let myUserRef =
     null;
 
-let listenersStarted =
-    false;
-
 let language =
     "ar";
+
+let listenersStarted =
+    false;
 
 
 /* =========================================================
@@ -1634,11 +1729,17 @@ const translations = {
         join:
         "دخول",
 
+        joining:
+        "جاري الدخول...",
+
         message:
         "اكتب رسالتك... 20 كلمة كحد أقصى",
 
         send:
         "إرسال",
+
+        sending:
+        "إرسال...",
 
         connected:
         "● متصل",
@@ -1654,6 +1755,9 @@ const translations = {
 
         wait:
         "انتظر حتى يتم الاتصال بالدردشة",
+
+        onlineError:
+        "تعذر تسجيل الاسم في قائمة الموجودين",
 
         sendError:
         "تعذر إرسال الرسالة",
@@ -1695,11 +1799,17 @@ const translations = {
         join:
         "Join",
 
+        joining:
+        "Joining...",
+
         message:
         "Write your message... Max 20 words",
 
         send:
         "Send",
+
+        sending:
+        "Sending...",
 
         connected:
         "● Connected",
@@ -1716,6 +1826,9 @@ const translations = {
         wait:
         "Please wait for the chat connection",
 
+        onlineError:
+        "Unable to register your name",
+
         sendError:
         "Unable to send the message",
 
@@ -1726,6 +1839,73 @@ const translations = {
         "Write a message first"
 
     }
+
+};
+
+
+/* =========================================================
+   LANGUAGE
+========================================================= */
+
+function applyLanguage(){
+
+    const t =
+        translations[language];
+
+    languageButton.textContent =
+        t.lang;
+
+    $("title").textContent =
+        t.title;
+
+    $("subtitle").textContent =
+        t.subtitle;
+
+    $("usersHeader").childNodes[0]
+        .textContent =
+        t.users + " ";
+
+    $("roomName").textContent =
+        t.room;
+
+    $("roomInfo").textContent =
+        t.info;
+
+    $("welcomeText").innerHTML =
+        t.welcome;
+
+    userNameInput.placeholder =
+        t.name;
+
+    messageInput.placeholder =
+        t.message;
+
+    enterChat.textContent =
+        t.join;
+
+    sendButton.textContent =
+        t.send;
+
+    connection.textContent =
+        currentUser
+        ? t.connected
+        : t.connecting;
+
+    host.dir =
+        language === "ar"
+        ? "rtl"
+        : "ltr";
+}
+
+languageButton.onclick =
+function(){
+
+    language =
+        language === "ar"
+        ? "en"
+        : "ar";
+
+    applyLanguage();
 
 };
 
@@ -1764,85 +1944,7 @@ function(){
 
 
 /* =========================================================
-   LANGUAGE
-========================================================= */
-
-function applyLanguage(){
-
-    const t =
-        translations[language];
-
-    chatLanguage.textContent =
-        t.lang;
-
-    $("title").textContent =
-        t.title;
-
-    $("subtitle").textContent =
-        t.subtitle;
-
-    $("usersHeader").childNodes[0]
-        .textContent =
-        t.users + " ";
-
-    $("roomName").textContent =
-        t.room;
-
-    $("roomInfo").textContent =
-        t.info;
-
-    $("welcomeText").innerHTML =
-        t.welcome;
-
-    userNameInput.placeholder =
-        t.name;
-
-    enterChat.textContent =
-        t.join;
-
-    messageInput.placeholder =
-        t.message;
-
-    sendButton.textContent =
-        t.send;
-
-    if(currentUser){
-
-        connection.textContent =
-            t.connected;
-
-    }else{
-
-        connection.textContent =
-            t.connecting;
-
-    }
-
-    host.dir =
-        language === "ar"
-        ? "rtl"
-        : "ltr";
-}
-
-
-function changeLanguage(){
-
-    language =
-        language === "ar"
-        ? "en"
-        : "ar";
-
-    applyLanguage();
-
-}
-
-
-chatLanguage.onclick =
-changeLanguage;
-
-
-/* =========================================================
-   WORD COUNTER
+   WORD COUNT
 ========================================================= */
 
 function getWordCount(text){
@@ -1852,16 +1954,15 @@ function getWordCount(text){
         .split(/\s+/)
         .filter(Boolean)
         .length;
+
 }
 
 
 /* =========================================================
-   FIREBASE AUTH
+   FIREBASE LOGIN
 ========================================================= */
 
-signInAnonymously(
-    sakakerChatAuth
-)
+signInAnonymously(auth)
 
 .then(result => {
 
@@ -1874,10 +1975,10 @@ signInAnonymously(
         ].connected;
 
     connection.style.color =
-        "#25e58b";
+        "#21e58a";
 
     console.log(
-        "Firebase anonymous login:",
+        "Firebase UID:",
         currentUser.uid
     );
 
@@ -1888,7 +1989,7 @@ signInAnonymously(
 .catch(error => {
 
     console.error(
-        "Firebase Auth Error:",
+        "Firebase Authentication Error:",
         error
     );
 
@@ -1904,7 +2005,7 @@ signInAnonymously(
 
 
 /* =========================================================
-   REALTIME LISTENERS
+   LISTENERS
 ========================================================= */
 
 function startRealtimeListeners(){
@@ -1919,12 +2020,10 @@ function startRealtimeListeners(){
         true;
 
 
-    /* USERS */
-
     onValue(
 
         ref(
-            sakakerChatDB,
+            db,
             "onlineUsers"
         ),
 
@@ -1942,13 +2041,11 @@ function startRealtimeListeners(){
     );
 
 
-    /* MESSAGES */
-
     onChildAdded(
 
         query(
             ref(
-                sakakerChatDB,
+                db,
                 "publicChat"
             ),
 
@@ -1961,7 +2058,7 @@ function startRealtimeListeners(){
         error => {
 
             console.error(
-                "Messages error:",
+                "Public chat error:",
                 error
             );
 
@@ -1973,7 +2070,7 @@ function startRealtimeListeners(){
 
 
 /* =========================================================
-   ONLINE USERS
+   USERS
 ========================================================= */
 
 function renderOnlineUsers(snapshot){
@@ -1999,6 +2096,7 @@ function renderOnlineUsers(snapshot){
                 return;
 
             }
+
 
             count++;
 
@@ -2044,69 +2142,13 @@ function renderOnlineUsers(snapshot){
 
 
     onlineCount.textContent =
-        String(count);
+        count;
 
 }
 
 
 /* =========================================================
-   CHECK MESSAGE EXPIRY
-========================================================= */
-
-function isMessageExpired(data){
-
-    if(
-        !data ||
-        !data.expiresAt
-    ){
-
-        return false;
-
-    }
-
-    return Date.now() >=
-        Number(data.expiresAt);
-
-}
-
-
-/* =========================================================
-   DELETE EXPIRED MESSAGE
-========================================================= */
-
-async function deleteIfExpired(
-    snapshot,
-    data
-){
-
-    if(
-        !isMessageExpired(data)
-    ){
-
-        return;
-
-    }
-
-    try{
-
-        await remove(
-            snapshot.ref
-        );
-
-    }catch(error){
-
-        console.error(
-            "Expired message delete error:",
-            error
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   RENDER MESSAGE
+   MESSAGE RENDER
 ========================================================= */
 
 function renderMessage(snapshot){
@@ -2126,15 +2168,24 @@ function renderMessage(snapshot){
     }
 
 
-    /* الرسالة انتهت */
+    /*
+       إذا كانت الرسالة انتهت
+       نحاول حذفها مباشرة.
+    */
 
     if(
-        isMessageExpired(data)
+        data.expiresAt &&
+        Date.now() >=
+        Number(data.expiresAt)
     ){
 
-        deleteIfExpired(
-            snapshot,
-            data
+        remove(snapshot.ref)
+        .catch(
+            error =>
+            console.error(
+                "Expired message:",
+                error
+            )
         );
 
         return;
@@ -2195,46 +2246,51 @@ function renderMessage(snapshot){
         messages.scrollHeight;
 
 
-    /* حذف الرسالة محليًا بعد 5 دقائق */
+    /*
+       حذف الرسالة من الواجهة
+       بعد انتهاء الخمس دقائق.
+    */
 
-    const remaining =
-        Number(data.expiresAt) -
-        Date.now();
+    if(data.expiresAt){
+
+        const remaining =
+            Number(data.expiresAt) -
+            Date.now();
 
 
-    if(
-        remaining > 0
-    ){
+        if(remaining > 0){
 
-        setTimeout(
-            async () => {
+            setTimeout(
+                async () => {
 
-                try{
+                    try{
 
-                    await remove(
-                        snapshot.ref
-                    );
+                        await remove(
+                            snapshot.ref
+                        );
 
-                    if(
-                        message.parentNode
-                    ){
+                        if(
+                            message.parentNode
+                        ){
 
-                        message.remove();
+                            message.remove();
+
+                        }
+
+                    }catch(error){
+
+                        console.error(
+                            "Message expiration:",
+                            error
+                        );
 
                     }
 
-                }catch(error){
+                },
+                remaining
+            );
 
-                    console.error(
-                        "Message expiration error:",
-                        error
-                    );
-
-                }
-
-            },
-            remaining
-        );
+        }
 
     }
 
@@ -2242,7 +2298,7 @@ function renderMessage(snapshot){
 
 
 /* =========================================================
-   REGISTER ONLINE USER
+   REGISTER USER
 ========================================================= */
 
 async function registerOnlineUser(){
@@ -2259,89 +2315,43 @@ async function registerOnlineUser(){
 
     myUserRef =
         ref(
-            sakakerChatDB,
+            db,
             `onlineUsers/${currentUser.uid}`
-        );
-
-
-    const connectedRef =
-        ref(
-            sakakerChatDB,
-            ".info/connected"
         );
 
 
     try{
 
-        await new Promise(
-            (resolve, reject) => {
+        /*
+           نسجل المستخدم أولًا.
+        */
 
-                const unsubscribe =
-                    onValue(
+        await set(
+            myUserRef,
+            {
 
-                        connectedRef,
+                name:
+                myName,
 
-                        async snapshot => {
+                uid:
+                currentUser.uid,
 
-                            if(
-                                snapshot.val() !==
-                                true
-                            ){
-
-                                return;
-
-                            }
-
-                            try{
-
-                                await onDisconnect(
-                                    myUserRef
-                                ).remove();
-
-
-                                await set(
-                                    myUserRef,
-                                    {
-
-                                        name:
-                                        myName,
-
-                                        uid:
-                                        currentUser.uid,
-
-                                        joinedAt:
-                                        serverTimestamp()
-
-                                    }
-                                );
-
-
-                                unsubscribe();
-
-                                resolve();
-
-                            }catch(error){
-
-                                unsubscribe();
-
-                                reject(error);
-
-                            }
-
-                        },
-
-                        error => {
-
-                            unsubscribe();
-
-                            reject(error);
-
-                        }
-
-                    );
+                joinedAt:
+                Date.now()
 
             }
         );
+
+
+        /*
+           ثم نحدد أن Firebase
+           يحذف المستخدم عند
+           انقطاع الاتصال.
+        */
+
+        await onDisconnect(
+            myUserRef
+        ).remove();
 
 
         return true;
@@ -2350,7 +2360,7 @@ async function registerOnlineUser(){
     }catch(error){
 
         console.error(
-            "Online User Error:",
+            "Register Online User Error:",
             error
         );
 
@@ -2409,9 +2419,9 @@ async function enterPublicChat(){
         true;
 
     enterChat.textContent =
-        language === "ar"
-        ? "جاري الدخول..."
-        : "Joining...";
+        translations[
+            language
+        ].joining;
 
 
     const success =
@@ -2430,7 +2440,9 @@ async function enterPublicChat(){
             ].join;
 
         alert(
-            "تعذر تسجيل الاسم في قائمة الموجودين"
+            translations[
+                language
+            ].onlineError
         );
 
         return;
@@ -2449,10 +2461,6 @@ async function enterPublicChat(){
 
 }
 
-
-/* =========================================================
-   ENTER BUTTON
-========================================================= */
 
 enterChat.onclick =
 enterPublicChat;
@@ -2499,13 +2507,12 @@ async function sendPublicMessage(){
     }
 
 
-    const wordCount =
+    const words =
         getWordCount(text);
 
 
     if(
-        wordCount >
-        MAX_WORDS
+        words > MAX_WORDS
     ){
 
         alert(
@@ -2529,15 +2536,13 @@ async function sendPublicMessage(){
     }
 
 
-    /*
-      مدة الرسالة:
+    sendButton.disabled =
+        true;
 
-      5 دقائق
-    */
-
-    const expiresAt =
-        Date.now() +
-        MESSAGE_LIFETIME;
+    sendButton.textContent =
+        translations[
+            language
+        ].sending;
 
 
     try{
@@ -2545,10 +2550,19 @@ async function sendPublicMessage(){
         const messageRef =
             push(
                 ref(
-                    sakakerChatDB,
+                    db,
                     "publicChat"
                 )
             );
+
+
+        /*
+           الرسالة تنتهي بعد 5 دقائق.
+        */
+
+        const expiresAt =
+            Date.now() +
+            MESSAGE_LIFETIME;
 
 
         await set(
@@ -2574,15 +2588,8 @@ async function sendPublicMessage(){
         );
 
 
-        /*
-          لا نترك النص في مربع الكتابة
-          بعد الإرسال.
-        */
-
         messageInput.value =
             "";
-
-        messageInput.focus();
 
 
     }catch(error){
@@ -2600,12 +2607,19 @@ async function sendPublicMessage(){
 
     }
 
+
+    sendButton.disabled =
+        false;
+
+    sendButton.textContent =
+        translations[
+            language
+        ].send;
+
+    messageInput.focus();
+
 }
 
-
-/* =========================================================
-   SEND BUTTON
-========================================================= */
 
 sendButton.onclick =
 sendPublicMessage;
@@ -2630,16 +2644,17 @@ messageInput.addEventListener(
 
 
 /* =========================================================
-   INITIAL LANGUAGE
+   START
 ========================================================= */
 
 applyLanguage();
-
 
 </script>
 
 </body>
 </html>
+```
+
 
 <!-- ====== الدوائر ====== -->
 <div class="video-top-container-fixed">
@@ -3790,8 +3805,8 @@ content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cove
 /* 🌟 أيقونة فليشر القنوات المباشرة */
 #liveFlasher {
   position: fixed;
-  top: 580px;
-  right: 610px;
+  top: 480px;
+  right: 510px;
   transform: 
   width: 50px;
   height: 50px;
@@ -3823,8 +3838,8 @@ content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cove
 #livePopup {
   display: none;
   position: fixed;
-  top: 30%;
-  left: 50%;
+  top: 130%;
+  left: 150%;
   transform: translate(-50%, -30%);
   width: 80vw;
   max-width: 420px;
@@ -3936,8 +3951,8 @@ content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cove
 /* زر مكتبة الفيديو الزمردية */
 #emeraldLibraryButton {
   position: fixed;
-  right:1020px;
-  top: 580px;
+  right:120px;
+  top: 380px;
   z-index: 9500;
   cursor: pointer;
   padding: 2px 2px;
@@ -3952,8 +3967,8 @@ content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cove
 #emeraldLibraryContent {
   display: none;
   position: fixed;
-  right: 40px;
-  top:70px;
+  right:1 40px;
+  top:170px;
   max-height: 80%;
   overflow-y: auto;
   background: rgba(0,0,0,0.85);
@@ -4000,7 +4015,7 @@ content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cove
 /* مودال خاص بمكتبة الفيديو الزمردية */
 #emeraldModal {
   position: fixed;
-  top: 20px;
+  top: 120px;
   left: 20px;
   width:100%;
   height:100%;
@@ -4019,7 +4034,7 @@ content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cove
 }
 #emeraldModalClose {
   position:fixed;
-  top:10px;
+  top:110px;
   right:10px;
   padding:8px 12px;
   background:rgba(0,255,255,0.3);
@@ -6758,1911 +6773,3 @@ svg{
     box-sizing:border-box !important;
 }
 </style>
-<!-- =========================================================
-     💬 SAKAKER CHAT + VIDEO
-     كتابة + فيديو مباشر
-     Firebase Authentication + Firestore
-     لا يحتاج Firebase Storage
-     ========================================================= -->
-
-<div id="sakakerChatApp">
-
-  <!-- زر فتح الدردشة -->
-  <button id="sakakerChatOpen">
-    💬
-    <span>دردشة</span>
-  </button>
-
-  <!-- نافذة الدردشة -->
-  <div id="sakakerChatBox">
-
-    <!-- الرأس -->
-    <div id="sakakerChatHeader">
-
-      <div>
-        <strong>💎 سكاكر دردشة</strong>
-        <small id="sakakerOnlineStatus">
-          ● متصل
-        </small>
-      </div>
-
-      <button id="sakakerChatClose">✕</button>
-
-    </div>
-
-
-    <!-- معلومات المستخدم -->
-    <div id="sakakerCurrentUser">
-      <img id="sakakerCurrentPhoto"
-           src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
-
-      <span id="sakakerCurrentName">
-        جاري التحميل...
-      </span>
-    </div>
-
-
-    <!-- الفيديو -->
-    <div id="sakakerVideoArea">
-
-      <div class="sakakerVideoTitle">
-        📹 مكالمة فيديو مباشرة
-      </div>
-
-      <div id="sakakerVideos">
-
-        <video
-          id="sakakerRemoteVideo"
-          autoplay
-          playsinline>
-        </video>
-
-        <video
-          id="sakakerLocalVideo"
-          autoplay
-          muted
-          playsinline>
-        </video>
-
-      </div>
-
-      <div id="sakakerVideoStatus">
-        جاهز للمكالمة
-      </div>
-
-    </div>
-
-
-    <!-- أزرار الاتصال -->
-    <div id="sakakerCallControls">
-
-      <button id="sakakerStartVideo">
-        📹 بدء فيديو
-      </button>
-
-      <button id="sakakerStartAudio">
-        🎙️ صوت
-      </button>
-
-      <button id="sakakerStopCall">
-        🔴 إنهاء
-      </button>
-
-    </div>
-
-
-    <!-- قائمة المستخدمين -->
-    <div class="sakakerSectionTitle">
-      👥 المستخدمون
-    </div>
-
-    <div id="sakakerUsersList">
-      جاري تحميل المستخدمين...
-    </div>
-
-
-    <!-- الرسائل -->
-    <div class="sakakerSectionTitle">
-      💬 المحادثة
-    </div>
-
-    <div id="sakakerMessages"></div>
-
-
-    <!-- كتابة الرسالة -->
-    <div id="sakakerMessageArea">
-
-      <input
-        id="sakakerMessageInput"
-        type="text"
-        placeholder="اكتب رسالتك هنا..."
-        maxlength="500"
-      >
-
-      <button id="sakakerSendMessage">
-        ➤
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<style>
-
-/* =========================================================
-   النافذة الرئيسية
-   ========================================================= */
-
-#sakakerChatApp{
-  font-family:
-  Tajawal,
-  Tahoma,
-  Arial,
-  sans-serif;
-}
-
-
-/* زر الدردشة */
-
-#sakakerChatOpen{
-
-  position:fixed;
-
-  left:20px;
-  bottom:25px;
-
-  width:65px;
-  height:65px;
-
-  border:none;
-  border-radius:50%;
-
-  background:
-  radial-gradient(circle,#00ffcc,#006b59);
-
-  color:white;
-
-  font-size:27px;
-
-  cursor:pointer;
-
-  z-index:99990;
-
-  box-shadow:
-  0 0 10px #00ffcc,
-  0 0 30px #00ffcc;
-
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-
-  transition:.3s;
-}
-
-
-#sakakerChatOpen:hover{
-
-  transform:scale(1.1);
-
-}
-
-
-#sakakerChatOpen span{
-
-  font-size:10px;
-  margin-top:2px;
-
-}
-
-
-/* صندوق الدردشة */
-
-#sakakerChatBox{
-
-  position:fixed;
-
-  left:20px;
-  bottom:100px;
-
-  width:390px;
-  max-width:calc(100vw - 30px);
-
-  height:650px;
-  max-height:calc(100vh - 120px);
-
-  background:
-  rgba(0,0,0,.94);
-
-  border:
-  1px solid #00ffcc;
-
-  border-radius:20px;
-
-  overflow:hidden;
-
-  z-index:99991;
-
-  display:none;
-
-  flex-direction:column;
-
-  color:white;
-
-  box-shadow:
-  0 0 20px #00ffcc,
-  0 0 60px rgba(0,255,204,.2);
-
-  backdrop-filter:blur(10px);
-
-}
-
-
-/* الرأس */
-
-#sakakerChatHeader{
-
-  min-height:58px;
-
-  background:
-  linear-gradient(
-    90deg,
-    #002c27,
-    #004d43,
-    #002c27
-  );
-
-  border-bottom:
-  1px solid #00ffcc;
-
-  display:flex;
-
-  align-items:center;
-  justify-content:space-between;
-
-  padding:0 15px;
-
-}
-
-
-#sakakerChatHeader strong{
-
-  color:#00ffcc;
-  font-size:18px;
-
-}
-
-
-#sakakerOnlineStatus{
-
-  display:block;
-
-  color:#00ff88;
-
-  font-size:11px;
-
-  margin-top:3px;
-
-}
-
-
-#sakakerChatClose{
-
-  border:none;
-
-  background:transparent;
-
-  color:white;
-
-  font-size:22px;
-
-  cursor:pointer;
-
-}
-
-
-/* المستخدم الحالي */
-
-#sakakerCurrentUser{
-
-  display:flex;
-
-  align-items:center;
-
-  gap:10px;
-
-  padding:8px 12px;
-
-  border-bottom:
-  1px solid rgba(0,255,204,.2);
-
-}
-
-
-#sakakerCurrentPhoto{
-
-  width:38px;
-  height:38px;
-
-  border-radius:50%;
-
-  border:
-  2px solid gold;
-
-  object-fit:cover;
-
-}
-
-
-#sakakerCurrentName{
-
-  font-size:13px;
-  color:#fff;
-
-}
-
-
-/* منطقة الفيديو */
-
-#sakakerVideoArea{
-
-  padding:8px;
-
-}
-
-
-.sakakerVideoTitle{
-
-  color:#00ffcc;
-
-  font-size:13px;
-
-  margin-bottom:6px;
-
-}
-
-
-#sakakerVideos{
-
-  position:relative;
-
-  width:100%;
-  height:180px;
-
-  background:#050505;
-
-  border-radius:12px;
-
-  overflow:hidden;
-
-  border:
-  1px solid rgba(0,255,204,.4);
-
-}
-
-
-#sakakerRemoteVideo{
-
-  width:100%;
-  height:100%;
-
-  object-fit:cover;
-
-  background:#050505;
-
-}
-
-
-#sakakerLocalVideo{
-
-  position:absolute;
-
-  right:8px;
-  bottom:8px;
-
-  width:100px;
-  height:75px;
-
-  object-fit:cover;
-
-  background:#111;
-
-  border:
-  2px solid #00ffcc;
-
-  border-radius:10px;
-
-}
-
-
-#sakakerVideoStatus{
-
-  text-align:center;
-
-  font-size:11px;
-
-  color:#aaa;
-
-  padding:4px;
-
-}
-
-
-/* أزرار المكالمة */
-
-#sakakerCallControls{
-
-  display:flex;
-
-  gap:5px;
-
-  padding:5px 8px;
-
-}
-
-
-#sakakerCallControls button{
-
-  flex:1;
-
-  padding:8px 3px;
-
-  border:none;
-
-  border-radius:8px;
-
-  cursor:pointer;
-
-  color:white;
-
-  font-weight:bold;
-
-  font-size:11px;
-
-}
-
-
-#sakakerStartVideo{
-
-  background:#007bff;
-
-}
-
-
-#sakakerStartAudio{
-
-  background:#008c68;
-
-}
-
-
-#sakakerStopCall{
-
-  background:#b00020;
-
-}
-
-
-/* العنوان */
-
-.sakakerSectionTitle{
-
-  padding:
-  6px 12px;
-
-  color:#00ffcc;
-
-  font-size:13px;
-
-  border-top:
-  1px solid rgba(0,255,204,.15);
-
-}
-
-
-/* المستخدمون */
-
-#sakakerUsersList{
-
-  max-height:70px;
-
-  overflow-x:auto;
-  overflow-y:hidden;
-
-  display:flex;
-
-  gap:7px;
-
-  padding:5px 10px;
-
-}
-
-
-.sakakerUser{
-
-  min-width:70px;
-
-  text-align:center;
-
-  cursor:pointer;
-
-  padding:4px;
-
-  border-radius:10px;
-
-  background:#ffffff0d;
-
-}
-
-
-.sakakerUser:hover{
-
-  background:#00ffcc22;
-
-}
-
-
-.sakakerUser img{
-
-  width:35px;
-  height:35px;
-
-  border-radius:50%;
-
-  border:1px solid #00ffcc;
-
-  object-fit:cover;
-
-}
-
-
-.sakakerUserName{
-
-  display:block;
-
-  font-size:9px;
-
-  white-space:nowrap;
-
-  overflow:hidden;
-
-  text-overflow:ellipsis;
-
-}
-
-
-/* الرسائل */
-
-#sakakerMessages{
-
-  flex:1;
-
-  overflow-y:auto;
-
-  padding:10px;
-
-  min-height:80px;
-
-}
-
-
-.sakakerMessage{
-
-  margin-bottom:8px;
-
-  display:flex;
-
-  flex-direction:column;
-
-}
-
-
-.sakakerMessage.me{
-
-  align-items:flex-start;
-
-}
-
-
-.sakakerMessage.other{
-
-  align-items:flex-end;
-
-}
-
-
-.sakakerMessageBubble{
-
-  max-width:80%;
-
-  padding:8px 11px;
-
-  border-radius:13px;
-
-  font-size:12px;
-
-  line-height:1.5;
-
-  word-break:break-word;
-
-}
-
-
-.sakakerMessage.me
-.sakakerMessageBubble{
-
-  background:#005f50;
-
-  border:
-  1px solid #00ffcc;
-
-}
-
-
-.sakakerMessage.other
-.sakakerMessageBubble{
-
-  background:#222;
-
-  border:
-  1px solid #555;
-
-}
-
-
-.sakakerMessageName{
-
-  font-size:9px;
-
-  color:#00ffcc;
-
-  margin-bottom:2px;
-
-}
-
-
-.sakakerMessageTime{
-
-  font-size:8px;
-
-  color:#777;
-
-  margin-top:2px;
-
-}
-
-
-/* منطقة الكتابة */
-
-#sakakerMessageArea{
-
-  display:flex;
-
-  gap:5px;
-
-  padding:8px;
-
-  border-top:
-  1px solid #00ffcc44;
-
-}
-
-
-#sakakerMessageInput{
-
-  flex:1;
-
-  min-width:0;
-
-  padding:10px;
-
-  border:none;
-
-  border-radius:10px;
-
-  background:#ffffff12;
-
-  color:white;
-
-  outline:none;
-
-}
-
-
-#sakakerMessageInput::placeholder{
-
-  color:#aaa;
-
-}
-
-
-#sakakerSendMessage{
-
-  width:45px;
-
-  border:none;
-
-  border-radius:10px;
-
-  background:#00ffcc;
-
-  color:#002c27;
-
-  font-size:18px;
-
-  cursor:pointer;
-
-}
-
-
-/* الهاتف */
-
-@media(max-width:600px){
-
-  #sakakerChatBox{
-
-    left:7px;
-    right:7px;
-
-    bottom:80px;
-
-    width:auto;
-
-    height:
-    calc(100vh - 95px);
-
-    max-height:none;
-
-  }
-
-
-  #sakakerChatOpen{
-
-    left:12px;
-    bottom:15px;
-
-  }
-
-
-  #sakakerVideos{
-
-    height:150px;
-
-  }
-
-}
-
-</style>
-
-
-<script type="module">
-
-/* =========================================================
-   FIREBASE
-   ========================================================= */
-
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  query,
-  orderBy,
-  limit,
-  onSnapshot,
-  serverTimestamp,
-  doc,
-  setDoc,
-  deleteDoc,
-  getDocs
-}
-from
-"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
-
-/* نستخدم Firebase الموجود في كود تسجيل الدخول */
-
-const chatAuth = window.firebaseAuth;
-const chatDB = window.firebaseDB;
-
-
-/* التأكد من وجود تسجيل الدخول */
-
-if(!chatAuth || !chatDB){
-
-  console.error(
-    "SAKAKER: Firebase Authentication / Firestore غير موجود"
-  );
-
-}
-
-
-/* =========================================================
-   العناصر
-   ========================================================= */
-
-const chatOpen =
-document.getElementById("sakakerChatOpen");
-
-const chatBox =
-document.getElementById("sakakerChatBox");
-
-const chatClose =
-document.getElementById("sakakerChatClose");
-
-const messageInput =
-document.getElementById("sakakerMessageInput");
-
-const sendMessage =
-document.getElementById("sakakerSendMessage");
-
-const messagesBox =
-document.getElementById("sakakerMessages");
-
-const usersList =
-document.getElementById("sakakerUsersList");
-
-const currentName =
-document.getElementById("sakakerCurrentName");
-
-const currentPhoto =
-document.getElementById("sakakerCurrentPhoto");
-
-const localVideo =
-document.getElementById("sakakerLocalVideo");
-
-const remoteVideo =
-document.getElementById("sakakerRemoteVideo");
-
-const videoStatus =
-document.getElementById("sakakerVideoStatus");
-
-
-/* =========================================================
-   فتح / إغلاق الدردشة
-   ========================================================= */
-
-chatOpen.onclick=()=>{
-
-  chatBox.style.display="flex";
-
-};
-
-
-chatClose.onclick=()=>{
-
-  chatBox.style.display="none";
-
-};
-
-
-/* =========================================================
-   المستخدم الحالي
-   ========================================================= */
-
-let currentUser=null;
-
-
-onAuthStateChangedSafe();
-
-
-function onAuthStateChangedSafe(){
-
-  chatAuth.onAuthStateChanged(async user=>{
-
-    currentUser=user;
-
-    if(!user){
-
-      currentName.textContent=
-      "يجب تسجيل الدخول";
-
-      return;
-
-    }
-
-
-    currentName.textContent=
-    user.displayName ||
-    user.email ||
-    "مستخدم";
-
-
-    currentPhoto.src=
-    user.photoURL ||
-    "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-
-
-    /*
-      حفظ المستخدم في Firestore
-      لا يتم حفظ كلمة المرور.
-    */
-
-    await setDoc(
-      doc(chatDB,"sakakerUsers",user.uid),
-      {
-        uid:user.uid,
-
-        name:
-        user.displayName ||
-        user.email ||
-        "مستخدم",
-
-        email:user.email || "",
-
-        photo:
-        user.photoURL ||
-        "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-
-        lastSeen:
-        serverTimestamp()
-      },
-      {merge:true}
-    );
-
-
-    loadUsers();
-
-    loadMessages();
-
-  });
-
-}
-
-
-/* =========================================================
-   المستخدمون
-   ========================================================= */
-
-let usersUnsubscribe=null;
-
-
-function loadUsers(){
-
-  if(usersUnsubscribe)
-    usersUnsubscribe();
-
-
-  const q=query(
-    collection(chatDB,"sakakerUsers"),
-    orderBy("lastSeen","desc"),
-    limit(30)
-  );
-
-
-  usersUnsubscribe=
-  onSnapshot(q,snapshot=>{
-
-    usersList.innerHTML="";
-
-
-    snapshot.forEach(item=>{
-
-      const user=item.data();
-
-
-      if(
-        currentUser &&
-        user.uid===currentUser.uid
-      ){
-        return;
-      }
-
-
-      const div=
-      document.createElement("div");
-
-
-      div.className=
-      "sakakerUser";
-
-
-      div.innerHTML=`
-
-        <img
-          src="${escapeHtml(
-            user.photo ||
-            "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-          )}"
-        >
-
-        <span class="sakakerUserName">
-          ${escapeHtml(
-            user.name || "مستخدم"
-          )}
-        </span>
-
-      `;
-
-
-      /*
-        عند الضغط على المستخدم
-        نجهز اتصال الفيديو معه.
-      */
-
-      div.onclick=()=>{
-
-        selectedUser=user;
-
-        videoStatus.textContent=
-        "تم اختيار: "+
-        (user.name || "المستخدم");
-
-      };
-
-
-      usersList.appendChild(div);
-
-    });
-
-  });
-
-}
-
-
-/* =========================================================
-   الرسائل
-   ========================================================= */
-
-let messagesUnsubscribe=null;
-
-
-function loadMessages(){
-
-  if(messagesUnsubscribe)
-    messagesUnsubscribe();
-
-
-  const q=query(
-
-    collection(
-      chatDB,
-      "sakakerChatMessages"
-    ),
-
-    orderBy(
-      "createdAt",
-      "asc"
-    ),
-
-    limit(100)
-
-  );
-
-
-  messagesUnsubscribe=
-  onSnapshot(q,snapshot=>{
-
-    messagesBox.innerHTML="";
-
-
-    snapshot.forEach(item=>{
-
-      const data=item.data();
-
-
-      const mine=
-      currentUser &&
-      data.uid===currentUser.uid;
-
-
-      const message=
-      document.createElement("div");
-
-
-      message.className=
-      "sakakerMessage "+
-      (mine ? "me":"other");
-
-
-      const time=
-      data.createdAt &&
-      data.createdAt.toDate
-      ?
-      data.createdAt
-      .toDate()
-      .toLocaleTimeString(
-        "ar-SA",
-        {
-          hour:"2-digit",
-          minute:"2-digit"
-        }
-      )
-      :
-      "";
-
-
-      message.innerHTML=`
-
-        <span class="sakakerMessageName">
-          ${escapeHtml(
-            data.name || "مستخدم"
-          )}
-        </span>
-
-        <div class="sakakerMessageBubble">
-          ${escapeHtml(
-            data.text || ""
-          )}
-        </div>
-
-        <span class="sakakerMessageTime">
-          ${time}
-        </span>
-
-      `;
-
-
-      messagesBox.appendChild(message);
-
-    });
-
-
-    messagesBox.scrollTop=
-    messagesBox.scrollHeight;
-
-  });
-
-}
-
-
-/* =========================================================
-   إرسال رسالة
-   ========================================================= */
-
-async function sendChatMessage(){
-
-  if(!currentUser)
-    return;
-
-
-  const text=
-  messageInput.value.trim();
-
-
-  if(!text)
-    return;
-
-
-  messageInput.value="";
-
-
-  try{
-
-    await addDoc(
-      collection(
-        chatDB,
-        "sakakerChatMessages"
-      ),
-      {
-
-        uid:
-        currentUser.uid,
-
-        name:
-        currentUser.displayName ||
-        currentUser.email ||
-        "مستخدم",
-
-        photo:
-        currentUser.photoURL || "",
-
-        text:text,
-
-        createdAt:
-        serverTimestamp()
-
-      }
-    );
-
-  }catch(error){
-
-    console.error(
-      "Chat message error:",
-      error
-    );
-
-  }
-
-}
-
-
-sendMessage.onclick=
-sendChatMessage;
-
-
-messageInput.addEventListener(
-  "keydown",
-  event=>{
-
-    if(event.key==="Enter"){
-
-      event.preventDefault();
-
-      sendChatMessage();
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   VIDEO WEBRTC
-   ========================================================= */
-
-let localStream=null;
-
-let peerConnection=null;
-
-let selectedUser=null;
-
-let currentCallId=null;
-
-
-/*
-  خوادم STUN مجانية.
-  لا يتم تخزين الفيديو فيها.
-*/
-
-const rtcConfig={
-
-  iceServers:[
-
-    {
-      urls:
-      "stun:stun.l.google.com:19302"
-    },
-
-    {
-      urls:
-      "stun:stun1.l.google.com:19302"
-    }
-
-  ]
-
-};
-
-
-/* =========================================================
-   تشغيل الكاميرا
-   ========================================================= */
-
-async function startLocalMedia(
-  video=true
-){
-
-  try{
-
-    localStream=
-    await navigator.mediaDevices
-    .getUserMedia({
-
-      video:video,
-
-      audio:true
-
-    });
-
-
-    localVideo.srcObject=
-    localStream;
-
-
-    return true;
-
-  }catch(error){
-
-    console.error(error);
-
-    videoStatus.textContent=
-    "❌ لم يتم السماح بالكاميرا والميكروفون";
-
-    return false;
-
-  }
-
-}
-
-
-/* =========================================================
-   بدء مكالمة
-   ========================================================= */
-
-async function startVideoCall(){
-
-  if(!currentUser){
-
-    videoStatus.textContent=
-    "يجب تسجيل الدخول أولاً";
-
-    return;
-
-  }
-
-
-  if(!selectedUser){
-
-    videoStatus.textContent=
-    "اختر مستخدماً من القائمة أولاً";
-
-    return;
-
-  }
-
-
-  const ok=
-  await startLocalMedia(true);
-
-
-  if(!ok)
-    return;
-
-
-  peerConnection=
-  new RTCPeerConnection(
-    rtcConfig
-  );
-
-
-  localStream
-  .getTracks()
-  .forEach(track=>{
-
-    peerConnection.addTrack(
-      track,
-      localStream
-    );
-
-  });
-
-
-  peerConnection.ontrack=
-  event=>{
-
-    remoteVideo.srcObject=
-    event.streams[0];
-
-  };
-
-
-  currentCallId=
-  currentUser.uid+
-  "_" +
-  selectedUser.uid;
-
-
-  const callRef=
-  doc(
-    chatDB,
-    "sakakerCalls",
-    currentCallId
-  );
-
-
-  /*
-    ICE candidates
-  */
-
-  const callerCandidates=
-  collection(
-    callRef,
-    "callerCandidates"
-  );
-
-
-  peerConnection.onicecandidate=
-  event=>{
-
-    if(event.candidate){
-
-      addDoc(
-        callerCandidates,
-        event.candidate.toJSON()
-      );
-
-    }
-
-  };
-
-
-  const offer=
-  await peerConnection.createOffer();
-
-
-  await peerConnection.setLocalDescription(
-    offer
-  );
-
-
-  await setDoc(
-    callRef,
-    {
-
-      caller:
-      currentUser.uid,
-
-      callee:
-      selectedUser.uid,
-
-      offer:{
-        type:offer.type,
-        sdp:offer.sdp
-      },
-
-      createdAt:
-      serverTimestamp()
-
-    }
-  );
-
-
-  /*
-    مراقبة الرد
-  */
-
-  onSnapshot(
-    callRef,
-    async snapshot=>{
-
-      const data=
-      snapshot.data();
-
-
-      if(
-        !peerConnection ||
-        !data
-      )
-        return;
-
-
-      if(
-        data.answer &&
-        !peerConnection.currentRemoteDescription
-      ){
-
-        await peerConnection.setRemoteDescription(
-          new RTCSessionDescription(
-            data.answer
-          )
-        );
-
-      }
-
-    }
-  );
-
-
-  videoStatus.textContent=
-  "📞 جاري الاتصال بـ "+
-  (selectedUser.name || "المستخدم");
-
-
-  listenForRemoteCandidates(
-    callRef,
-    "calleeCandidates"
-  );
-
-}
-
-
-/* =========================================================
-   استقبال المكالمة
-   ========================================================= */
-
-async function answerCall(
-  callId,
-  callData
-){
-
-  const ok=
-  await startLocalMedia(true);
-
-
-  if(!ok)
-    return;
-
-
-  peerConnection=
-  new RTCPeerConnection(
-    rtcConfig
-  );
-
-
-  localStream
-  .getTracks()
-  .forEach(track=>{
-
-    peerConnection.addTrack(
-      track,
-      localStream
-    );
-
-  });
-
-
-  peerConnection.ontrack=
-  event=>{
-
-    remoteVideo.srcObject=
-    event.streams[0];
-
-  };
-
-
-  const callRef=
-  doc(
-    chatDB,
-    "sakakerCalls",
-    callId
-  );
-
-
-  const calleeCandidates=
-  collection(
-    callRef,
-    "calleeCandidates"
-  );
-
-
-  peerConnection.onicecandidate=
-  event=>{
-
-    if(event.candidate){
-
-      addDoc(
-        calleeCandidates,
-        event.candidate.toJSON()
-      );
-
-    }
-
-  };
-
-
-  await peerConnection.setRemoteDescription(
-
-    new RTCSessionDescription(
-      callData.offer
-    )
-
-  );
-
-
-  const answer=
-  await peerConnection.createAnswer();
-
-
-  await peerConnection.setLocalDescription(
-    answer
-  );
-
-
-  await setDoc(
-
-    callRef,
-
-    {
-
-      answer:{
-        type:answer.type,
-        sdp:answer.sdp
-      }
-
-    },
-
-    {merge:true}
-
-  );
-
-
-  listenForRemoteCandidates(
-    callRef,
-    "callerCandidates"
-  );
-
-
-  videoStatus.textContent=
-  "📹 تم الاتصال";
-
-}
-
-
-/* =========================================================
-   مراقبة المكالمات الواردة
-   ========================================================= */
-
-onAuthStateChangedSafeCall();
-
-
-function onAuthStateChangedSafeCall(){
-
-  chatAuth.onAuthStateChanged(
-    user=>{
-
-      if(!user)
-        return;
-
-
-      const q=query(
-        collection(
-          chatDB,
-          "sakakerCalls"
-        ),
-        orderBy(
-          "createdAt",
-          "desc"
-        ),
-        limit(20)
-      );
-
-
-      onSnapshot(
-        q,
-        snapshot=>{
-
-          snapshot.forEach(item=>{
-
-            const data=
-            item.data();
-
-
-            if(
-              data.callee===
-              user.uid &&
-              data.offer
-            ){
-
-              const answer=
-              confirm(
-                "📞 يوجد اتصال فيديو وارد.\n\nهل تريد الرد؟"
-              );
-
-
-              if(answer){
-
-                answerCall(
-                  item.id,
-                  data
-                );
-
-              }
-
-            }
-
-          });
-
-        }
-      );
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   ICE
-   ========================================================= */
-
-function listenForRemoteCandidates(
-  callRef,
-  collectionName
-){
-
-  const candidates=
-  collection(
-    callRef,
-    collectionName
-  );
-
-
-  onSnapshot(
-    candidates,
-    snapshot=>{
-
-      snapshot.docChanges()
-      .forEach(async change=>{
-
-        if(
-          change.type==="added" &&
-          peerConnection
-        ){
-
-          try{
-
-            await peerConnection
-            .addIceCandidate(
-              new RTCIceCandidate(
-                change.doc.data()
-              )
-            );
-
-          }catch(error){
-
-            console.log(
-              "ICE error",
-              error
-            );
-
-          }
-
-        }
-
-      });
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   زر الفيديو
-   ========================================================= */
-
-document
-.getElementById(
-  "sakakerStartVideo"
-)
-.onclick=
-startVideoCall;
-
-
-/* =========================================================
-   صوت فقط
-   ========================================================= */
-
-document
-.getElementById(
-  "sakakerStartAudio"
-)
-.onclick=
-async()=>{
-
-  if(!selectedUser){
-
-    videoStatus.textContent=
-    "اختر مستخدماً أولاً";
-
-    return;
-
-  }
-
-
-  /*
-    نستخدم نفس الاتصال
-    لكن بدون فيديو.
-  */
-
-  const ok=
-  await startLocalMedia(false);
-
-
-  if(!ok)
-    return;
-
-
-  /*
-    نبدأ اتصال WebRTC صوتي.
-    يمكن تطويره لاحقاً إلى
-    مكالمة صوتية كاملة.
-  */
-
-  videoStatus.textContent=
-  "🎙️ تم تشغيل الميكروفون";
-
-};
-
-
-/* =========================================================
-   إنهاء المكالمة
-   ========================================================= */
-
-document
-.getElementById(
-  "sakakerStopCall"
-)
-.onclick=
-async()=>{
-
-  if(localStream){
-
-    localStream
-    .getTracks()
-    .forEach(
-      track=>track.stop()
-    );
-
-  }
-
-
-  if(peerConnection){
-
-    peerConnection.close();
-
-    peerConnection=null;
-
-  }
-
-
-  localVideo.srcObject=null;
-
-  remoteVideo.srcObject=null;
-
-
-  if(
-    currentCallId &&
-    currentUser
-  ){
-
-    try{
-
-      await deleteDoc(
-        doc(
-          chatDB,
-          "sakakerCalls",
-          currentCallId
-        )
-      );
-
-    }catch(e){
-
-      console.log(e);
-
-    }
-
-  }
-
-
-  currentCallId=null;
-
-
-  videoStatus.textContent=
-  "تم إنهاء المكالمة";
-
-};
-
-
-/* =========================================================
-   حماية النصوص
-   ========================================================= */
-
-function escapeHtml(text){
-
-  const div=
-  document.createElement("div");
-
-  div.textContent=
-  String(text ?? "");
-
-  return div.innerHTML;
-
-}
-
-
-console.log(
-  "💎 SAKAKER Chat + Video Ready"
-);
-
-</script>
-<!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API = Tawk_API || {};
-var Tawk_LoadStart = new Date();
-
-(function () {
-    var s1 = document.createElement("script");
-    var s0 = document.getElementsByTagName("script")[0];
-
-    s1.async = true;
-    s1.src = "https://embed.tawk.to/68a0d1bd11c62119233a9be9/1j2q36k9k";
-    s1.charset = "UTF-8";
-    s1.setAttribute("crossorigin", "*");
-
-    s0.parentNode.insertBefore(s1, s0);
-})();
-</script>
-<!--End of Tawk.to Script-->
