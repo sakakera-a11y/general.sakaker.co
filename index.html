@@ -1,4 +1,231 @@
 
+<!-- ====================== شريط الأخبار + الوقت + التاريخ + الطقس ====================== -->
+<div class="news-ticker">
+  
+  <!-- صندوق الوقت والتاريخ والطقس -->
+  <div class="clock-box">
+    <span id="clock"></span>
+    <span id="date"></span>
+    <span id="weather"></span>
+    <span id="locationName" style="color:#0ff; font-size:14px; margin-top:4px;"></span>
+  </div>
+
+  <!-- نص الأخبار المُكرر لحركة سلسة -->
+  <div class="ticker-wrapper">
+    <span id="newsContent"></span>
+    <span id="newsContentClone"></span>
+  </div>
+
+</div>
+
+<style>
+/* =================== شريط الأخبار =================== */
+.news-ticker {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.15) !important;
+  color: #fff;
+  padding: 5px 0;
+  overflow: hidden;
+  white-space: nowrap;
+  position: fixed;
+  top: 120px;
+  right: 0;
+  font-size: 26px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+
+  /* ✨✨ التوهج الذهبي ✨✨ */
+  box-shadow: 
+      0 0 12px rgba(255, 215, 0, 0.75),
+      0 0 25px rgba(255, 215, 0, 0.55),
+      inset 0 -2px 3px rgba(255, 215, 0, 0.9);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.75);
+
+  animation: goldGlow 2.2s infinite ease-in-out;
+}
+
+/* ✨ نبض اللمعان الذهبي ✨ */
+@keyframes goldGlow {
+  0%   { box-shadow: 0 0 10px rgba(255,215,0,0.6), 0 0 25px rgba(255,215,0,0.35); }
+  50%  { box-shadow: 0 0 25px rgba(255,215,0,0.9), 0 0 45px rgba(255,215,0,0.6); }
+  100% { box-shadow: 0 0 10px rgba(255,215,0,0.6), 0 0 25px rgba(255,215,0,0.35); }
+}
+
+/* =================== محتوى الأخبار =================== */
+.ticker-wrapper {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 80%;
+}
+
+#newsContent,
+#newsContentClone {
+  display: inline-block;
+  padding-right: 50px;
+  animation: tickerMove 300s linear infinite;
+}
+
+/* حركة من اليسار → اليمين */
+@keyframes tickerMove {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* =================== صندوق الوقت + التاريخ + الطقس =================== */
+.clock-box {
+  margin-right: 15px;
+  padding: 0;
+  background: transparent !important;
+  border: none !important;
+  font-size: 40px;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+#clock { color: #0f0; font-weight: bold; }
+#date  { color: #ccc; font-size: 15px; }
+#weather { color: #7cf; font-size: 18px; font-weight: bold; }
+</style>
+
+<script>
+/* =================== روابط مصادر الأخبار =================== */
+const feeds = [
+  ["الجزيرة", "https://www.aljazeera.net/aljazeerarss/arabe.xml"],
+  ["العربية", "https://www.alarabiya.net/.mrss/ar.xml"],
+  ["BBC عربي", "https://www.bbc.com/arabic/index.xml"],
+  ["CNN عربي", "https://arabic.cnn.com/rss.xml"],
+  ["الشرق الأوسط", "https://aawsat.com/rss.xml"],
+  ["سكاي نيوز", "https://www.skynewsarabia.com/web/rss"],
+  ["فرانس 24", "https://www.france24.com/ar/rss"],
+  ["روسيا اليوم", "https://arabic.rt.com/rss/"],
+  ["TRT عربي", "https://www.trtarabi.com/rss"]
+];
+
+/* =================== جلب الأخبار =================== */
+async function loadNews() {
+  let allNews = [];
+
+  for (const [name, url] of feeds) {
+    try {
+      const response = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent(url));
+      const data = await response.json();
+      const xml = new DOMParser().parseFromString(data.contents, "text/xml");
+      const items = xml.querySelectorAll("item");
+
+      items.forEach((item, i) => {
+        if (i < 3) {
+          const title = item.querySelector("title").textContent.trim();
+          allNews.push(`🔸 (${name}) ${title}`);
+        }
+      });
+
+    } catch (e) {
+      console.log("خطأ في جلب الأخبار من:", name);
+    }
+  }
+
+  const finalText = allNews.length > 0 ? allNews.join(" | ") : "تعذّر تحميل الأخبار حالياً.";
+
+  document.getElementById("newsContent").textContent = finalText;
+  document.getElementById("newsContentClone").textContent = finalText;
+}
+
+/* =================== الساعة والتاريخ =================== */
+function updateClock() {
+  const now = new Date();
+
+  let h = String(now.getHours()).padStart(2, '0');
+  let m = String(now.getMinutes()).padStart(2, '0');
+  let s = String(now.getSeconds()).padStart(2, '0');
+
+  document.getElementById("clock").textContent = `${h}:${m}:${s}`;
+
+  const days = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+  const dayName = days[now.getDay()];
+  const d = now.getDate();
+  const mon = now.getMonth() + 1;
+  const y = now.getFullYear();
+
+  document.getElementById("date").textContent = `${dayName} - ${y}/${mon}/${d}`;
+}
+
+/* =================== الطقس + تحديد المدينة =================== */
+function loadWeather() {
+  if (!navigator.geolocation) {
+    document.getElementById("weather").textContent = "تعذّر تحديد الموقع";
+    document.getElementById("locationName").textContent = "📍 غير معروف";
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+
+    const lat = pos.coords.latitude;
+    const lon = pos.coords.longitude;
+
+    /* === استخراج اسم المدينة === */
+    try {
+      const locRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+      const locData = await locRes.json();
+
+      const city = locData.address.city || locData.address.town || locData.address.village || "مدينة غير معروفة";
+      const country = locData.address.country || "";
+
+      document.getElementById("locationName").textContent = `📍 ${city} - ${country}`;
+
+    } catch {
+      document.getElementById("locationName").textContent = "📍 الموقع غير متوفر";
+    }
+
+    /* === بيانات الطقس === */
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code`;
+
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      const temp = data.current.temperature_2m;
+      const code = data.current.weather_code;
+
+      const conditions = {
+        0: "☀️ صافٍ",
+        1: "🌤 غالبًا صافٍ",
+        2: "⛅ غائم جزئيًا",
+        3: "☁️ غائم",
+        45: "🌫 ضباب",
+        48: "🌫 ضباب متجمد",
+        51: "🌦 رشاش خفيف",
+        61: "🌧 مطر",
+        71: "❄️ ثلوج",
+        95: "🌩 عواصف رعدية"
+      };
+
+      const condText = conditions[code] || "🌡 غير معروف";
+
+      document.getElementById("weather").textContent =
+        `${temp}°C - ${condText}`;
+
+    } catch {
+      document.getElementById("weather").textContent = "خطأ بالطقس";
+    }
+
+  }, () => {
+    document.getElementById("weather").textContent = "لم يتم السماح بالموقع";
+    document.getElementById("locationName").textContent = "📍 غير معروف";
+  });
+}
+
+/* =================== تشغيل =================== */
+loadNews();
+loadWeather();
+setInterval(updateClock, 1000);
+updateClock();
+
+/* تحديث الطقس كل 30 دقيقة */
+setInterval(loadWeather, 1800000);
+</script>
 <!-- =========================================================
      🏓 PONG ONLINE - SAKAKER
      ملف واحد كامل
