@@ -281,28 +281,49 @@ margin:0 0 10px;
 text-align:center;
 color:#00cfa3;
 ">
-🌐 غرفة اللاعبين
+🌐 تحدي اللاعبين
 </h3>
 
-<button id="pongOnline-createRoom" style="
+<div id="pongOnline-myStatusBox" style="
 width:100%;
-padding:10px;
+margin-bottom:10px;
+text-align:center;
+">
+<button id="pongOnline-myStatus" style="
+padding:8px 14px;
 border:none;
-border-radius:9px;
-background:#ffd700;
+border-radius:20px;
+background:#00a878;
+color:#fff;
 font-weight:bold;
 cursor:pointer;
-margin-bottom:8px;
 ">
-🏠 إنشاء غرفة
+🟢 متاح للعب
 </button>
+</div>
+
+<div id="pongOnline-challengeNotice" style="
+display:none;
+margin-bottom:10px;
+padding:10px;
+border-radius:10px;
+background:rgba(255,215,0,.12);
+border:1px solid rgba(255,215,0,.35);
+text-align:center;
+">
+<div id="pongOnline-challengeText" style="margin-bottom:8px;color:#ffd700;font-weight:bold;"></div>
+<div style="display:flex;justify-content:center;gap:7px;">
+<button id="pongOnline-accept" style="padding:7px 14px;border:0;border-radius:8px;background:#00cfa3;color:#fff;font-weight:bold;cursor:pointer;">قبول ✓</button>
+<button id="pongOnline-reject" style="padding:7px 14px;border:0;border-radius:8px;background:#d33;color:#fff;font-weight:bold;cursor:pointer;">رفض ✕</button>
+</div>
+</div>
 
 <div id="pongOnline-rooms" style="
-display:flex;
-flex-direction:column;
-gap:7px;
+font-size:13px;
+text-align:center;
+color:#ddd;
 ">
-لا توجد غرف مفتوحة
+اضغط على لاعب 🟢 لإرسال تحدٍ
 </div>
 
 </div>
@@ -407,6 +428,31 @@ cursor:pointer;
 
 </div>
 
+
+<!-- =========================================================
+     🔓 فتح اللعبة مستقل عن Firebase
+========================================================= -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const pongBtn = document.getElementById("pongGame-btn");
+  const pongContainer = document.getElementById("pongGame-container");
+  const pongClose = document.getElementById("pongGame-close");
+
+  if (pongBtn && pongContainer) {
+    pongBtn.addEventListener("click", function () {
+      pongContainer.style.display = "block";
+      document.body.style.overflow = "hidden";
+    });
+  }
+
+  if (pongClose && pongContainer) {
+    pongClose.addEventListener("click", function () {
+      pongContainer.style.display = "none";
+      document.body.style.overflow = "auto";
+    });
+  }
+});
+</script>
 
 <!-- =========================================================
      🔥 FIREBASE + PONG
@@ -537,11 +583,23 @@ document.getElementById("pongOnline-roomPanel");
 const roomsBox =
 document.getElementById("pongOnline-rooms");
 
-const createRoom =
-document.getElementById("pongOnline-createRoom");
-
 const onlineGameInfo =
 document.getElementById("pongOnline-gameInfo");
+
+const myStatusBtn =
+document.getElementById("pongOnline-myStatus");
+
+const challengeNotice =
+document.getElementById("pongOnline-challengeNotice");
+
+const challengeText =
+document.getElementById("pongOnline-challengeText");
+
+const acceptChallengeBtn =
+document.getElementById("pongOnline-accept");
+
+const rejectChallengeBtn =
+document.getElementById("pongOnline-reject");
 
 
 /* =========================================================
@@ -565,6 +623,10 @@ let roomListenerStarted = false;
 let usersListenerStarted = false;
 
 let roomsListenerStarted = false;
+
+let myStatus = "available";
+let incomingChallenge = null;
+let challengeListenerStarted = false;
 
 
 /* =========================================================
@@ -681,6 +743,7 @@ enterBtn.onclick = async () => {
       {
         name: myName,
         uid: currentUser.uid,
+        status: "available",
         joinedAt: serverTimestamp()
       }
     );
@@ -695,6 +758,7 @@ enterBtn.onclick = async () => {
     enterBtn.textContent = "✓ متصل";
 
     startRoomsListener();
+    startChallengeListener();
 
   }
 
@@ -723,73 +787,73 @@ function startUsersListener() {
 
   onValue(
     ref(db,"onlineUsers"),
-
     snapshot => {
 
       usersBox.innerHTML = "";
-
       let count = 0;
 
       snapshot.forEach(child => {
 
         const data = child.val();
 
-        if (
-          !data ||
-          typeof data.name !== "string"
-        ) return;
+        if (!data || typeof data.name !== "string") return;
 
         count++;
 
-        const item =
-        document.createElement("div");
+        const isMe = currentUser && child.key === currentUser.uid;
+        const playerStatus = data.status || "available";
 
+        const item = document.createElement("div");
         item.style.cssText = `
           display:flex;
           align-items:center;
+          justify-content:space-between;
           gap:7px;
-          padding:5px;
+          padding:7px;
           border-bottom:1px solid rgba(255,255,255,.08);
+          border-radius:8px;
+          transition:.2s;
         `;
 
-        const dot =
-        document.createElement("span");
+        const left = document.createElement("div");
+        left.style.cssText = "display:flex;align-items:center;gap:7px;min-width:0;";
 
-        dot.textContent = "🟢";
+        const dot = document.createElement("span");
+        dot.textContent = playerStatus === "playing" ? "🟡" : playerStatus === "busy" ? "🔴" : "🟢";
 
-        const name =
-        document.createElement("span");
+        const name = document.createElement("span");
+        name.textContent = data.name + (isMe ? " (أنت)" : "");
+        name.style.cssText = "overflow:hidden;text-overflow:ellipsis;white-space:nowrap;";
 
-        name.textContent = data.name;
+        left.append(dot,name);
+        item.appendChild(left);
 
-        item.append(dot,name);
+        const statusLabel = document.createElement("span");
+        statusLabel.style.cssText = "font-size:11px;color:#bbb;white-space:nowrap;";
+        statusLabel.textContent = playerStatus === "playing" ? "يلعب الآن" : playerStatus === "busy" ? "لا يريد اللعب" : "متاح";
+        item.appendChild(statusLabel);
+
+        if (!isMe && playerStatus === "available") {
+          item.style.cursor = "pointer";
+          item.style.background = "rgba(0,207,163,.06)";
+          item.title = "اضغط لإرسال طلب لعب";
+          item.onclick = () => sendChallenge(child.key, data.name);
+          item.onmouseenter = () => item.style.background = "rgba(0,207,163,.18)";
+          item.onmouseleave = () => item.style.background = "rgba(0,207,163,.06)";
+        } else if (!isMe) {
+          item.style.opacity = ".65";
+        }
 
         usersBox.appendChild(item);
-
       });
 
-      usersCount.textContent =
-      String(count);
+      usersCount.textContent = String(count);
 
-      if (!count) {
-
-        usersBox.textContent =
-        "لا يوجد لاعبون حاليًا";
-
-      }
-
+      if (!count) usersBox.textContent = "لا يوجد لاعبون حاليًا";
     },
-
     error => {
-
-      console.error(
-        "Users error:",
-        error
-      );
-
-      usersBox.textContent =
-      "تعذر تحميل المتواجدين";
-
+      console.error("Users error:", error);
+      usersBox.textContent = "تعذر تحميل المتواجدين";
     }
   );
 
@@ -797,255 +861,174 @@ function startUsersListener() {
 
 
 /* =========================================================
-   🏠 الغرف
+   🎯 طلبات اللعب المباشرة
 ========================================================= */
 
 function startRoomsListener() {
-
-  if (roomsListenerStarted)
-  return;
-
-  roomsListenerStarted = true;
-
-  onValue(
-    ref(db,"pongRooms"),
-
-    snapshot => {
-
-      roomsBox.innerHTML = "";
-
-      let found = false;
-
-      snapshot.forEach(child => {
-
-        const data = child.val();
-
-        if (
-          !data ||
-          data.status !== "waiting"
-        ) return;
-
-        if (data.hostUid === currentUser.uid)
-        return;
-
-        found = true;
-
-        const button =
-        document.createElement("button");
-
-        button.style.cssText = `
-          padding:9px;
-          border:none;
-          border-radius:8px;
-          background:#007bff;
-          color:#fff;
-          cursor:pointer;
-          font-weight:bold;
-        `;
-
-        button.textContent =
-        "🎮 " +
-        (data.hostName || "لاعب") +
-        " - انضمام";
-
-        button.onclick = () =>
-        joinRoom(child.key);
-
-        roomsBox.appendChild(button);
-
-      });
-
-      if (!found) {
-
-        roomsBox.textContent =
-        "لا توجد غرف انتظار حاليًا";
-
-      }
-
-    },
-
-    error => {
-
-      console.error(
-        "Rooms error:",
-        error
-      );
-
-      roomsBox.textContent =
-      "تعذر تحميل الغرف";
-
-    }
-  );
-
+  // النظام الجديد لا يستخدم غرفًا يدوية.
+  roomsBox.textContent = "اضغط على لاعب 🟢 لإرسال تحدٍ";
 }
 
+async function sendChallenge(targetUid, targetName) {
 
-/* =========================================================
-   🏠 إنشاء غرفة
-========================================================= */
+  if (!currentUser || !myName) return;
 
-createRoom.onclick = async () => {
-
-  if (!currentUser || !myName) {
-
-    alert("سجل اسمك أولًا");
-
+  if (myStatus !== "available") {
+    status.textContent = "غيّر حالتك إلى 🟢 متاح للعب أولًا";
     return;
-
   }
 
   try {
+    const challengeRef = push(ref(db, "pongChallenges/" + targetUid));
 
-    const newRoom =
-    push(ref(db,"pongRooms"));
+    await set(challengeRef, {
+      fromUid: currentUser.uid,
+      fromName: myName,
+      toUid: targetUid,
+      toName: targetName,
+      status: "pending",
+      createdAt: serverTimestamp()
+    });
 
-    currentRoomId =
-    newRoom.key;
+    status.textContent = "🎯 تم إرسال طلب اللعب إلى " + targetName;
 
-    currentRoomRef =
-    newRoom;
-
-    currentPlayer =
-    "host";
-
-    await set(
-      newRoom,
-      {
-
-        hostUid:
-        currentUser.uid,
-
-        hostName:
-        myName,
-
-        guestUid:
-        null,
-
-        guestName:
-        null,
-
-        status:
-        "waiting",
-
-        p1Y:
-        0.5,
-
-        p2Y:
-        0.5,
-
-        ballX:
-        0.5,
-
-        ballY:
-        0.5,
-
-        dx:
-        0.006,
-
-        dy:
-        0.004,
-
-        score1:
-        0,
-
-        score2:
-        0,
-
-        updatedAt:
-        serverTimestamp()
-
+    onValue(challengeRef, async snap => {
+      const data = snap.val();
+      if (!data) return;
+      if (data.status === "accepted" && data.roomId && currentRoomId !== data.roomId) {
+        currentRoomId = data.roomId;
+        currentRoomRef = ref(db, "pongRooms/" + data.roomId);
+        currentPlayer = "host";
+        await update(myOnlineRef, { status: "playing" });
+        status.textContent = "🎮 تم قبول التحدي — تبدأ المباراة";
+        startRoomListener();
+        startOnlineGame();
+      } else if (data.status === "rejected") {
+        status.textContent = "❌ " + targetName + " رفض طلب اللعب";
       }
-    );
-
-    await onDisconnect(newRoom)
-    .remove();
-
-    status.textContent =
-    "🏠 الغرفة جاهزة... بانتظار لاعب";
-
-    createRoom.textContent =
-    "⏳ بانتظار اللاعب...";
-
-    createRoom.disabled = true;
-
-    startRoomListener();
-
+    });
+  } catch(error) {
+    console.error("Challenge error:", error);
+    status.textContent = "تعذر إرسال طلب اللعب";
   }
+}
 
-  catch(error) {
+function startChallengeListener() {
 
-    console.error(error);
+  if (challengeListenerStarted || !currentUser) return;
+  challengeListenerStarted = true;
 
-    status.textContent =
-    "تعذر إنشاء الغرفة";
+  onValue(ref(db, "pongChallenges/" + currentUser.uid), snapshot => {
 
+    let latest = null;
+
+    snapshot.forEach(child => {
+      const data = child.val();
+      if (data && data.status === "pending") {
+        latest = { id: child.key, ...data };
+      }
+    });
+
+    incomingChallenge = latest;
+
+    if (latest) {
+      challengeNotice.style.display = "block";
+      challengeText.textContent = "🎮 " + latest.fromName + " يريد اللعب معك";
+    } else {
+      challengeNotice.style.display = "none";
+    }
+  }, error => {
+    console.error("Challenge listener error:", error);
+  });
+}
+
+myStatusBtn.onclick = async () => {
+
+  if (!myOnlineRef || !currentUser) return;
+
+  myStatus = myStatus === "available" ? "busy" : "available";
+
+  try {
+    await update(myOnlineRef, { status: myStatus });
+    myStatusBtn.textContent = myStatus === "available" ? "🟢 متاح للعب" : "🔴 لا أريد اللعب";
+    myStatusBtn.style.background = myStatus === "available" ? "#00a878" : "#a33";
+    status.textContent = myStatus === "available" ? "🟢 أنت متاح للعب" : "🔴 لن تصلك طلبات لعب جديدة";
+  } catch(error) {
+    console.error("Status error:", error);
   }
-
 };
 
+acceptChallengeBtn.onclick = async () => {
+
+  if (!incomingChallenge || !currentUser) return;
+
+  try {
+    const challengeRef = ref(db, "pongChallenges/" + currentUser.uid + "/" + incomingChallenge.id);
+
+    const room = push(ref(db, "pongRooms"));
+    currentRoomId = room.key;
+    currentRoomRef = room;
+    currentPlayer = "guest";
+
+    await set(room, {
+      hostUid: incomingChallenge.fromUid,
+      hostName: incomingChallenge.fromName,
+      guestUid: currentUser.uid,
+      guestName: myName,
+      status: "playing",
+      p1Y: 0.5,
+      p2Y: 0.5,
+      ballX: 0.5,
+      ballY: 0.5,
+      dx: 0.006,
+      dy: 0.004,
+      score1: 0,
+      score2: 0,
+      updatedAt: serverTimestamp()
+    });
+
+    await update(challengeRef, { status: "accepted", roomId: room.key });
+    await update(myOnlineRef, { status: "playing" });
+
+    challengeNotice.style.display = "none";
+    incomingChallenge = null;
+    status.textContent = "🎮 تم قبول التحدي";
+    startRoomListener();
+    startOnlineGame();
+  } catch(error) {
+    console.error("Accept challenge error:", error);
+    status.textContent = "تعذر قبول التحدي";
+  }
+};
+
+rejectChallengeBtn.onclick = async () => {
+
+  if (!incomingChallenge || !currentUser) return;
+
+  try {
+    await update(
+      ref(db, "pongChallenges/" + currentUser.uid + "/" + incomingChallenge.id),
+      { status: "rejected" }
+    );
+    challengeNotice.style.display = "none";
+    status.textContent = "تم رفض طلب اللعب";
+    incomingChallenge = null;
+  } catch(error) {
+    console.error("Reject challenge error:", error);
+  }
+};
 
 /* =========================================================
-   🎮 الانضمام إلى غرفة
+   🏠 إنشاء غرفة — لم يعد مستخدمًا
 ========================================================= */
 
 async function joinRoom(roomId) {
-
-  if (!currentUser || !myName)
-  return;
-
-  const room =
-  ref(db,"pongRooms/" + roomId);
-
-  try {
-
-    await update(
-      room,
-      {
-
-        guestUid:
-        currentUser.uid,
-
-        guestName:
-        myName,
-
-        status:
-        "playing",
-
-        updatedAt:
-        serverTimestamp()
-
-      }
-    );
-
-    currentRoomId =
-    roomId;
-
-    currentRoomRef =
-    room;
-
-    currentPlayer =
-    "guest";
-
-    status.textContent =
-    "🎮 انضممت إلى الغرفة";
-
-    startRoomListener();
-
-    startOnlineGame();
-
-  }
-
-  catch(error) {
-
-    console.error(error);
-
-    status.textContent =
-    "تعذر الانضمام إلى الغرفة";
-
-  }
-
+  // محفوظ للتوافق مع النسخة القديمة.
 }
 
+async function createRoomLegacy() {
+  // نظام الغرف اليدوي تم استبداله بالتحدي المباشر.
+}
 
 /* =========================================================
    🔄 مراقبة الغرفة
@@ -1194,6 +1177,15 @@ async function stopOnlineGame() {
 
     } catch(e) {}
 
+  }
+
+  if (myOnlineRef) {
+    update(myOnlineRef, { status: "available" }).catch(() => {});
+    myStatus = "available";
+    if (myStatusBtn) {
+      myStatusBtn.textContent = "🟢 متاح للعب";
+      myStatusBtn.style.background = "#00a878";
+    }
   }
 
   currentRoomRef = null;
@@ -2025,15 +2017,17 @@ e => {
    🔘 الأزرار
 ========================================================= */
 
-btn.onclick = () => {
+/* فتح اللعبة مستقل عن Firebase */
+document.addEventListener("DOMContentLoaded", function () {
 
-  cont.style.display =
-  "block";
+  if (btn && cont) {
+    btn.addEventListener("click", function () {
+      cont.style.display = "block";
+      document.body.style.overflow = "hidden";
+    });
+  }
 
-  document.body.style.overflow =
-  "hidden";
-
-};
+});
 
 
 document.getElementById(
@@ -4566,7 +4560,7 @@ applyLanguage();
 /* ====== الدوائر ====== */
 .video-top-container-fixed {
   position: fixed;
-  top: 550px;
+  top: 250px;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -4587,7 +4581,7 @@ applyLanguage();
   user-select: none;
   transition: 0.3s ease;
   overflow: hidden;
-  font-size: 28px;
+  font-size: 12px;
   border: 1px solid rgba(255,255,255,0.4);
   position: relative;
 }
@@ -4600,7 +4594,7 @@ applyLanguage();
 /* ====== الفيديو المصغّر داخل الدائرة ====== */
 .miniVideo {
   position: absolute;
-  width: 260%;
+  width: 160%;
   height: 160%;
   top: -30%;
   left: -30%;
