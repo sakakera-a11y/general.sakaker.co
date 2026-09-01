@@ -564,22 +564,24 @@ z-index:2147483647;
 overflow:hidden;
 font-family:Arial,Tajawal,sans-serif;
 ">
-<!-- 🌊 الخلفية -->
-<iframe
-id="pongGame-video"
-src="https://www.youtube.com/embed/iB3vKc8EBs0?autoplay=1&mute=1&loop=1&playlist=iB3vKc8EBs0&enablejsapi=1"
-frameborder="0"
-allow="autoplay;encrypted-media"
-style="
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-pointer-events:none;
-z-index:1;
-">
-</iframe>
+<!-- 🌸 خلفية حديقة أزهار ثابتة -->
+<div id="pongGame-background"></div>
+
+<style>
+#pongGame-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+
+    background-image: url("ضع-رابط-صورة-الحديقة-هنا");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+</style>
 
 <!-- =========================================================
      🔹 الشاشة الرئيسية
@@ -6999,13 +7001,24 @@ iframe.map { height: 200px; }
 <div class="overlay">
   <div class="box">
     <button class="close">×</button>
-    <iframe class="video"
-      src="https://www.youtube.com/embed/SKIhQsszmP8?autoplay=1&mute=1"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen>
-    </iframe>
-    <iframe class="map" id="mapFrame" loading="lazy"></iframe>
-  </div>
+<!-- 🌸 خلفية حديقة أزهار ثابتة -->
+<div id="pongGame-background"></div>
+
+<style>
+#pongGame-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+
+    background-image: url("ضع-رابط-صورة-الحديقة-هنا");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+</style>
 </div>
 
 <script>
