@@ -551,7 +551,6 @@ setInterval(loadWeather, 1800000);
 <!-- =========================================================
      🔹 نافذة اللعبة
 ========================================================= -->
-
 <div id="pongGame-container" style="
 display:none;
 position:fixed;
@@ -559,30 +558,18 @@ top:0;
 left:0;
 width:100vw;
 height:100vh;
-background:#000;
+
+background:
+    url('ضع-رابط-صورة-الحديقة-هنا')
+    center center
+    / cover
+    no-repeat
+    fixed;
+
 z-index:2147483647;
 overflow:hidden;
 font-family:Arial,Tajawal,sans-serif;
 ">
-<!-- 🌸 خلفية حديقة أزهار ثابتة -->
-<div id="pongGame-background"></div>
-
-<style>
-#pongGame-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-
-    background-image: url("ضع-رابط-صورة-الحديقة-هنا");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-</style>
-
 <!-- =========================================================
      🔹 الشاشة الرئيسية
 ========================================================= -->
@@ -6898,155 +6885,560 @@ window.addEventListener("keyup",(e)=>{
 
 <!-- Emerald Music Overlay END -->
 
-    
-
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title> When the moon glows with emerald. </title>
+<title>When the moon glows with emerald.</title>
+
 <style>
-/* 🔹 أيقونة النجمة */
+
+/* ⭐ أيقونة النجمة */
 .launcher {
-  position: fixed;
-  bottom: 235px; 
-  right: 125px;
-  width: 50px;
-  height: 50px;
-  background: conic-gradient(red, orange, yellow, green, blue, indigo, violet, red);
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 
-                     79% 91%, 50% 70%, 21% 91%, 32% 57%, 
-                     2% 35%, 39% 35%);
-  border-radius: 50%;
-  box-shadow: 0 0 25px #fff, 0 0 50px #0ff;
-  animation: rotateColors 3s linear infinite, pulse 2s ease-in-out infinite;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
+    position: fixed;
+    bottom: 235px;
+    right: 125px;
+
+    width: 50px;
+    height: 50px;
+
+    background:
+        conic-gradient(
+            red,
+            orange,
+            yellow,
+            green,
+            blue,
+            indigo,
+            violet,
+            red
+        );
+
+    clip-path: polygon(
+        50% 0%,
+        61% 35%,
+        98% 35%,
+        68% 57%,
+        79% 91%,
+        50% 70%,
+        21% 91%,
+        32% 57%,
+        2% 35%,
+        39% 35%
+    );
+
+    box-shadow:
+        0 0 20px white,
+        0 0 35px #00ffff,
+        0 0 55px #00ffcc;
+
+    animation:
+        rotateColors 3s linear infinite,
+        pulse 2s ease-in-out infinite;
+
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 9999;
 }
+
 
 .launcher span {
-  color: white;
-  font-weight: bold;
-  text-align: center;
-  text-shadow: 0 0 8px black;
-  font-size: 14px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    text-shadow:
+        0 0 4px black,
+        0 0 8px black;
+
+    font-size: 12px;
+    line-height: 14px;
 }
+
 
 @keyframes rotateColors {
-  0% { filter: hue-rotate(0deg); }
-  100% { filter: hue-rotate(360deg); }
+
+    0% {
+        filter: hue-rotate(0deg);
+    }
+
+    100% {
+        filter: hue-rotate(360deg);
+    }
+
 }
+
+
 @keyframes pulse {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
 }
 
-/* 🔹 الإطار المنبثق */
+
+
+/* 🌑 الخلفية الداكنة عند فتح النافذة */
 .overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 9998;
+
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0,0,0,0.80);
+
+    display: none;
+
+    justify-content: center;
+    align-items: center;
+
+    z-index: 10000;
+
+    padding: 15px;
+    box-sizing: border-box;
 }
 
+
+
+/* 🌸 صندوق الخريطة */
 .box {
-  background: #000;
-  border-radius: 16px;
-  box-shadow: 0 0 25px #0ff;
-  padding: 12px;
-  width: 80%;
-  max-width: 400px;
-  text-align: center;
-  position: relative;
+
+    width: 90%;
+    max-width: 500px;
+    height: 500px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius: 22px;
+
+    border: 2px solid #00ffcc;
+
+    box-shadow:
+        0 0 15px #00ffcc,
+        0 0 35px #00ffff;
+
 }
 
-iframe {
-  width: 100%;
-  border: none;
-  border-radius: 10px;
-  margin-top: 8px;
-}
 
-iframe.video { height: 200px; }
-iframe.map { height: 200px; }
 
-.close {
-  position: absolute;
-  top: 10px;
-  right: -12px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: none;
-  background: red;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  box-shadow: 0 0 10px white;
-}
-</style>
-</head>
-
-<div class="launcher" title="عرض الفيديو والخريطة">
-  <span>خرائط<br>Map</span>
-</div>
-
-<div class="overlay">
-  <div class="box">
-    <button class="close">×</button>
-<!-- 🌸 خلفية حديقة أزهار ثابتة -->
-<div id="pongGame-background"></div>
-
-<style>
+/* 🌸 خلفية حديقة ثابتة */
 #pongGame-background {
+
     position: absolute;
+
     top: 0;
     left: 0;
+
     width: 100%;
     height: 100%;
-    z-index: 1;
 
-    background-image: url("ضع-رابط-صورة-الحديقة-هنا");
+    background-image:
+        url("ضع-رابط-صورة-الحديقة-هنا");
+
     background-size: cover;
+
     background-position: center;
+
     background-repeat: no-repeat;
+
+    z-index: 1;
 }
+
+
+
+/* 🌑 طبقة خفيفة فوق الخلفية */
+.backgroundShade {
+
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(0,0,0,0.30);
+
+    z-index: 2;
+}
+
+
+
+/* 🗺️ محتوى الخريطة */
+.mapContent {
+
+    position: relative;
+
+    z-index: 3;
+
+    height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+
+}
+
+
+
+/* عنوان */
+.mapTitle {
+
+    color: white;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    margin-bottom: 15px;
+
+    text-shadow:
+        0 0 6px black,
+        0 0 12px #00ffcc;
+
+}
+
+
+
+/* 🗺️ الخريطة */
+#mapFrame {
+
+    width: 100%;
+
+    height: 350px;
+
+    border: 2px solid rgba(255,255,255,0.8);
+
+    border-radius: 15px;
+
+    background: white;
+
+    box-shadow:
+        0 0 15px rgba(0,255,204,0.8);
+
+}
+
+
+
+/* ❌ زر الإغلاق */
+.close {
+
+    position: absolute;
+
+    top: 10px;
+    right: 10px;
+
+    width: 34px;
+    height: 34px;
+
+    border-radius: 50%;
+
+    border: 2px solid white;
+
+    background: red;
+
+    color: white;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    z-index: 10;
+
+    box-shadow:
+        0 0 10px white,
+        0 0 15px red;
+
+}
+
+
+
+/* 📱 الجوال */
+@media (max-width: 600px) {
+
+    .launcher {
+
+        right: 25px;
+        bottom: 180px;
+
+        width: 46px;
+        height: 46px;
+
+    }
+
+
+    .launcher span {
+
+        font-size: 11px;
+
+    }
+
+
+    .box {
+
+        width: 95%;
+        height: 460px;
+
+    }
+
+
+    #mapFrame {
+
+        height: 330px;
+
+    }
+
+}
+
 </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ⭐ أيقونة الخرائط -->
+<div
+    class="launcher"
+    title="عرض الخريطة"
+    role="button"
+    tabindex="0"
+>
+
+    <span>
+        خرائط
+        <br>
+        Map
+    </span>
+
 </div>
 
+
+
+<!-- 🌑 النافذة المنبثقة -->
+<div class="overlay">
+
+
+    <div class="box">
+
+
+        <!-- ❌ إغلاق -->
+        <button
+            class="close"
+            type="button"
+            aria-label="إغلاق"
+        >
+            ×
+        </button>
+
+
+
+        <!-- 🌸 خلفية الحديقة -->
+        <div id="pongGame-background"></div>
+
+
+        <!-- طبقة التعتيم -->
+        <div class="backgroundShade"></div>
+
+
+
+        <!-- محتوى الخريطة -->
+        <div class="mapContent">
+
+
+            <div class="mapTitle">
+                📍 موقعك على الخريطة
+                <br>
+                Your Location
+            </div>
+
+
+            <iframe
+                id="mapFrame"
+                title="Google Map"
+                loading="lazy"
+                allowfullscreen>
+            </iframe>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
 <script>
-const launcher = document.querySelector('.launcher');
-const overlay = document.querySelector('.overlay');
-const closeBtn = document.querySelector('.close');
-const mapFrame = document.getElementById('mapFrame');
 
-launcher.addEventListener('click', () => {
-  overlay.style.display = 'flex';
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(pos => {
-      const lat = pos.coords.latitude;
-      const lon = pos.coords.longitude;
-      mapFrame.src = `https://www.google.com/maps?q=${lat},${lon}&z=15&output=embed`;
-    }, () => {
-      mapFrame.src = "https://www.google.com/maps";
-    });
-  } else {
-    mapFrame.src = "https://www.google.com/maps";
-  }
-});
+const launcher =
+    document.querySelector(".launcher");
 
-closeBtn.addEventListener('click', () => {
-  overlay.style.display = 'none';
-});
+const overlay =
+    document.querySelector(".overlay");
+
+const closeBtn =
+    document.querySelector(".close");
+
+const mapFrame =
+    document.getElementById("mapFrame");
+
+
+
+/* ⭐ فتح الخريطة */
+function openMap() {
+
+    overlay.style.display = "flex";
+
+
+    if (navigator.geolocation) {
+
+
+        navigator.geolocation.getCurrentPosition(
+
+            function(position) {
+
+
+                const lat =
+                    position.coords.latitude;
+
+
+                const lon =
+                    position.coords.longitude;
+
+
+                mapFrame.src =
+                    `https://www.google.com/maps?q=${lat},${lon}&z=15&output=embed`;
+
+            },
+
+
+            function() {
+
+
+                mapFrame.src =
+                    "https://www.google.com/maps?q=Saudi+Arabia&z=5&output=embed";
+
+            },
+
+
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 60000
+            }
+
+        );
+
+
+    } else {
+
+
+        mapFrame.src =
+            "https://www.google.com/maps?q=Saudi+Arabia&z=5&output=embed";
+
+    }
+
+}
+
+
+
+/* ⭐ الضغط على النجمة */
+launcher.addEventListener(
+    "click",
+    openMap
+);
+
+
+
+/* ⌨️ فتح عن طريق لوحة المفاتيح */
+launcher.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Enter" ||
+            event.key === " "
+        ) {
+
+            openMap();
+
+        }
+
+    }
+);
+
+
+
+/* ❌ إغلاق */
+closeBtn.addEventListener(
+    "click",
+    function() {
+
+        overlay.style.display = "none";
+
+    }
+);
+
+
+
+/* الضغط خارج الصندوق للإغلاق */
+overlay.addEventListener(
+    "click",
+    function(event) {
+
+        if (event.target === overlay) {
+
+            overlay.style.display = "none";
+
+        }
+
+    }
+);
+
+
+
+/* زر ESC */
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Escape") {
+
+            overlay.style.display = "none";
+
+        }
+
+    }
+);
+
 </script>
 
+
+</body>
+</html>
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
