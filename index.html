@@ -1,3 +1,1004 @@
+<!-- =========================================================
+     ⭐ دائرة فيديو واحدة مميزة
+========================================================= -->
+
+<div class="video-top-container-fixed">
+
+  <div class="video-circle" data-video="n7eQejkXbnM">
+
+```
+<!-- وهج خارجي -->
+<div class="circle-glow"></div>
+
+<!-- انعكاس زجاجي -->
+<div class="circle-shine"></div>
+
+<!-- حلقات زخرفية -->
+<div class="circle-orbit orbit-1"></div>
+<div class="circle-orbit orbit-2"></div>
+
+<!-- الفيديو المصغر -->
+<iframe
+  class="miniVideo"
+  src="https://www.youtube.com/embed/n7eQejkXbnM?autoplay=1&mute=1&playsinline=1&controls=0&loop=1&playlist=n7eQejkXbnM"
+  title="Video"
+  frameborder="0"
+  allow="autoplay; encrypted-media">
+</iframe>
+
+<!-- رمز التشغيل -->
+<div class="video-play-icon">▶</div>
+```
+
+  </div>
+
+</div>
+
+<!-- =========================================================
+     ⭐ إطار الفيديو المنبثق
+========================================================= -->
+
+<div id="videoBoxFixed">
+
+  <!-- الإطار الخارجي المتحرك -->
+
+  <div class="video-box-border"></div>
+
+  <!-- الزخرفة الداخلية -->
+
+  <div class="video-box-inner"></div>
+
+  <!-- عنوان صغير -->
+
+  <div class="video-box-title">
+    ✦ VIDEO ✦
+  </div>
+
+  <!-- زر الإغلاق -->
+
+<button
+ id="videoCloseBtn"
+ onclick="closeFixedVideo()">
+✕ </button>
+
+  <!-- الفيديو -->
+
+  <iframe
+    id="fixedVideo"
+    src=""
+    allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+    allowfullscreen>
+  </iframe>
+
+</div>
+
+<style>
+
+/* =========================================================
+   الحاوية
+========================================================= */
+
+.video-top-container-fixed {
+
+  position: fixed;
+
+  top: 250px;
+  left: 0;
+
+  width: 100%;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+
+  padding-left: 28px;
+
+  box-sizing: border-box;
+
+  z-index: 50000;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   ⭐ الدائرة الرئيسية
+========================================================= */
+
+.video-circle {
+
+  width: 125px;
+  height: 105px;
+
+  position: relative;
+
+  border-radius: 50%;
+
+  overflow: hidden;
+
+  cursor: pointer;
+
+  pointer-events: auto;
+
+  isolation: isolate;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      rgba(255,255,255,.20),
+      rgba(0,0,0,.55) 55%,
+      rgba(0,255,200,.18)
+    );
+
+  border: 2px solid #00ffcc;
+
+  box-shadow:
+
+    0 0 8px #00ffcc,
+    0 0 20px rgba(0,255,200,.8),
+    0 0 40px rgba(0,255,200,.45),
+    0 0 70px rgba(255,215,0,.20),
+
+    inset 0 0 20px rgba(0,255,200,.35);
+
+  transition:
+
+    transform .4s cubic-bezier(.2,.8,.2,1),
+    box-shadow .4s ease;
+
+  animation:
+    emeraldPulse 2.8s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   الحلقة الذهبية الخارجية
+========================================================= */
+
+.video-circle::before {
+
+  content: "";
+
+  position: absolute;
+
+  inset: -6px;
+
+  border-radius: 50%;
+
+  border: 2px solid transparent;
+
+  border-top-color: #00ffcc;
+  border-right-color: #ffd700;
+  border-bottom-color: transparent;
+  border-left-color: #ffd700;
+
+  filter:
+    drop-shadow(0 0 5px #00ffcc)
+    drop-shadow(0 0 12px #ffd700);
+
+  animation:
+    rotateRing 4s linear infinite;
+
+  z-index: 7;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   الحلقة الداخلية
+========================================================= */
+
+.video-circle::after {
+
+  content: "";
+
+  position: absolute;
+
+  inset: 7px;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(255,215,0,.8);
+
+  box-shadow:
+
+    0 0 8px rgba(255,215,0,.7),
+    inset 0 0 15px rgba(0,255,200,.3);
+
+  z-index: 5;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   حلقات مدارية إضافية
+========================================================= */
+
+.circle-orbit {
+
+  position: absolute;
+
+  border-radius: 50%;
+
+  pointer-events: none;
+
+  z-index: 6;
+
+}
+
+
+.orbit-1 {
+
+  inset: -10px;
+
+  border:
+
+    1px solid transparent;
+
+  border-top-color: rgba(0,255,200,.8);
+  border-bottom-color: rgba(255,215,0,.6);
+
+  transform: rotate(25deg);
+
+  animation:
+    rotateRingReverse 6s linear infinite;
+}
+
+
+.orbit-2 {
+
+  inset: 3px;
+
+  border:
+
+    1px solid rgba(0,255,200,.35);
+
+  transform: rotate(-20deg);
+
+  animation:
+    rotateRing 8s linear infinite;
+}
+
+
+/* =========================================================
+   الفيديو داخل الدائرة
+========================================================= */
+
+.miniVideo {
+
+  position: absolute;
+
+  width: 165%;
+  height: 165%;
+
+  top: -32.5%;
+  left: -32.5%;
+
+  border: none;
+
+  pointer-events: none;
+
+  opacity: .92;
+
+  z-index: 1;
+
+  transform: scale(1.03);
+
+  transition:
+
+    transform .5s ease,
+    opacity .5s ease;
+}
+
+
+/* =========================================================
+   الوهج الداخلي
+========================================================= */
+
+.circle-glow {
+
+  position: absolute;
+
+  inset: 0;
+
+  border-radius: 50%;
+
+  background:
+
+    radial-gradient(
+      circle,
+      transparent 30%,
+      rgba(0,255,200,.05) 50%,
+      rgba(0,255,200,.20) 75%,
+      rgba(255,215,0,.18) 100%
+    );
+
+  z-index: 2;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   انعكاس زجاجي متحرك
+========================================================= */
+
+.circle-shine {
+
+  position: absolute;
+
+  top: -70%;
+  left: -100%;
+
+  width: 42%;
+  height: 240%;
+
+  background:
+
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255,255,255,.65),
+      transparent
+    );
+
+  transform: rotate(25deg);
+
+  z-index: 8;
+
+  pointer-events: none;
+
+  animation:
+    shineMove 4.5s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   رمز التشغيل
+========================================================= */
+
+.video-play-icon {
+
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform:
+    translate(-50%,-50%);
+
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  padding-left: 3px;
+
+  border-radius: 50%;
+
+  color: #ffd700;
+
+  background:
+    rgba(0,0,0,.45);
+
+  border:
+    1px solid rgba(255,215,0,.8);
+
+  box-shadow:
+
+    0 0 10px rgba(255,215,0,.7),
+    inset 0 0 10px rgba(0,255,200,.25);
+
+  font-size: 15px;
+
+  z-index: 9;
+
+  pointer-events: none;
+
+  transition: .3s;
+}
+
+
+/* =========================================================
+   عند مرور الماوس
+========================================================= */
+
+.video-circle:hover {
+
+  transform: scale(1.18);
+
+  border-color: #ffd700;
+
+  box-shadow:
+
+    0 0 12px #00ffcc,
+    0 0 30px #00ffcc,
+    0 0 55px #ffd700,
+    0 0 90px rgba(0,255,200,.4),
+
+    inset 0 0 30px rgba(0,255,200,.5);
+}
+
+
+.video-circle:hover .miniVideo {
+
+  transform: scale(1.12);
+
+  opacity: 1;
+}
+
+
+.video-circle:hover .video-play-icon {
+
+  transform:
+    translate(-50%,-50%)
+    scale(1.18);
+
+  color: #fff;
+
+  border-color: #fff;
+
+  box-shadow:
+
+    0 0 15px #ffd700,
+    0 0 25px #00ffcc;
+}
+
+
+/* =========================================================
+   الضغط
+========================================================= */
+
+.video-circle:active {
+
+  transform: scale(.94);
+
+}
+
+
+/* =========================================================
+   ⭐ إطار الفيديو المنبثق
+========================================================= */
+
+#videoBoxFixed {
+
+  position: fixed;
+
+  top: 50px;
+  left: 50%;
+
+  transform:
+    translateX(-50%);
+
+  width: 390px;
+  height: 235px;
+
+  background: #000;
+
+  border-radius: 22px;
+
+  overflow: hidden;
+
+  display: none;
+
+  z-index: 49999;
+
+  border: 2px solid #00ffcc;
+
+  box-shadow:
+
+    0 0 10px #00ffcc,
+    0 0 25px #00ffcc,
+    0 0 50px rgba(0,255,200,.65),
+    0 0 90px rgba(255,215,0,.35);
+
+  animation:
+    videoAppear .4s cubic-bezier(.2,.8,.2,1);
+}
+
+
+/* =========================================================
+   الإطار المتحرك
+========================================================= */
+
+.video-box-border {
+
+  position: absolute;
+
+  inset: 0;
+
+  border-radius: 22px;
+
+  border: 2px solid transparent;
+
+  border-top-color: #00ffcc;
+  border-right-color: #ffd700;
+
+  box-shadow:
+
+    inset 0 0 18px rgba(0,255,200,.35);
+
+  animation:
+    rotateBorder 4s linear infinite;
+
+  pointer-events: none;
+
+  z-index: 5;
+}
+
+
+/* =========================================================
+   إطار داخلي
+========================================================= */
+
+.video-box-inner {
+
+  position: absolute;
+
+  inset: 7px;
+
+  border-radius: 17px;
+
+  border: 1px solid rgba(255,215,0,.55);
+
+  box-shadow:
+
+    inset 0 0 15px rgba(255,215,0,.18);
+
+  pointer-events: none;
+
+  z-index: 4;
+}
+
+
+/* =========================================================
+   عنوان الفيديو
+========================================================= */
+
+.video-box-title {
+
+  position: absolute;
+
+  top: 7px;
+  left: 50%;
+
+  transform:
+    translateX(-50%);
+
+  padding: 3px 12px;
+
+  border-radius: 20px;
+
+  background:
+    rgba(0,0,0,.75);
+
+  border:
+    1px solid rgba(0,255,200,.55);
+
+  color: #00ffcc;
+
+  font-size: 10px;
+
+  letter-spacing: 3px;
+
+  text-shadow:
+    0 0 8px #00ffcc;
+
+  z-index: 8;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   فيديو الإطار
+========================================================= */
+
+#videoBoxFixed iframe {
+
+  width: 100%;
+  height: 100%;
+
+  border: none;
+
+  display: block;
+}
+
+
+/* =========================================================
+   زر الإغلاق
+========================================================= */
+
+#videoCloseBtn {
+
+  position: absolute;
+
+  top: 7px;
+  right: 7px;
+
+  width: 31px;
+  height: 31px;
+
+  border-radius: 50%;
+
+  border:
+    1px solid rgba(255,215,0,.85);
+
+  background:
+    rgba(0,0,0,.82);
+
+  color: #ffd700;
+
+  font-size: 15px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  z-index: 15;
+
+  transition: .3s;
+
+  box-shadow:
+    0 0 10px rgba(255,215,0,.6);
+}
+
+
+#videoCloseBtn:hover {
+
+  color: #fff;
+
+  background:
+    rgba(255,0,0,.75);
+
+  border-color: #fff;
+
+  box-shadow:
+    0 0 18px red;
+
+  transform:
+    rotate(90deg)
+    scale(1.12);
+}
+
+
+/* =========================================================
+   الحركات
+========================================================= */
+
+@keyframes rotateRing {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+@keyframes rotateRingReverse {
+
+  from {
+    transform: rotate(360deg);
+  }
+
+  to {
+    transform: rotate(0deg);
+  }
+
+}
+
+
+@keyframes rotateBorder {
+
+  from {
+    filter:
+      drop-shadow(0 0 3px #00ffcc);
+    transform: rotate(0deg);
+  }
+
+  to {
+    filter:
+      drop-shadow(0 0 8px #ffd700);
+    transform: rotate(360deg);
+  }
+
+}
+
+
+@keyframes shineMove {
+
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  50% {
+    left: 150%;
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 0;
+  }
+
+  100% {
+    left: 150%;
+    opacity: 0;
+  }
+
+}
+
+
+@keyframes emeraldPulse {
+
+  0%,
+  100% {
+
+    box-shadow:
+
+      0 0 8px rgba(0,255,200,.8),
+      0 0 20px rgba(0,255,200,.55),
+      0 0 40px rgba(0,255,200,.30);
+
+  }
+
+  50% {
+
+    box-shadow:
+
+      0 0 14px #00ffcc,
+      0 0 30px #00ffcc,
+      0 0 55px rgba(255,215,0,.65),
+      0 0 80px rgba(0,255,200,.35);
+
+  }
+
+}
+
+
+@keyframes videoAppear {
+
+  from {
+
+    opacity: 0;
+
+    transform:
+      translateX(-50%)
+      scale(.72)
+      rotate(-3deg);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform:
+      translateX(-50%)
+      scale(1)
+      rotate(0deg);
+
+  }
+
+}
+
+
+/* =========================================================
+   الجوال
+========================================================= */
+
+@media (max-width:600px) {
+
+  .video-top-container-fixed {
+
+    top: 180px;
+
+    padding-left: 12px;
+
+  }
+
+
+  .video-circle {
+
+    width: 90px;
+    height: 78px;
+
+  }
+
+
+  .video-play-icon {
+
+    width: 27px;
+    height: 27px;
+
+    font-size: 12px;
+
+  }
+
+
+  #videoBoxFixed {
+
+    width: 90%;
+
+    height: 195px;
+
+    top: 55px;
+
+    border-radius: 18px;
+
+  }
+
+
+  .video-box-border {
+
+    border-radius: 18px;
+
+  }
+
+
+  .video-box-inner {
+
+    border-radius: 14px;
+
+  }
+
+}
+
+
+/* =========================================================
+   منع أي تأثير على بقية الموقع
+========================================================= */
+
+.video-top-container-fixed *,
+#videoBoxFixed * {
+
+  box-sizing: border-box;
+
+}
+
+</style>
+
+<!-- =========================================================
+     JavaScript
+========================================================= -->
+
+<script>
+
+(function(){
+
+  const circle =
+    document.querySelector(".video-circle");
+
+  const box =
+    document.getElementById("videoBoxFixed");
+
+  const iframe =
+    document.getElementById("fixedVideo");
+
+
+  if (!circle || !box || !iframe) return;
+
+
+  /* فتح الفيديو */
+
+  circle.addEventListener("click", function(){
+
+    const videoId =
+      this.getAttribute("data-video");
+
+
+    /* إذا كان مفتوحًا يتم إغلاقه */
+
+    if (box.style.display === "block") {
+
+      iframe.src = "";
+
+      box.style.display = "none";
+
+      return;
+
+    }
+
+
+    /* تشغيل الفيديو */
+
+    iframe.src =
+      "https://www.youtube.com/embed/" +
+      videoId +
+      "?autoplay=1&controls=1&playsinline=1&rel=0";
+
+
+    box.style.display = "block";
+
+  });
+
+
+})();
+
+
+/* =========================================================
+   إغلاق الفيديو
+========================================================= */
+
+function closeFixedVideo(){
+
+  const box =
+    document.getElementById("videoBoxFixed");
+
+  const iframe =
+    document.getElementById("fixedVideo");
+
+
+  if (!box || !iframe) return;
+
+
+  iframe.src = "";
+
+  box.style.display = "none";
+
+}
+
+
+/* =========================================================
+   نظام الفيديو القديم
+   أبقيته كما هو حتى لا يتأثر أي كود سابق
+========================================================= */
+
+function openVideoModal(videoId){
+
+  const modal =
+    document.getElementById("videoModal");
+
+  const modalVideo =
+    document.getElementById("modalVideo");
+
+
+  if (!modal || !modalVideo) return;
+
+
+  modalVideo.src =
+    "https://www.youtube.com/embed/" +
+    videoId +
+    "?autoplay=1&mute=0";
+
+
+  modal.style.display = "flex";
+
+}
+
+
+function closeVideoModal(){
+
+  const modal =
+    document.getElementById("videoModal");
+
+  const modalVideo =
+    document.getElementById("modalVideo");
+
+
+  if (!modal || !modalVideo) return;
+
+
+  modalVideo.src = "";
+
+  modal.style.display = "none";
+
+}
+
+</script>
 
 <!-- ====================== شريط الأخبار + الوقت + التاريخ + الطقس ====================== -->
 <div class="news-ticker">
@@ -2870,7 +3871,7 @@ body > *{
 <!-- 🐦 أيقونة صوت الطيور بتوهج زمردي -->
 <div id="bird-sound-btn" title="تشغيل/إيقاف صوت الطيور" style="
   position: fixed;
-  top: 460px;
+  top: 620px;
   right: 202px;
   width: 75px;
   height: 75px;
@@ -2923,148 +3924,6 @@ birdBtn.addEventListener('click', async () => {
 });
 </script>
 
-
-<!-- ====== الدوائر ====== -->
-<div class="video-top-container-fixed">
-
-  <div class="video-circle" data-video="n7eQejkXbnM">
-    <iframe class="miniVideo"
-      src="https://www.youtube.com/embed/n7eQejkXbnM?autoplay=1&mute=1&playsinline=1&controls=0&loop=1&playlist=n7eQejkXbnM"
-      title="YouTube video player"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen>
-    </iframe>
-  </div>
-
-  <div class="video-circle" data-video="-EEHXzLNS6o">
-    <iframe class="miniVideo"
-      src="https://www.youtube.com/embed/-EEHXzLNS6o?autoplay=1&mute=1&playsinline=1&controls=0&loop=1&playlist=-EEHXzLNS6o"
-      title="YouTube video player"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen>
-    </iframe>
-  </div>
-
-</div>
-
-<!-- ====== مربع الفيديو ====== -->
-<div id="videoBoxFixed">
-  <iframe id="fixedVideo" src="" allowfullscreen></iframe>
-</div>
-
-<style>
-/* ====== الدوائر ====== */
-.video-top-container-fixed {
-  position: fixed;
-  top: 250px;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 25px;
-  z-index: 50000;
-}
-
-.video-circle {
-  width:125px;
-  height: 105px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.08);
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  user-select: none;
-  transition: 0.3s ease;
-  overflow: hidden;
-  font-size: 12px;
-  border: 1px solid rgba(255,255,255,0.4);
-  position: relative;
-}
-
-.video-circle:hover {
-  transform: scale(1.1);
-  background: rgba(255,255,255,0.2);
-}
-
-/* ====== الفيديو المصغّر داخل الدائرة ====== */
-.miniVideo {
-  position: absolute;
-  width: 160%;
-  height: 160%;
-  top: -30%;
-  left: -30%;
-  border: none;
-  pointer-events: none; /* يمنع مشاكل الضغط */
-  opacity: 0.85;
-}
-
-/* ====== مربع الفيديو ====== */
-#videoBoxFixed {
-  position: fixed;
-  top: 50px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 330px;
-  height: 200px;
-  background: #000;
-  border-radius: 14px;
-  box-shadow: 0 0 20px rgba(0,255,255,0.5);
-  display: none;
-  z-index: 49999;
-  overflow: hidden;
-}
-
-#videoBoxFixed iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-</style>
-
-<!-- ====== سكربت الفتح والإغلاق ====== -->
-<script>
-document.querySelectorAll(".video-circle").forEach(circle => {
-  circle.addEventListener("click", () => {
-    const box = document.getElementById("videoBoxFixed");
-    const iframe = document.getElementById("fixedVideo");
-    const videoId = circle.getAttribute("data-video");
-
-    // إغلاق إذا كان مفتوح
-    if (box.style.display === "block") {
-      iframe.src = "";
-      box.style.display = "none";
-      return;
-    }
-
-    // فتح المربع
-    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&playsinline=1`;
-    box.style.display = "block";
-  });
-});
-</script>
-
-<!-- ====== JavaScript ====== -->
-<script>
-function openVideoModal(videoId) {
-  const modal = document.getElementById('videoModal');
-  const modalVideo = document.getElementById('modalVideo');
-  modalVideo.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0`;
-  modal.style.display = 'flex';
-}
-
-function closeVideoModal() {
-  const modal = document.getElementById('videoModal');
-  const modalVideo = document.getElementById('modalVideo');
-  modalVideo.src = ''; // إيقاف الفيديو عند الإغلاق
-  modal.style.display = 'none';
-}
-</script>
- 
 <!-- 🔒 منع ظهور محتوى الموقع قبل تسجيل الدخول -->
 <style>
 body.locked > *:not(#loginOverlay){
@@ -3587,8 +4446,8 @@ shadow.innerHTML = `
 
     position:fixed;
 
-    left:50%;
-    top:50%;
+    left:60%;
+    top:20%;
 
     transform:
     translate(-50%,-50%);
@@ -5602,653 +6461,10 @@ applyLanguage();
 </html>
 ```
   <!-- ================= خلفية موقع ================= -->
-<!-- ====== الدوائر ====== -->
-<div class="video-top-container-fixed">
 
-  <div class="video-circle" data-video="n7eQejkXbnM">
-    <div class="circle-glow"></div>
-    <div class="circle-shine"></div>
-
-    <iframe class="miniVideo"
-      src="https://www.youtube.com/embed/n7eQejkXbnM?autoplay=1&mute=1&playsinline=1&controls=0&loop=1&playlist=n7eQejkXbnM"
-      title="YouTube video player"
-      frameborder="0"
-      allow="autoplay; encrypted-media">
-    </iframe>
-  </div>
-
-  <div class="video-circle" data-video="-EEHXzLNS6o">
-    <div class="circle-glow"></div>
-    <div class="circle-shine"></div>
-
-    <iframe class="miniVideo"
-      src="https://www.youtube.com/embed/-EEHXzLNS6o?autoplay=1&mute=1&playsinline=1&controls=0&loop=1&playlist=-EEHXzLNS6o"
-      title="YouTube video player"
-      frameborder="0"
-      allow="autoplay; encrypted-media">
-    </iframe>
-  </div>
-
-</div>
-
-
-<!-- ====== مربع الفيديو ====== -->
-<div id="videoBoxFixed">
-
-  <div class="video-box-border"></div>
-
-  <button id="videoCloseBtn" onclick="closeFixedVideo()">✕</button>
-
-  <iframe id="fixedVideo" src="" allowfullscreen></iframe>
-
-</div>
-
-
-<style>
-
-/* =====================================================
-   الدوائر العلوية
-===================================================== */
-
-.video-top-container-fixed {
-  position: fixed;
-  top: 250px;
-  left: 0;
-  width: 100%;
-  box-sizing: border-box;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 0 28px;
-
-  z-index: 50000;
-
-  pointer-events: none;
-}
-
-
-/* =====================================================
-   الدائرة
-===================================================== */
-
-.video-circle {
-
-  width: 125px;
-  height: 105px;
-
-  border-radius: 50%;
-
-  position: relative;
-
-  overflow: hidden;
-
-  cursor: pointer;
-
-  pointer-events: auto;
-
-  background: rgba(0,0,0,.35);
-
-  border: 2px solid rgba(0,255,200,.75);
-
-  box-shadow:
-
-    0 0 8px rgba(0,255,200,.9),
-    0 0 20px rgba(0,255,200,.7),
-    0 0 40px rgba(0,255,200,.45),
-    inset 0 0 20px rgba(0,255,200,.25);
-
-  transition:
-    transform .35s ease,
-    box-shadow .35s ease;
-
-  isolation: isolate;
-
-  animation: emeraldPulse 2.5s ease-in-out infinite;
-}
-
-
-/* =====================================================
-   بريق الدائرة الخارجي
-===================================================== */
-
-.video-circle::before {
-
-  content: "";
-
-  position: absolute;
-
-  inset: -4px;
-
-  border-radius: 50%;
-
-  border: 2px solid transparent;
-
-  border-top-color: #00ffcc;
-  border-right-color: #ffd700;
-
-  filter:
-    drop-shadow(0 0 5px #00ffcc)
-    drop-shadow(0 0 10px #ffd700);
-
-  animation: rotateRing 3s linear infinite;
-
-  z-index: 5;
-
-  pointer-events: none;
-}
-
-
-/* =====================================================
-   الحلقة الثانية
-===================================================== */
-
-.video-circle::after {
-
-  content: "";
-
-  position: absolute;
-
-  inset: 6px;
-
-  border-radius: 50%;
-
-  border: 1px solid rgba(255,215,0,.7);
-
-  box-shadow:
-    0 0 8px rgba(255,215,0,.8),
-    inset 0 0 12px rgba(255,215,0,.25);
-
-  z-index: 4;
-
-  pointer-events: none;
-}
-
-
-/* =====================================================
-   الفيديو داخل الدائرة
-===================================================== */
-
-.miniVideo {
-
-  position: absolute;
-
-  width: 160%;
-  height: 160%;
-
-  top: -30%;
-  left: -30%;
-
-  border: none;
-
-  pointer-events: none;
-
-  opacity: .88;
-
-  z-index: 1;
-
-  transform: scale(1.03);
-
-  transition:
-    transform .5s ease,
-    opacity .5s ease;
-}
-
-
-/* =====================================================
-   الوهج الداخلي
-===================================================== */
-
-.circle-glow {
-
-  position: absolute;
-
-  inset: 0;
-
-  border-radius: 50%;
-
-  background:
-    radial-gradient(
-      circle,
-      transparent 35%,
-      rgba(0,255,200,.08) 60%,
-      rgba(0,255,200,.25) 100%
-    );
-
-  z-index: 2;
-
-  pointer-events: none;
-}
-
-
-/* =====================================================
-   انعكاس زجاجي
-===================================================== */
-
-.circle-shine {
-
-  position: absolute;
-
-  top: -60%;
-
-  left: -80%;
-
-  width: 45%;
-
-  height: 220%;
-
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255,255,255,.55),
-    transparent
-  );
-
-  transform: rotate(25deg);
-
-  z-index: 6;
-
-  pointer-events: none;
-
-  animation: shineMove 4s ease-in-out infinite;
-}
-
-
-/* =====================================================
-   عند تمرير الماوس
-===================================================== */
-
-.video-circle:hover {
-
-  transform: scale(1.16);
-
-  box-shadow:
-
-    0 0 12px #00ffcc,
-    0 0 30px #00ffcc,
-    0 0 60px rgba(255,215,0,.8),
-    inset 0 0 25px rgba(0,255,200,.4);
-
-  border-color: #ffd700;
-}
-
-
-.video-circle:hover .miniVideo {
-
-  transform: scale(1.10);
-
-  opacity: 1;
-}
-
-
-/* =====================================================
-   عند الضغط
-===================================================== */
-
-.video-circle:active {
-
-  transform: scale(.96);
-
-  box-shadow:
-
-    0 0 15px #ffd700,
-    0 0 45px #00ffcc;
-}
-
-
-/* =====================================================
-   مربع الفيديو
-===================================================== */
-
-#videoBoxFixed {
-
-  position: fixed;
-
-  top: 50px;
-  left: 50%;
-
-  transform: translateX(-50%);
-
-  width: 330px;
-  height: 200px;
-
-  background: #000;
-
-  border-radius: 18px;
-
-  overflow: hidden;
-
-  display: none;
-
-  z-index: 49999;
-
-  border: 2px solid rgba(0,255,200,.8);
-
-  box-shadow:
-
-    0 0 10px #00ffcc,
-    0 0 25px rgba(0,255,200,.8),
-    0 0 50px rgba(255,215,0,.45);
-
-  animation: videoAppear .35s ease;
-}
-
-
-/* =====================================================
-   إطار متوهج داخل المربع
-===================================================== */
-
-.video-box-border {
-
-  position: absolute;
-
-  inset: 0;
-
-  border-radius: 18px;
-
-  border: 1px solid rgba(255,215,0,.6);
-
-  box-shadow:
-    inset 0 0 15px rgba(0,255,200,.3);
-
-  pointer-events: none;
-
-  z-index: 3;
-}
-
-
-/* =====================================================
-   فيديو المربع
-===================================================== */
-
-#videoBoxFixed iframe {
-
-  width: 100%;
-  height: 100%;
-
-  border: none;
-}
-
-
-/* =====================================================
-   زر الإغلاق
-===================================================== */
-
-#videoCloseBtn {
-
-  position: absolute;
-
-  top: 7px;
-  right: 7px;
-
-  width: 30px;
-  height: 30px;
-
-  border-radius: 50%;
-
-  border: 1px solid rgba(255,215,0,.8);
-
-  background: rgba(0,0,0,.75);
-
-  color: #ffd700;
-
-  font-size: 15px;
-
-  font-weight: bold;
-
-  cursor: pointer;
-
-  z-index: 10;
-
-  transition: .3s;
-
-  box-shadow:
-    0 0 8px rgba(255,215,0,.6);
-}
-
-
-#videoCloseBtn:hover {
-
-  color: #fff;
-
-  background: rgba(255,0,0,.75);
-
-  border-color: #fff;
-
-  box-shadow:
-    0 0 15px red;
-
-  transform: rotate(90deg) scale(1.1);
-}
-
-
-/* =====================================================
-   الحركات
-===================================================== */
-
-@keyframes rotateRing {
-
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-
-}
-
-
-@keyframes shineMove {
-
-  0% {
-    left: -100%;
-    opacity: 0;
-  }
-
-  20% {
-    opacity: 1;
-  }
-
-  50% {
-    left: 150%;
-    opacity: 1;
-  }
-
-  70% {
-    opacity: 0;
-  }
-
-  100% {
-    left: 150%;
-    opacity: 0;
-  }
-
-}
-
-
-@keyframes emeraldPulse {
-
-  0%,
-  100% {
-
-    box-shadow:
-      0 0 8px rgba(0,255,200,.8),
-      0 0 20px rgba(0,255,200,.55),
-      0 0 35px rgba(0,255,200,.3);
-
-  }
-
-  50% {
-
-    box-shadow:
-      0 0 12px #00ffcc,
-      0 0 30px #00ffcc,
-      0 0 55px rgba(255,215,0,.55);
-
-  }
-
-}
-
-
-@keyframes videoAppear {
-
-  from {
-
-    opacity: 0;
-
-    transform:
-      translateX(-50%)
-      scale(.75);
-
-  }
-
-  to {
-
-    opacity: 1;
-
-    transform:
-      translateX(-50%)
-      scale(1);
-
-  }
-
-}
-
-
-/* =====================================================
-   الجوال
-===================================================== */
-
-@media (max-width:600px) {
-
-  .video-top-container-fixed {
-
-    top: 180px;
-
-    padding: 0 12px;
-
-  }
-
-  .video-circle {
-
-    width: 90px;
-    height: 78px;
-
-  }
-
-  #videoBoxFixed {
-
-    width: 88%;
-    height: 190px;
-
-    top: 55px;
-
-  }
-
-}
-
-</style>
-
-
-<!-- ====== JavaScript ====== -->
-
-<script>
-
-document.querySelectorAll(".video-circle").forEach(circle => {
-
-  circle.addEventListener("click", () => {
-
-    const box =
-      document.getElementById("videoBoxFixed");
-
-    const iframe =
-      document.getElementById("fixedVideo");
-
-    const videoId =
-      circle.getAttribute("data-video");
-
-
-    /* إذا كان مفتوحًا */
-    if (box.style.display === "block") {
-
-      iframe.src = "";
-
-      box.style.display = "none";
-
-      return;
-
-    }
-
-
-    /* فتح الفيديو */
-
-    iframe.src =
-      `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&playsinline=1`;
-
-    box.style.display = "block";
-
-  });
-
-});
-
-
-/* إغلاق الفيديو */
-
-function closeFixedVideo() {
-
-  const box =
-    document.getElementById("videoBoxFixed");
-
-  const iframe =
-    document.getElementById("fixedVideo");
-
-  iframe.src = "";
-
-  box.style.display = "none";
-
-}
-
-
-/* =====================================================
-   نظام الفيديو القديم
-===================================================== */
-
-function openVideoModal(videoId) {
-
-  const modal =
-    document.getElementById('videoModal');
-
-  const modalVideo =
-    document.getElementById('modalVideo');
-
-  modalVideo.src =
-    `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0`;
-
-  modal.style.display = 'flex';
-
-}
-
-
-function closeVideoModal() {
-
-  const modal =
-    document.getElementById('videoModal');
-
-  const modalVideo =
-    document.getElementById('modalVideo');
-
-  modalVideo.src = '';
-
-  modal.style.display = 'none';
-
-}
-
-</script>
 <!-- Emerald Music Overlay START -->
 <div id="emeraldMusicHost">
-  <div id="emOpenBtn">🎹💎</div>
+  <div id="emOpenBtn">🎹</div>
 </div>
 
 <style>
@@ -6899,8 +7115,8 @@ window.addEventListener("keyup",(e)=>{
 /* ⭐ أيقونة النجمة */
 .launcher {
     position: fixed;
-    bottom: 235px;
-    right: 125px;
+    bottom: 135px;
+    right: 325px;
 
     width: 50px;
     height: 50px;
