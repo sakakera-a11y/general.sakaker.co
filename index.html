@@ -1,3 +1,447 @@
+
+<!-- 🔒 منع ظهور محتوى الموقع قبل تسجيل الدخول -->
+<style>
+body.locked > *:not(#loginOverlay){
+visibility:hidden;
+}
+</style>
+
+<script>
+document.body.classList.add("locked");
+</script>
+
+
+<!-- 🔒 نافذة الدخول -->
+<div id="loginOverlay" style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:999999;
+backdrop-filter:blur(5px);
+">
+
+<div style="
+background:rgba(0,0,0,.8);
+padding:25px;
+width:90%;
+max-width:420px;
+border-radius:18px;
+text-align:center;
+color:white;
+font-family:Tajawal;
+box-shadow:0 0 30px #00ffcc;
+">
+
+
+<h2 style="color:#00ffcc">
+🔐 تسجيل الدخول
+</h2>
+
+
+<input id="emailInput"
+type="email"
+placeholder="📧 البريد الإلكتروني"
+style="
+width:100%;
+padding:12px;
+margin:8px 0;
+border-radius:10px;
+border:none;
+background:#ffffff22;
+color:white;
+">
+
+
+<input id="passwordInput"
+type="password"
+placeholder="🔒 كلمة المرور"
+style="
+width:100%;
+padding:12px;
+margin:8px 0;
+border-radius:10px;
+border:none;
+background:#ffffff22;
+color:white;
+">
+
+
+<button id="loginButton" style="
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+background:#00ffcc;
+font-weight:bold;
+cursor:pointer;
+">
+دخول
+</button>
+
+
+<button id="googleButton" style="
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+background:#4285F4;
+color:white;
+font-weight:bold;
+cursor:pointer;
+">
+🔵 الدخول بواسطة Google
+</button>
+
+
+<div id="loginError"
+style="color:#ff8888;margin:10px">
+</div>
+
+
+<button id="signupButton" style="
+width:100%;
+padding:12px;
+border-radius:10px;
+background:#ffffff22;
+color:white;
+border:1px solid #00ffcc;
+cursor:pointer;
+">
+📝 إنشاء حساب جديد
+</button>
+
+
+</div>
+</div>
+
+
+
+<!-- 👤 بيانات المستخدم -->
+<div id="userProfile" style="
+display:none;
+position:fixed;
+top:15px;
+right:15px;
+z-index:99999;
+background:#000c;
+padding:10px;
+border-radius:15px;
+border:1px solid #00ffcc;
+color:white;
+align-items:center;
+gap:10px;
+">
+
+<img id="userPhoto"
+style="
+width:45px;
+height:45px;
+border-radius:50%;
+border:2px solid gold;
+">
+
+<span id="userName"></span>
+
+<button id="logoutButton">
+خروج
+</button>
+
+</div>
+
+
+
+<script type="module">
+
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+
+import { getAnalytics }
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
+
+
+import {
+getAuth,
+signInWithEmailAndPassword,
+createUserWithEmailAndPassword,
+GoogleAuthProvider,
+signInWithPopup,
+onAuthStateChanged,
+setPersistence,
+browserLocalPersistence,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+
+import { getFirestore }
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+
+import { getStorage }
+from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
+
+
+
+const firebaseConfig = {
+
+    apiKey:
+    "AIzaSyCltuh24M0X4KBlVpIFi8HXlrTObQRVk_s",
+
+    authDomain:
+    "general-sakaker.firebaseapp.com",
+
+    projectId:
+    "general-sakaker",
+
+    storageBucket:
+    "general-sakaker.firebasestorage.app",
+
+    messagingSenderId:
+    "999891768564",
+
+    appId:
+    "1:999891768564:web:9821008d91378788b93aa1",
+
+    measurementId:
+    "G-0LGSW71V74"
+
+};
+
+
+
+const app=initializeApp(firebaseConfig);
+
+
+const analytics=getAnalytics(app);
+
+const auth=getAuth(app);
+
+const db=getFirestore(app);
+
+const storage=getStorage(app);
+
+
+
+window.firebaseApp=app;
+
+window.firebaseAuth=auth;
+
+window.firebaseDB=db;
+
+window.firebaseStorage=storage;
+
+
+
+await setPersistence(
+auth,
+browserLocalPersistence
+);
+
+
+
+const overlay=document.getElementById("loginOverlay");
+
+const email=document.getElementById("emailInput");
+
+const pass=document.getElementById("passwordInput");
+
+const error=document.getElementById("loginError");
+
+
+
+/* دخول */
+
+document.getElementById("loginButton").onclick=async()=>{
+
+
+try{
+
+
+await signInWithEmailAndPassword(
+auth,
+email.value,
+pass.value
+);
+
+
+}catch(e){
+
+error.textContent="❌ "+e.message;
+
+}
+
+};
+
+
+
+/* إنشاء حساب */
+
+document.getElementById("signupButton").onclick=async()=>{
+
+
+try{
+
+
+await createUserWithEmailAndPassword(
+auth,
+email.value,
+pass.value
+);
+
+
+}catch(e){
+
+error.textContent="❌ "+e.message;
+
+}
+
+};
+
+
+
+
+/* Google */
+
+document.getElementById("googleButton").onclick=async()=>{
+
+
+const provider=new GoogleAuthProvider();
+
+
+try{
+
+
+await signInWithPopup(
+auth,
+provider
+);
+
+
+}catch(e){
+
+error.textContent="❌ "+e.message;
+
+}
+
+
+};
+
+
+
+
+
+/* مراقبة الدخول */
+
+onAuthStateChanged(auth,(user)=>{
+
+
+if(user){
+
+
+overlay.style.display="none";
+
+document.body.classList.remove("locked");
+
+
+document.getElementById("userProfile").style.display="flex";
+
+
+document.getElementById("userName").textContent =
+user.displayName || user.email;
+
+
+document.getElementById("userPhoto").src =
+user.photoURL ||
+"https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+
+}else{
+
+
+overlay.style.display="flex";
+
+document.body.classList.add("locked");
+
+
+document.getElementById("userProfile").style.display="none";
+
+
+}
+
+
+});
+
+
+
+
+
+/* خروج */
+
+document.getElementById("logoutButton").onclick=async()=>{
+
+await signOut(auth);
+
+};
+
+
+
+console.log("SAKAKER Firebase Ready");
+
+</script>
+
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع بخلفية ساحرة</title>
+    <style>
+        /* تهيئة الصفحة وجعل الخلفية تمتد بالكامل */
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            
+            /* كود الخلفية مع رابط الصورة المرسلة */
+            background: url("https://d.top4top.io/p_3858dvoq11.png") center/cover no-repeat;
+            background-attachment: fixed; /* لتثبيت الخلفية عند التمرير */
+        }
+
+
+        h1 {
+            margin: 0 0 15px 0;
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        p {
+            margin: 0;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            opacity: 0.95;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+<body>
+
 <!-- =========================================================
      ⭐ دائرة فيديو واحدة مميزة
 ========================================================= -->
@@ -1009,7 +1453,7 @@ function closeVideoModal(){
     <span id="clock"></span>
     <span id="date"></span>
     <span id="weather"></span>
-    <span id="locationName" style="color:#0ff; font-size:14px; margin-top:4px;"></span>
+    <span id="locationName" style="color:#0ff; font-size:4px; margin-top:4px;"></span>
   </div>
 
   <!-- نص الأخبار المُكرر لحركة سلسة -->
@@ -1078,7 +1522,7 @@ function closeVideoModal(){
 
 /* =================== صندوق الوقت + التاريخ + الطقس =================== */
 .clock-box {
-  margin-right: 15px;
+  margin-right: 55px;
   padding: 0;
   background: transparent !important;
   border: none !important;
@@ -3899,15 +4343,7 @@ body{
     min-height:100%;
 }
 
-body{
-    background-image:url("https://raw.githubusercontent.com/sakakera-a11y/general.sakaker.co/main/ChatGPT%20Image%20Aug%2029%2C%202026%2C%2003_01_28%20PM.png");
-    background-size:cover;
-    background-position:center center;
-    background-repeat:no-repeat;
-    background-attachment:fixed;
-    background-color:#000;
-}
-
+b
 /* طبقة التوهج الزمردي */
 body::before{
     content:"";
@@ -3989,407 +4425,6 @@ birdBtn.addEventListener('click', async () => {
   }
 });
 </script>
-
-<!-- 🔒 منع ظهور محتوى الموقع قبل تسجيل الدخول -->
-<style>
-body.locked > *:not(#loginOverlay){
-visibility:hidden;
-}
-</style>
-
-<script>
-document.body.classList.add("locked");
-</script>
-
-
-<!-- 🔒 نافذة الدخول -->
-<div id="loginOverlay" style="
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:url("https://d.top4top.io/p_3858dvoq11.png"); center/cover no-repeat;
-display:flex;
-align-items:center;
-justify-content:center;
-z-index:999999;
-backdrop-filter:blur(5px);
-">
-
-<div style="
-background:rgba(0,0,0,.8);
-padding:25px;
-width:90%;
-max-width:420px;
-border-radius:18px;
-text-align:center;
-color:white;
-font-family:Tajawal;
-box-shadow:0 0 30px #00ffcc;
-">
-
-
-<h2 style="color:#00ffcc">
-🔐 تسجيل الدخول
-</h2>
-
-
-<input id="emailInput"
-type="email"
-placeholder="📧 البريد الإلكتروني"
-style="
-width:100%;
-padding:12px;
-margin:8px 0;
-border-radius:10px;
-border:none;
-background:#ffffff22;
-color:white;
-">
-
-
-<input id="passwordInput"
-type="password"
-placeholder="🔒 كلمة المرور"
-style="
-width:100%;
-padding:12px;
-margin:8px 0;
-border-radius:10px;
-border:none;
-background:#ffffff22;
-color:white;
-">
-
-
-<button id="loginButton" style="
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:10px;
-background:#00ffcc;
-font-weight:bold;
-cursor:pointer;
-">
-دخول
-</button>
-
-
-<button id="googleButton" style="
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:10px;
-background:#4285F4;
-color:white;
-font-weight:bold;
-cursor:pointer;
-">
-🔵 الدخول بواسطة Google
-</button>
-
-
-<div id="loginError"
-style="color:#ff8888;margin:10px">
-</div>
-
-
-<button id="signupButton" style="
-width:100%;
-padding:12px;
-border-radius:10px;
-background:#ffffff22;
-color:white;
-border:1px solid #00ffcc;
-cursor:pointer;
-">
-📝 إنشاء حساب جديد
-</button>
-
-
-</div>
-</div>
-
-
-
-<!-- 👤 بيانات المستخدم -->
-<div id="userProfile" style="
-display:none;
-position:fixed;
-top:15px;
-right:15px;
-z-index:99999;
-background:#000c;
-padding:10px;
-border-radius:15px;
-border:1px solid #00ffcc;
-color:white;
-align-items:center;
-gap:10px;
-">
-
-<img id="userPhoto"
-style="
-width:45px;
-height:45px;
-border-radius:50%;
-border:2px solid gold;
-">
-
-<span id="userName"></span>
-
-<button id="logoutButton">
-خروج
-</button>
-
-</div>
-
-
-
-<script type="module">
-
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-
-
-import { getAnalytics }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
-
-
-import {
-getAuth,
-signInWithEmailAndPassword,
-createUserWithEmailAndPassword,
-GoogleAuthProvider,
-signInWithPopup,
-onAuthStateChanged,
-setPersistence,
-browserLocalPersistence,
-signOut
-}
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
-
-import { getFirestore }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
-
-import { getStorage }
-from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
-
-
-
-const firebaseConfig = {
-
-    apiKey:
-    "AIzaSyCltuh24M0X4KBlVpIFi8HXlrTObQRVk_s",
-
-    authDomain:
-    "general-sakaker.firebaseapp.com",
-
-    projectId:
-    "general-sakaker",
-
-    storageBucket:
-    "general-sakaker.firebasestorage.app",
-
-    messagingSenderId:
-    "999891768564",
-
-    appId:
-    "1:999891768564:web:9821008d91378788b93aa1",
-
-    measurementId:
-    "G-0LGSW71V74"
-
-};
-
-
-
-const app=initializeApp(firebaseConfig);
-
-
-const analytics=getAnalytics(app);
-
-const auth=getAuth(app);
-
-const db=getFirestore(app);
-
-const storage=getStorage(app);
-
-
-
-window.firebaseApp=app;
-
-window.firebaseAuth=auth;
-
-window.firebaseDB=db;
-
-window.firebaseStorage=storage;
-
-
-
-await setPersistence(
-auth,
-browserLocalPersistence
-);
-
-
-
-const overlay=document.getElementById("loginOverlay");
-
-const email=document.getElementById("emailInput");
-
-const pass=document.getElementById("passwordInput");
-
-const error=document.getElementById("loginError");
-
-
-
-/* دخول */
-
-document.getElementById("loginButton").onclick=async()=>{
-
-
-try{
-
-
-await signInWithEmailAndPassword(
-auth,
-email.value,
-pass.value
-);
-
-
-}catch(e){
-
-error.textContent="❌ "+e.message;
-
-}
-
-};
-
-
-
-/* إنشاء حساب */
-
-document.getElementById("signupButton").onclick=async()=>{
-
-
-try{
-
-
-await createUserWithEmailAndPassword(
-auth,
-email.value,
-pass.value
-);
-
-
-}catch(e){
-
-error.textContent="❌ "+e.message;
-
-}
-
-};
-
-
-
-
-/* Google */
-
-document.getElementById("googleButton").onclick=async()=>{
-
-
-const provider=new GoogleAuthProvider();
-
-
-try{
-
-
-await signInWithPopup(
-auth,
-provider
-);
-
-
-}catch(e){
-
-error.textContent="❌ "+e.message;
-
-}
-
-
-};
-
-
-
-
-
-/* مراقبة الدخول */
-
-onAuthStateChanged(auth,(user)=>{
-
-
-if(user){
-
-
-overlay.style.display="none";
-
-document.body.classList.remove("locked");
-
-
-document.getElementById("userProfile").style.display="flex";
-
-
-document.getElementById("userName").textContent =
-user.displayName || user.email;
-
-
-document.getElementById("userPhoto").src =
-user.photoURL ||
-"https://cdn-icons-png.flaticon.com/512/149/149071.png";
-
-
-}else{
-
-
-overlay.style.display="flex";
-
-document.body.classList.add("locked");
-
-
-document.getElementById("userProfile").style.display="none";
-
-
-}
-
-
-});
-
-
-
-
-
-/* خروج */
-
-document.getElementById("logoutButton").onclick=async()=>{
-
-await signOut(auth);
-
-};
-
-
-
-console.log("SAKAKER Firebase Ready");
-
-</script>
-
 
 <!-- ================= نهاية الكود المنعزل ================= -->
 
@@ -4603,8 +4638,8 @@ shadow.innerHTML = `
     transform:
     translate(-50%,-50%);
 
-    width:650px;
-    height:550px;
+    width:550px;
+    height:350px;
 
     max-width:
     calc(100vw - 24px);
@@ -6524,7 +6559,8 @@ applyLanguage();
 </script>
 
 </body>
-
+</html>
+```
   <!-- ================= خلفية موقع ================= -->
 
 <!-- Emerald Music Overlay START -->
@@ -6547,7 +6583,7 @@ applyLanguage();
 /* زر الفتح */
 #emeraldMusicHost #emOpenBtn{
   pointer-events:auto;
-  position:fixed;bottom:20px;right:1120px;width:78px;height:78px;border-radius:50%;
+  position:fixed;bottom:200px;right:20px;width:78px;height:78px;border-radius:50%;
   background:rgba(255,255,255,.08);border:2px solid var(--em);
   display:flex;align-items:center;justify-content:center;
   font-size:28px;cursor:pointer;box-shadow:0 0 18px var(--em);
@@ -6908,7 +6944,9 @@ emOpenBtn.onclick=()=>{
 
         <div class="emTopbar">
           <div class="emPayBox">
-            🎵  <b></b><br>            💎  <b> https://business.sakaker.co//</b>
+            🎵  <b></b><br>            💎  <b>لا يوجد حد أدنى للدفع أو الاشتراك، فلا تبخل علينا ولو لمرة واحدة لكي نسعد بخدمتكم ويستمر العطاء.
+
+There is no minimum limit for payment or subscription. Please support us, even if only once, so we can gladly serve you and continue our giving.</b>
             <div id="emPaypalBox"></div>
           </div>
 
@@ -7727,35 +7765,7 @@ content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cove
 <title>abwalqmrzmrd</title>
 
 <style>
- {
-    margin:10 px;
-    padding: 10px;
-    font-family: "Tajawal","Cairo",system-ui,sans-serif;
-    background: #000;
-    color: #fff;
-    overflow: hidden;
-}
 
-/* خلفية الفيديو */
-#video-background {
-  position: fixed;
-  top: 30px;
-  left: 30px;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  z-index: -10;
-}
-#video-background iframe {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 120%;
-  height: 120%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  border: none;
-}
 
 /* 🌟 أيقونة فليشر القنوات المباشرة */
 #liveFlasher {
@@ -8741,3 +8751,7 @@ body.locked {
 }
 
 </style>
+
+   
+</body>
+</html>
