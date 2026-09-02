@@ -1,8 +1,69 @@
 
+```html
 <!-- 🔒 منع ظهور محتوى الموقع قبل تسجيل الدخول -->
 <style>
 body.locked > *:not(#loginOverlay){
-visibility:hidden;
+  visibility:hidden;
+}
+
+/* 🌐 زر اللغة */
+#loginLanguageButton{
+  position:absolute;
+  top:12px;
+  left:12px;
+  padding:7px 12px;
+  border:1px solid #00ffcc;
+  border-radius:20px;
+  background:#ffffff18;
+  color:#00ffcc;
+  cursor:pointer;
+  font-weight:bold;
+  font-family:Tajawal,Arial,sans-serif;
+}
+
+/* 🔐 نافذة الدخول */
+#loginOverlay{
+  direction:rtl;
+}
+
+#loginBox{
+  position:relative;
+}
+
+/* 👤 بيانات المستخدم */
+#userProfile{
+  direction:rtl;
+}
+
+/* 📱 الجوال */
+@media(max-width:480px){
+  #loginBox{
+    width:90% !important;
+    padding:20px !important;
+  }
+
+  #userProfile{
+    top:10px !important;
+    right:10px !important;
+  }
+
+  #userName{
+    max-width:100px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  #logoutText{
+    display:none;
+  }
+
+  #logoutButton{
+    width:42px;
+    height:42px;
+    padding:0 !important;
+    border-radius:50% !important;
+  }
 }
 </style>
 
@@ -18,108 +79,144 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-
 display:flex;
 align-items:center;
 justify-content:center;
 z-index:999999;
 backdrop-filter:blur(5px);
+background:rgba(0,0,0,.35);
 ">
 
-<div style="
-background:rgba(0,0,0,.8);
-padding:25px;
-width:90%;
-max-width:420px;
-border-radius:18px;
-text-align:center;
-color:white;
-font-family:Tajawal;
-box-shadow:0 0 30px #00ffcc;
-">
+  <div id="loginBox" style="
+  background:rgba(0,0,0,.8);
+  padding:25px;
+  width:90%;
+  max-width:420px;
+  border-radius:18px;
+  text-align:center;
+  color:white;
+  font-family:Tajawal,Arial,sans-serif;
+  box-shadow:0 0 30px #00ffcc;
+  ">
+
+    <!-- 🌐 تغيير اللغة -->
+    <button id="loginLanguageButton" type="button">
+      English
+    </button>
 
 
-<h2 style="color:#00ffcc">
-🔐 تسجيل الدخول
-</h2>
+    <!-- 🔐 العنوان -->
+    <h2 id="loginTitle" style="color:#00ffcc;margin-top:15px;">
+      🔐 تسجيل الدخول
+    </h2>
 
 
-<input id="emailInput"
-type="email"
-placeholder="📧 البريد الإلكتروني"
-style="
-width:100%;
-padding:12px;
-margin:8px 0;
-border-radius:10px;
-border:none;
-background:#ffffff22;
-color:white;
-">
+    <!-- 📧 البريد -->
+    <input
+      id="emailInput"
+      type="email"
+      placeholder="📧 البريد الإلكتروني"
+      autocomplete="email"
+      style="
+      box-sizing:border-box;
+      width:100%;
+      padding:12px;
+      margin:8px 0;
+      border-radius:10px;
+      border:none;
+      background:#ffffff22;
+      color:white;
+      outline:none;
+      "
+    >
 
 
-<input id="passwordInput"
-type="password"
-placeholder="🔒 كلمة المرور"
-style="
-width:100%;
-padding:12px;
-margin:8px 0;
-border-radius:10px;
-border:none;
-background:#ffffff22;
-color:white;
-">
+    <!-- 🔒 كلمة المرور -->
+    <input
+      id="passwordInput"
+      type="password"
+      placeholder="🔒 كلمة المرور"
+      autocomplete="current-password"
+      style="
+      box-sizing:border-box;
+      width:100%;
+      padding:12px;
+      margin:8px 0;
+      border-radius:10px;
+      border:none;
+      background:#ffffff22;
+      color:white;
+      outline:none;
+      "
+    >
 
 
-<button id="loginButton" style="
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:10px;
-background:#00ffcc;
-font-weight:bold;
-cursor:pointer;
-">
-دخول
-</button>
+    <!-- دخول -->
+    <button
+      id="loginButton"
+      style="
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      border:none;
+      border-radius:10px;
+      background:#00ffcc;
+      color:#00332b;
+      font-weight:bold;
+      cursor:pointer;
+      "
+    >
+      دخول
+    </button>
 
 
-<button id="googleButton" style="
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:10px;
-background:#4285F4;
-color:white;
-font-weight:bold;
-cursor:pointer;
-">
-🔵 الدخول بواسطة Google
-</button>
+    <!-- Google -->
+    <button
+      id="googleButton"
+      style="
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      border:none;
+      border-radius:10px;
+      background:#4285F4;
+      color:white;
+      font-weight:bold;
+      cursor:pointer;
+      "
+    >
+      🔵 الدخول بواسطة Google
+    </button>
 
 
-<div id="loginError"
-style="color:#ff8888;margin:10px">
-</div>
+    <!-- الخطأ -->
+    <div
+      id="loginError"
+      style="
+      color:#ff8888;
+      margin:10px;
+      min-height:20px;
+      "
+    ></div>
 
 
-<button id="signupButton" style="
-width:100%;
-padding:12px;
-border-radius:10px;
-background:#ffffff22;
-color:white;
-border:1px solid #00ffcc;
-cursor:pointer;
-">
-📝 إنشاء حساب جديد
-</button>
+    <!-- إنشاء حساب -->
+    <button
+      id="signupButton"
+      style="
+      width:100%;
+      padding:12px;
+      border-radius:10px;
+      background:#ffffff22;
+      color:white;
+      border:1px solid #00ffcc;
+      cursor:pointer;
+      "
+    >
+      📝 إنشاء حساب جديد
+    </button>
 
-
-</div>
+  </div>
 </div>
 
 
@@ -131,28 +228,54 @@ position:fixed;
 top:15px;
 right:15px;
 z-index:99999;
-background:#000c;
+background:rgba(0,0,0,.75);
 padding:10px;
 border-radius:15px;
 border:1px solid #00ffcc;
 color:white;
 align-items:center;
 gap:10px;
+font-family:Tajawal,Arial,sans-serif;
 ">
 
-<img id="userPhoto"
-style="
-width:45px;
-height:45px;
-border-radius:50%;
-border:2px solid gold;
-">
+  <img
+    id="userPhoto"
+    alt="User"
+    style="
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    border:2px solid gold;
+    object-fit:cover;
+    "
+  >
 
-<span id="userName"></span>
+  <span id="userName"></span>
 
-<button id="logoutButton">
-خروج
-</button>
+
+  <!-- 🚪 خروج -->
+  <button
+    id="logoutButton"
+    type="button"
+    style="
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    min-width:70px;
+    height:38px;
+    padding:5px 10px;
+    border:1px solid gold;
+    border-radius:18px;
+    background:linear-gradient(145deg,#fff3a0,#ffd700,#b8860b);
+    color:#3a2900;
+    font-weight:bold;
+    cursor:pointer;
+    "
+  >
+    <span id="logoutIcon">🚪</span>
+    <span id="logoutText">خروج</span>
+  </button>
 
 </div>
 
@@ -160,252 +283,480 @@ border:2px solid gold;
 
 <script type="module">
 
+/* =====================================================
+   🔥 Firebase
+===================================================== */
 
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
-
 import { getAnalytics }
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
 
-
 import {
-getAuth,
-signInWithEmailAndPassword,
-createUserWithEmailAndPassword,
-GoogleAuthProvider,
-signInWithPopup,
-onAuthStateChanged,
-setPersistence,
-browserLocalPersistence,
-signOut
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence,
+  signOut
 }
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-
 import { getFirestore }
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
 
 import { getStorage }
 from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
 
 
-
 const firebaseConfig = {
 
-    apiKey:
-    "AIzaSyCltuh24M0X4KBlVpIFi8HXlrTObQRVk_s",
+  apiKey:
+  "AIzaSyCltuh24M0X4KBlVpIFi8HXlrTObQRVk_s",
 
-    authDomain:
-    "general-sakaker.firebaseapp.com",
+  authDomain:
+  "general-sakaker.firebaseapp.com",
 
-    projectId:
-    "general-sakaker",
+  projectId:
+  "general-sakaker",
 
-    storageBucket:
-    "general-sakaker.firebasestorage.app",
+  storageBucket:
+  "general-sakaker.firebasestorage.app",
 
-    messagingSenderId:
-    "999891768564",
+  messagingSenderId:
+  "999891768564",
 
-    appId:
-    "1:999891768564:web:9821008d91378788b93aa1",
+  appId:
+  "1:999891768564:web:9821008d91378788b93aa1",
 
-    measurementId:
-    "G-0LGSW71V74"
+  measurementId:
+  "G-0LGSW71V74"
 
 };
 
 
+const app = initializeApp(firebaseConfig);
 
-const app=initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
+const auth = getAuth(app);
 
-const analytics=getAnalytics(app);
+const db = getFirestore(app);
 
-const auth=getAuth(app);
-
-const db=getFirestore(app);
-
-const storage=getStorage(app);
+const storage = getStorage(app);
 
 
-
-window.firebaseApp=app;
-
-window.firebaseAuth=auth;
-
-window.firebaseDB=db;
-
-window.firebaseStorage=storage;
-
+window.firebaseApp = app;
+window.firebaseAuth = auth;
+window.firebaseDB = db;
+window.firebaseStorage = storage;
 
 
 await setPersistence(
-auth,
-browserLocalPersistence
+  auth,
+  browserLocalPersistence
 );
 
 
 
-const overlay=document.getElementById("loginOverlay");
+/* =====================================================
+   🌐 نظام اللغة
+===================================================== */
 
-const email=document.getElementById("emailInput");
-
-const pass=document.getElementById("passwordInput");
-
-const error=document.getElementById("loginError");
-
+let currentLang =
+  localStorage.getItem("sakakerLoginLanguage") || "ar";
 
 
-/* دخول */
+const translations = {
 
-document.getElementById("loginButton").onclick=async()=>{
+  ar: {
+
+    direction: "rtl",
+
+    languageButton: "English",
+
+    title: "🔐 تسجيل الدخول",
+
+    email: "📧 البريد الإلكتروني",
+
+    password: "🔒 كلمة المرور",
+
+    login: "دخول",
+
+    google: "🔵 الدخول بواسطة Google",
+
+    signup: "📝 إنشاء حساب جديد",
+
+    logout: "خروج",
+
+    user: "المستخدم"
+
+  },
 
 
-try{
+  en: {
 
+    direction: "ltr",
 
-await signInWithEmailAndPassword(
-auth,
-email.value,
-pass.value
-);
+    languageButton: "العربية",
 
+    title: "🔐 Login",
 
-}catch(e){
+    email: "📧 Email Address",
 
-error.textContent="❌ "+e.message;
+    password: "🔒 Password",
 
-}
+    login: "Login",
+
+    google: "🔵 Sign in with Google",
+
+    signup: "📝 Create New Account",
+
+    logout: "Logout",
+
+    user: "User"
+
+  }
 
 };
 
 
 
-/* إنشاء حساب */
+function updateLoginLanguage(lang){
 
-document.getElementById("signupButton").onclick=async()=>{
+  currentLang = lang;
+
+  localStorage.setItem(
+    "sakakerLoginLanguage",
+    lang
+  );
 
 
-try{
+  const t = translations[lang];
 
 
-await createUserWithEmailAndPassword(
-auth,
-email.value,
-pass.value
+  /* اتجاه النافذة */
+
+  document.getElementById("loginOverlay")
+    .style.direction = t.direction;
+
+
+  document.getElementById("loginBox")
+    .style.direction = t.direction;
+
+
+  document.getElementById("userProfile")
+    .style.direction = t.direction;
+
+
+  /* زر اللغة */
+
+  document.getElementById(
+    "loginLanguageButton"
+  ).textContent = t.languageButton;
+
+
+  /* العنوان */
+
+  document.getElementById(
+    "loginTitle"
+  ).textContent = t.title;
+
+
+  /* الحقول */
+
+  document.getElementById(
+    "emailInput"
+  ).placeholder = t.email;
+
+
+  document.getElementById(
+    "passwordInput"
+  ).placeholder = t.password;
+
+
+  /* الأزرار */
+
+  document.getElementById(
+    "loginButton"
+  ).textContent = t.login;
+
+
+  document.getElementById(
+    "googleButton"
+  ).textContent = t.google;
+
+
+  document.getElementById(
+    "signupButton"
+  ).textContent = t.signup;
+
+
+  /* زر الخروج */
+
+  document.getElementById(
+    "logoutText"
+  ).textContent = t.logout;
+
+
+  document.getElementById(
+    "logoutButton"
+  ).title = t.logout;
+
+
+  document.getElementById(
+    "logoutButton"
+  ).setAttribute(
+    "aria-label",
+    t.logout
+  );
+
+}
+
+
+/* زر تبديل اللغة */
+
+document.getElementById(
+  "loginLanguageButton"
+).onclick = () => {
+
+  updateLoginLanguage(
+    currentLang === "ar"
+      ? "en"
+      : "ar"
+  );
+
+};
+
+
+/* تشغيل اللغة */
+
+updateLoginLanguage(currentLang);
+
+
+
+/* =====================================================
+   🔐 عناصر تسجيل الدخول
+===================================================== */
+
+const overlay =
+  document.getElementById("loginOverlay");
+
+const email =
+  document.getElementById("emailInput");
+
+const pass =
+  document.getElementById("passwordInput");
+
+const error =
+  document.getElementById("loginError");
+
+
+
+/* =====================================================
+   🔑 دخول بالبريد وكلمة المرور
+===================================================== */
+
+document.getElementById(
+  "loginButton"
+).onclick = async () => {
+
+  error.textContent = "";
+
+  try {
+
+    await signInWithEmailAndPassword(
+      auth,
+      email.value.trim(),
+      pass.value
+    );
+
+  } catch(e) {
+
+    error.textContent =
+      "❌ " +
+      (
+        currentLang === "en"
+        ? "Login failed"
+        : "فشل تسجيل الدخول"
+      );
+
+    console.error(e);
+
+  }
+
+};
+
+
+
+/* =====================================================
+   📝 إنشاء حساب
+===================================================== */
+
+document.getElementById(
+  "signupButton"
+).onclick = async () => {
+
+  error.textContent = "";
+
+  try {
+
+    await createUserWithEmailAndPassword(
+      auth,
+      email.value.trim(),
+      pass.value
+    );
+
+  } catch(e) {
+
+    error.textContent =
+      "❌ " +
+      (
+        currentLang === "en"
+        ? "Account creation failed"
+        : "فشل إنشاء الحساب"
+      );
+
+    console.error(e);
+
+  }
+
+};
+
+
+
+/* =====================================================
+   🔵 Google
+===================================================== */
+
+document.getElementById(
+  "googleButton"
+).onclick = async () => {
+
+  error.textContent = "";
+
+  const provider =
+    new GoogleAuthProvider();
+
+  try {
+
+    await signInWithPopup(
+      auth,
+      provider
+    );
+
+  } catch(e) {
+
+    error.textContent =
+      "❌ " +
+      (
+        currentLang === "en"
+        ? "Google sign-in failed"
+        : "فشل تسجيل الدخول بواسطة Google"
+      );
+
+    console.error(e);
+
+  }
+
+};
+
+
+
+/* =====================================================
+   👤 مراقبة حالة الدخول
+===================================================== */
+
+onAuthStateChanged(
+  auth,
+  (user) => {
+
+    if(user){
+
+      overlay.style.display = "none";
+
+      document.body.classList.remove(
+        "locked"
+      );
+
+
+      document.getElementById(
+        "userProfile"
+      ).style.display = "flex";
+
+
+      document.getElementById(
+        "userName"
+      ).textContent =
+        user.displayName ||
+        user.email;
+
+
+      document.getElementById(
+        "userPhoto"
+      ).src =
+        user.photoURL ||
+        "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+
+
+    }else{
+
+      overlay.style.display = "flex";
+
+      document.body.classList.add(
+        "locked"
+      );
+
+
+      document.getElementById(
+        "userProfile"
+      ).style.display = "none";
+
+    }
+
+  }
 );
 
 
-}catch(e){
 
-error.textContent="❌ "+e.message;
+/* =====================================================
+   🚪 تسجيل الخروج
+===================================================== */
 
-}
+document.getElementById(
+  "logoutButton"
+).onclick = async () => {
+
+  try {
+
+    await signOut(auth);
+
+  } catch(e) {
+
+    console.error(e);
+
+  }
 
 };
 
 
-
-
-/* Google */
-
-document.getElementById("googleButton").onclick=async()=>{
-
-
-const provider=new GoogleAuthProvider();
-
-
-try{
-
-
-await signInWithPopup(
-auth,
-provider
+console.log(
+  "SAKAKER Firebase Ready"
 );
-
-
-}catch(e){
-
-error.textContent="❌ "+e.message;
-
-}
-
-
-};
-
-
-
-
-
-/* مراقبة الدخول */
-
-onAuthStateChanged(auth,(user)=>{
-
-
-if(user){
-
-
-overlay.style.display="none";
-
-document.body.classList.remove("locked");
-
-
-document.getElementById("userProfile").style.display="flex";
-
-
-document.getElementById("userName").textContent =
-user.displayName || user.email;
-
-
-document.getElementById("userPhoto").src =
-user.photoURL ||
-"https://cdn-icons-png.flaticon.com/512/149/149071.png";
-
-
-}else{
-
-
-overlay.style.display="flex";
-
-document.body.classList.add("locked");
-
-
-document.getElementById("userProfile").style.display="none";
-
-
-}
-
-
-});
-
-
-
-
-
-/* خروج */
-
-document.getElementById("logoutButton").onclick=async()=>{
-
-await signOut(auth);
-
-};
-
-
-
-console.log("SAKAKER Firebase Ready");
 
 </script>
-
+```
 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>موقع بخلفية ساحرة</title>
+    <title>موقع ابو القمرزمرد العام</title>
     <style>
         /* تهيئة الصفحة وجعل الخلفية تمتد بالكامل */
         body {
