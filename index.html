@@ -1528,27 +1528,93 @@ setInterval(loadWeather, 1800000);
      ملف واحد كامل
      Firebase + Anonymous Authentication
 ========================================================= -->
-
 <!-- 🔹 زر فتح اللعبة -->
 <button id="pongGame-btn" style="
   z-index:9999;
   position:fixed;
   bottom:20px;
-  right:10px;
-  padding:5px 8px;
+  right:clamp(8px,2vw,20px);
+
+  /* حجم مرن */
+  width:auto;
+  max-width:clamp(95px,24vw,150px);
+  min-width:70px;
+
+  padding:clamp(4px,1.2vw,7px) clamp(7px,2vw,12px);
+
   border:none;
-  border-radius:14px;
+  border-radius:clamp(10px,3vw,16px);
+
   background:linear-gradient(45deg,#ff1493,#00ffff);
   color:#fff;
-  font-size:15px;
+
+  font-size:clamp(11px,3vw,15px);
   font-weight:bold;
+
   cursor:pointer;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+
   box-shadow:0 0 20px rgba(0,255,255,.8);
   transition:.3s;
+
+  box-sizing:border-box;
 ">
-🏓 <span id="pongGame-iconLabel">بونج</span>
+  🏓 <span id="pongGame-iconLabel">بونج</span>
 </button>
 
+<style>
+/* 📱 الجوال */
+@media (max-width:600px){
+  #pongGame-btn{
+    bottom:12px !important;
+    right:8px !important;
+
+    max-width:90px !important;
+    min-width:62px !important;
+
+    padding:4px 6px !important;
+    font-size:11px !important;
+
+    border-radius:11px !important;
+
+    box-shadow:0 0 12px rgba(0,255,255,.65) !important;
+  }
+
+  #pongGame-iconLabel{
+    display:inline-block;
+    max-width:45px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    vertical-align:middle;
+  }
+}
+
+/* 📱 الجوال الصغير جدًا */
+@media (max-width:380px){
+  #pongGame-btn{
+    max-width:72px !important;
+    min-width:55px !important;
+    padding:3px 5px !important;
+    font-size:10px !important;
+    bottom:8px !important;
+    right:6px !important;
+  }
+
+  #pongGame-iconLabel{
+    max-width:35px;
+  }
+}
+
+/* 💻 الكمبيوتر */
+@media (min-width:601px){
+  #pongGame-btn:hover{
+    transform:scale(1.08);
+    box-shadow:0 0 25px rgba(0,255,255,.9);
+  }
+}
+</style>
 <!-- =========================================================
      🔹 نافذة اللعبة
 ========================================================= -->
@@ -1560,8 +1626,8 @@ left:0;
 width:100vw;
 height:100vh;
 
-background:
-    url('ضع-رابط-صورة-الحديقة-هنا')
+ background:url('https://cdn.pixabay.com/photo/2017/02/01/22/02/mountains-2031539_1280.jpg') center/cover;
+}
     center center
     / cover
     no-repeat
